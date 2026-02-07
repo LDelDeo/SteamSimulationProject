@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
-using static EmployeeEnumerators;
 
 public class EmployeeFactory
 {
-    public void CreateEmployee()
+    public void CreateEmployee(EmployeeLists employeeLists, List<Employee> listToAddTo)
     {
         Employee employee = new Employee();
 
@@ -15,13 +13,13 @@ public class EmployeeFactory
 
         employee.gender = employeeRNG.GetGender();
 
-        if (employee.gender == EmployeeGender.Male) { employee.firstName = employeeRNG.GetRandomStringFromArray(employeeArrays.maleNames); }
-        else if (employee.gender == EmployeeGender.Female) { employee.firstName = employeeRNG.GetRandomStringFromArray(employeeArrays.femaleNames); }
+        if (employee.gender == EmployeeEnumerators.EmployeeGender.Male) { employee.firstName = employeeRNG.GetRandomStringFromArray(employeeArrays.maleNames); }
+        else if (employee.gender == EmployeeEnumerators.EmployeeGender.Female) { employee.firstName = employeeRNG.GetRandomStringFromArray(employeeArrays.femaleNames); }
 
         employee.lastName = employeeRNG.GetRandomStringFromArray(employeeArrays.lastNames);
 
-        employee.jobPosition = EmployeeRNG.GetRandomEnumValue<JobType>();
-        employee.workEthic = EmployeeRNG.GetRandomEnumValue<WorkEthic>();
+        employee.jobPosition = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.JobType>();
+        employee.workEthic = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.WorkEthic>();
 
         employee.efficiency = employeeRNG.GetRandomStat();
         employee.customerService = employeeRNG.GetRandomStat();
@@ -32,10 +30,10 @@ public class EmployeeFactory
 
         employee.overall = (employee.efficiency + employee.customerService + employee.communication + employee.teamwork + employee.iq) / 5;
 
-        PrintStats(employee);
+        employeeLists.AddEmployee(employee, listToAddTo);
     }
 
-    private void PrintStats(Employee employee)
+    public void PrintStats(Employee employee)
     {
         Debug.Log("Employee Stats");
         Debug.Log("==============");
@@ -55,20 +53,21 @@ public class EmployeeFactory
 
 public class EmployeeRNG
 {
-    public EmployeeGender GetGender()
+    EmployeeEnumerators employeeEnumerators = new EmployeeEnumerators();
+    public EmployeeEnumerators.EmployeeGender GetGender()
     {
         var randomNumber = UnityEngine.Random.Range(0, 2);
 
         switch (randomNumber)
         {
             case 0:
-                return EmployeeGender.Male;
+                return EmployeeEnumerators.EmployeeGender.Male;
 
             case 1:
-                return EmployeeGender.Female;
+                return EmployeeEnumerators.EmployeeGender.Female;
         }
 
-        return EmployeeGender.None;
+        return EmployeeEnumerators.EmployeeGender.None;
     }
 
     public string GetRandomStringFromArray(string[] array)
@@ -104,18 +103,18 @@ public class EmployeeEnumerators
     }
     public enum JobType
     {
-        Prep_Cook,
-        Line_Cook,
-        Fryer,
-        Patty_Flipper,
-        Manager,
         Busser,
+        Drive_Thru_Attendee,
         Janitor,
         Cashier,
-        Drive_Thru_Attendee,
         Media_Manager,
+        Prep_Cook,
+        Line_Cook,
+        Fry_Cook,
+        Patty_Flipper,
         Expiditer,
-        Shift_Manager
+        Shift_Manager,
+        Manager
     }
 
     public enum WorkEthic

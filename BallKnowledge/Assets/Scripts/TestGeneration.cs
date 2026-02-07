@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class TestGeneration : MonoBehaviour
 {
@@ -6,11 +7,16 @@ public class TestGeneration : MonoBehaviour
     private void Start()
     {
         EmployeeFactory employeeFactory = new EmployeeFactory();
+        EmployeeLists employeeLists = new EmployeeLists();
 
         for (int i = 0; i < employeeCount; i++)
         {
-            employeeFactory.CreateEmployee();
+            employeeFactory.CreateEmployee(employeeLists, employeeLists.currentRoster);
         }
-            
+
+        foreach (var employee in employeeLists.currentRoster)
+            employeeFactory.PrintStats(employee);
+
+        Debug.Log(employeeLists.currentRoster.Count);
     }
 }
