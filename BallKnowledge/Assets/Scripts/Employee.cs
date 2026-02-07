@@ -2,47 +2,25 @@ using UnityEngine;
 
 public class Employee
 {
-    string firstName;
-    string lastName;
+    public EmployeeEnumerators.EmployeeGender gender;
 
-    EmployeeEnumerators.Gender gender;
+    public string firstName;
+    public string lastName;
 
-    EmployeeEnumerators.JobTypes role;
+    public bool isRookie;
+    public int age;
 
-    int efficiency;
-    int customerService;
-    int communication;
-    int teamwork;
-    int workEthic;
-    int overall;
+    public EmployeeEnumerators.JobType jobPosition;
+    public EmployeeEnumerators.WorkEthic workEthic;
 
-    Sprite skinTone;
-    Sprite hair;
-    Sprite mouth;
-    Sprite eyes;
-    Sprite nose;
-    Sprite mustache;
-    Sprite beard;
-}
+    public int efficiency;
+    public int customerService;
+    public int communication;
+    public int teamwork;
+    public int iq;
 
-public class EmployeeEnumerators
-{
-    public enum Gender
-    {
-        Male,
-        Female
-    }
-    public enum JobTypes
-    {
-        Prep_Cook,
-        Line_Cook,
-        Fryer,
-        Patty_Flipper,
-        Manager,
-        Busser,
-        Janitor,
-        Cashier,
-        Drive_Thru_Attendee
-    }
+    public int[] employeeStats;
+    public int overall;
 
+    // Sprites for each facial feature
 }
