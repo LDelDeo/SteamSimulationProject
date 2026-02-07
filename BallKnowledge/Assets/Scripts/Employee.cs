@@ -30,5 +30,5 @@ public class Employee
 
     public int championships = 0;
 
-    // Sprites for each facial feature
+    // Sprites for each facial feature below
 }

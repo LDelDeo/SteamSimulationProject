@@ -18,6 +18,12 @@ public class EmployeeFactory
 
         employee.lastName = employeeRNG.GetRandomStringFromArray(employeeArrays.lastNames);
 
+        if (listToAddTo == employeeLists.draftClass) { employee.isRookie = true; }    
+        else { employee.isRookie = false; }
+
+        if (employee.isRookie) { employee.age = employeeRNG.GetRandomAge(20, 25); }
+        else { employee.age = employeeRNG.GetRandomAge(25, 34); }
+
         employee.jobPosition = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.JobType>();
         employee.workEthic = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.WorkEthic>();
 
@@ -68,6 +74,12 @@ public class EmployeeRNG
         }
 
         return EmployeeEnumerators.EmployeeGender.None;
+    }
+
+    public int GetRandomAge(int minAge, int maxAge)
+    {
+        var ageOutput = UnityEngine.Random.Range(minAge, maxAge);
+        return ageOutput;
     }
 
     public string GetRandomStringFromArray(string[] array)
@@ -134,5 +146,5 @@ public class EmployeeArrays
     // We could Import from JSON instead
     public string[] maleNames = { "Luke", "John", "Josh", "Tom", "Mike", "Owen", "Jared", "Aaron", "Noah" };
     public string[] femaleNames = { "Fallon", "Jenna", "Eden", "Alane", "Carly", "Halie" };
-    public string[] lastNames = { "Placeholder" };
+    public string[] lastNames = { "Placeholder1", "Placeholder2" };
 }

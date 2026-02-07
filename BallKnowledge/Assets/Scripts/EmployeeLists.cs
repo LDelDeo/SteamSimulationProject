@@ -18,11 +18,8 @@ public class EmployeeLists
     {
         if (list == currentRoster && HasRosterSpace(employee))
             list.Add(employee);
-        else
-        {
-            Debug.Log($"Max Space for Employee {employee.firstName}|{employee.jobPosition}");
-        }
-            
+        else if (list == draftClass)
+            list.Add(employee);
     }
 
     private bool HasRosterSpace(Employee employee)
