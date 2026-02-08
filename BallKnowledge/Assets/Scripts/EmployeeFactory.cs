@@ -32,7 +32,6 @@ public class EmployeeFactory
         employee.communication = employeeRNG.GetRandomStat();
         employee.teamwork = employeeRNG.GetRandomStat();
         employee.iq = employeeRNG.GetRandomStat();
-        employee.employeeStats = new int[] { employee.efficiency, employee.customerService, employee.communication, employee.teamwork, employee.iq };
 
         employee.overall = (employee.efficiency + employee.customerService + employee.communication + employee.teamwork + employee.iq) / 5;
 

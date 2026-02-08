@@ -21,7 +21,6 @@ public class Employee
     public int teamwork;
     public int iq;
 
-    public int[] employeeStats;
     public int overall;
 
     public int mostValuableEmployee = 0;

@@ -6,19 +6,19 @@ public class EmployeeCard : MonoBehaviour
 {
     #region Visuals
     [Header("Employee Card Visuals")]
-    [SerializeField] TMP_Text firstNameText;
-    [SerializeField] TMP_Text lastNameText;
-    [SerializeField] TMP_Text positionText;
-    [SerializeField] TMP_Text overallText;
-    [SerializeField] Image employeeCardBackground;
+    [SerializeField] protected TMP_Text firstNameText;
+    [SerializeField] protected TMP_Text lastNameText;
+    [SerializeField] protected TMP_Text positionText;
+    [SerializeField] protected TMP_Text overallText;
+    [SerializeField] protected Image employeeCardBackground;
     #endregion
 
-    private string employeeFirstName;
-    private string employeeLastName;
-    private string employeePosition;
-    private string employeeOverall;
+    protected string employeeFirstName;
+    protected string employeeLastName;
+    protected string employeePosition;
+    protected string employeeOverall;
 
-    public void GetEmployeeStats(Employee employee)
+    public virtual void GetEmployeeStats(Employee employee)
     {
         employeeFirstName = employee.firstName;
         employeeLastName = employee.lastName;

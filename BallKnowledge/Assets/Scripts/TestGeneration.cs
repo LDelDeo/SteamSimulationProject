@@ -20,8 +20,7 @@ public class TestGeneration : MonoBehaviour
         EmployeeLists employeeLists = new EmployeeLists();
 
         var employeeCardObject = employeeCard.GetComponent<EmployeeCard>();
-        var prospectCardObject = new ProspectCard();
-        prospectCardObject = employeeCard.GetComponent<ProspectCard>();
+        var prospectCardObject = prospectCard.GetComponent<ProspectCard>();
 
         // Create Employees for Roster (We can use this for when you start the game)
         CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, rosterGrid);
@@ -41,6 +40,7 @@ public class TestGeneration : MonoBehaviour
         {
             employeeCard.GetEmployeeStats(employee);
             Instantiate(employeeCard, layout);
+            employeeFactory.PrintStats(employee);
         }
     }
 }
