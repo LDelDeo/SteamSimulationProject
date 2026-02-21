@@ -21,11 +21,19 @@ public class EmployeeFactory
         if (listToAddTo == employeeLists.draftClass) { employee.isRookie = true; }    
         else { employee.isRookie = false; }
 
-        if (employee.isRookie) { employee.age = employeeRNG.GetRandomAge(20, 25); }
-        else { employee.age = employeeRNG.GetRandomAge(25, 34); }
+        if (employee.isRookie) 
+        { 
+            employee.age = employeeRNG.GetRandomAge(20, 25);
+            employee.hourlyWage = 21;
+        }
+        else 
+        { 
+            employee.age = employeeRNG.GetRandomAge(25, 34);
+            employee.hourlyWage = employeeRNG.GetRandomWage();
+        }
 
         employee.jobPosition = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.JobType>();
-        employee.workEthic = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.WorkEthic>();
+        employee.workEthic = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.WorkEthic>(); // We may have to create odds instead of an even chance for each dev trait
 
         employee.efficiency = employeeRNG.GetRandomStat();
         employee.customerService = employeeRNG.GetRandomStat();
@@ -101,6 +109,15 @@ public class EmployeeRNG
 
         int randomStatValue = UnityEngine.Random.Range(minStat, maxStat);
         return randomStatValue;
+    }
+
+    public int GetRandomWage()
+    {
+        int minWage = 18;
+        int maxWage = 55;
+
+        int randomWageValue = UnityEngine.Random.Range(minWage, maxWage);
+        return randomWageValue;
     }
 }
 

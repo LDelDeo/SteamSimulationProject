@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 
-public class EmployeeLists
+public class EmployeeLists : MonoBehaviour
 {
     RosterConstruction rosterConstruction = new RosterConstruction();
 
@@ -16,13 +16,22 @@ public class EmployeeLists
     #region Adding & Subtracting Employees
     public void AddEmployee(Employee employee, List<Employee> list)
     {
-        if (list == currentRoster && HasRosterSpace(employee))
-            list.Add(employee);
-        else if (list == draftClass)
+        if (employee == null)
+        {
+            Debug.LogError("Add Employee called with NULL employee");
+            return;
+        }
+
+        if (list == currentRoster || list == draftClass || list == freeAgentClass)
             list.Add(employee);
     }
 
-    private bool HasRosterSpace(Employee employee)
+    public void RemoveEmployee(Employee employee, List<Employee> list)
+    {
+        list.Remove(employee);
+    }
+
+    public bool HasRosterSpace(Employee employee)
     {
         switch (employee.jobPosition)
         {

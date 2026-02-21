@@ -4,6 +4,11 @@ using TMPro;
 
 public class EmployeeCard : MonoBehaviour
 {
+    [Header("Script References")]
+    protected GeneralManager manager;
+    protected EmployeeLists employeeLists;
+    protected UIManager uiManager;
+
     #region Visuals
     [Header("Employee Card Visuals")]
     [SerializeField] protected TMP_Text firstNameText;
@@ -17,6 +22,13 @@ public class EmployeeCard : MonoBehaviour
     protected string employeeLastName;
     protected string employeePosition;
     protected string employeeOverall;
+
+    private void Start()
+    {
+        manager = FindFirstObjectByType<GeneralManager>();
+        employeeLists = FindFirstObjectByType<EmployeeLists>();
+        uiManager = FindFirstObjectByType<UIManager>();
+    }
 
     public virtual void GetEmployeeStats(Employee employee)
     {
@@ -38,7 +50,7 @@ public class EmployeeCard : MonoBehaviour
         overallText.text = employeeOverall;
     }
 
-    private void SetEmployeeCardBackground(Employee employee)
+    protected void SetEmployeeCardBackground(Employee employee)
     {
         switch (employee.workEthic)
         {

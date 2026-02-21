@@ -10,7 +10,7 @@ public class Employee
     public bool isRookie;
     public int age;
 
-    public int? hourlyWage;
+    public int hourlyWage;
 
     public EmployeeEnumerators.JobType jobPosition;
     public EmployeeEnumerators.WorkEthic workEthic;
