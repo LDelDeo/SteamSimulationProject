@@ -490,14 +490,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313255425}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fcf423ef8ef2cd84d8bbac19e1403192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rosterCount: 100
-  draftClassSize: 25
-  freeAgencyClassSize: 3
+  rosterCount: 0
+  draftClassSize: 0
+  freeAgencyClassSize: 0
 --- !u!4 &313255427
 Transform:
   m_ObjectHideFlags: 0
@@ -579,6 +579,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentPeriod: 0
   currentPeriodIndex: 0
+  rosterCount: 100
+  draftClassSize: 25
+  freeAgencyClassSize: 25
 --- !u!1 &367251188
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class PeriodManager : MonoBehaviour
 {
+    [Header("Current Period")]
     [SerializeField] Period currentPeriod;
     [SerializeField] int currentPeriodIndex = 0;
     public enum Period
@@ -19,9 +21,19 @@ public class PeriodManager : MonoBehaviour
         SeasonReflection = 9
     }
 
+    [Header("List Sizes")]
+    [SerializeField] int rosterCount;
+    [SerializeField] int draftClassSize;
+    [SerializeField] int freeAgencyClassSize;
+
+    private EmployeeCard employeeCardObject;
+    private ProspectCard prospectCardObject;
+    private FreeAgentCard freeAgentCardObject;
+
     private EmployeeLists employeeLists;
     private UIManager uiManager;
     private GeneralManager generalManager;
+    private EmployeeFactory employeeFactory;
 
     private void Start()
     {
@@ -29,9 +41,18 @@ public class PeriodManager : MonoBehaviour
         uiManager = GetComponent<UIManager>();
         generalManager = GetComponent<GeneralManager>();
 
+        employeeFactory = new EmployeeFactory();
+
+        employeeCardObject = uiManager.employeeCard.GetComponent<EmployeeCard>();
+        prospectCardObject = uiManager.prospectCard.GetComponent<ProspectCard>();
+        freeAgentCardObject = uiManager.freeAgentCard.GetComponent<FreeAgentCard>();
+
+        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGrid);
+
         UpdatePeriod();
     }
 
+    #region Changing Period
     private void ChangePeriod()
     {
         currentPeriodIndex++;
@@ -73,7 +94,7 @@ public class PeriodManager : MonoBehaviour
                 break; 
 
             case Period.FreeAgency:
-                //CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyLayout);
+                CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyLayout);
                 LetExpiringContractsWalk();
                 uiManager.ChangeUI(uiManager.freeAgencyLayout);
                 break;
@@ -86,7 +107,7 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Draft:
-                //CreateAnEmployee(draftClassSize, employeeFactory, employeeLists, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
+                CreateAnEmployee(draftClassSize, employeeFactory, employeeLists, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
                 uiManager.ChangeUI(uiManager.prospectLayout);
                 break;
 
@@ -102,7 +123,26 @@ public class PeriodManager : MonoBehaviour
                 break;
         }
     }
+    #endregion
 
+    private void CreateAnEmployee(int employeeCount, EmployeeFactory employeeFactory, EmployeeLists employeeLists, List<Employee> listToAddTo, EmployeeCard employeeCard, Transform layout)
+    {
+        for (int i = 0; i < employeeCount; i++)
+        {
+            employeeFactory.CreateEmployee(employeeLists, listToAddTo);
+        }
+
+        foreach (var employee in listToAddTo)
+        {
+            GameObject cardObject = Instantiate(employeeCard.gameObject, layout);
+            EmployeeCard cardInstance = cardObject.GetComponent<EmployeeCard>();
+
+            cardInstance.GetEmployeeStats(employee);
+            employeeFactory.PrintStats(employee);
+        }
+    }
+
+    #region Period Functionality/Checks
     private void NewLeagueYear()
     {
         generalManager.currentYear++;
@@ -114,6 +154,13 @@ public class PeriodManager : MonoBehaviour
             employee.yearsUnderContract--;
 
         }
+    }
+
+    private void CheckforRetirement()
+    {
+        // Calculate the retirement percentages
+        // If retiring, add to retirement list, create a retirement card
+        // Allow player to ackowledge or add to the fast food hall of fame
     }
 
     private void CheckExpiringContracts()
@@ -137,4 +184,5 @@ public class PeriodManager : MonoBehaviour
             employeeLists.RemoveEmployee(expiringContract, employeeLists.pendingFreeAgents);
         }
     }
+    #endregion
 }

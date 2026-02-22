@@ -12,6 +12,8 @@ public class EmployeeLists : MonoBehaviour
     public List<Employee> draftClass = new List<Employee>();
     public List<Employee> pendingFreeAgents = new List<Employee>();
     public List<Employee> freeAgentClass = new List<Employee>();
+    public List<Employee> retiringEmployees = new List<Employee>();
+    public List<Employee> employeeHallOfFame = new List<Employee>();
     #endregion
 
     #region Adding & Subtracting Employees
@@ -91,7 +93,6 @@ public class EmployeeLists : MonoBehaviour
         foreach (Employee employee in list.ToList())
         {
             list.Remove(employee);
-            Debug.Log($"Removed {employee.firstName}");
         }
     }
 
