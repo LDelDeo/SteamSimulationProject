@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -22,13 +23,76 @@ public class EmployeeLists : MonoBehaviour
             return;
         }
 
-        if (list == currentRoster || list == draftClass || list == freeAgentClass)
+        if (list == currentRoster || list == draftClass || list == freeAgentClass || list == pendingFreeAgents)
             list.Add(employee);
     }
 
     public void RemoveEmployee(Employee employee, List<Employee> list)
     {
+        if (list == currentRoster)
+        {
+            switch (employee.jobPosition)
+            {
+                case EmployeeEnumerators.JobType.Busser:
+                        rosterConstruction.currentBusser--;
+                break;
+
+                case EmployeeEnumerators.JobType.Janitor:
+                        rosterConstruction.currentJanitor--;
+                break;
+
+                case EmployeeEnumerators.JobType.Drive_Thru_Attendee:
+                        rosterConstruction.currentDriveThruAttendee--;
+                break;
+
+                case EmployeeEnumerators.JobType.Cashier:
+                        rosterConstruction.currentCashier--;
+                break;
+
+                case EmployeeEnumerators.JobType.Media_Manager:
+                        rosterConstruction.currentMediaManager--;
+                break;
+
+                case EmployeeEnumerators.JobType.Prep_Cook:
+                        rosterConstruction.currentPrepCook--;
+                break;
+
+                case EmployeeEnumerators.JobType.Line_Cook:
+                        rosterConstruction.currentLineCook--;
+                break;
+
+                case EmployeeEnumerators.JobType.Fry_Cook:
+                        rosterConstruction.currentFryCook--;
+                break;
+
+                case EmployeeEnumerators.JobType.Patty_Flipper:
+                        rosterConstruction.currentPattyFlipper--;
+                break;
+
+                case EmployeeEnumerators.JobType.Expiditer:
+                        rosterConstruction.currentExpiditer--;
+                break;
+
+                case EmployeeEnumerators.JobType.Shift_Manager:
+                        rosterConstruction.currentShiftManager--;
+                break;
+
+                case EmployeeEnumerators.JobType.Manager:
+                        rosterConstruction.currentManager--;
+                break;
+            }
+        }
+
         list.Remove(employee);
+    }
+
+    public void ClearList(List<Employee> list)
+    {
+        foreach (Employee employee in list.ToList())
+        {
+            list.Remove(employee);
+            Debug.Log($"Removed {employee.firstName}");
+        }
     }
 
     public bool HasRosterSpace(Employee employee)

@@ -11,6 +11,7 @@ public class Employee
     public int age;
 
     public int hourlyWage;
+    public int yearsUnderContract;
 
     public EmployeeEnumerators.JobType jobPosition;
     public EmployeeEnumerators.WorkEthic workEthic;
@@ -22,6 +23,8 @@ public class Employee
     public int iq;
 
     public int overall;
+
+    public int value;
 
     public int mostValuableEmployee = 0;
     public int employeeOfTheYear = 0;

@@ -6,27 +6,39 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] Transform rosterGrid;
-    [SerializeField] GameObject employeeCard;
+    public Transform rosterGrid;
+    public GameObject employeeCard;
 
-    [SerializeField] Transform prospectLayout;
-    [SerializeField] GameObject prospectCard;
+    public Transform prospectLayout;
+    public GameObject prospectCard;
 
-    [SerializeField] Transform freeAgencyLayout;
-    [SerializeField] GameObject freeAgentCard;
+    public Transform freeAgencyLayout;
+    public GameObject freeAgentCard;
 
-    [SerializeField] public TMP_Text capSpaceText;
+    public Transform expiringContractsLayout;
+    public GameObject expiringContractCard;
+
+    public Transform[] layouts;
+
+    [Header("HUD Stats")]
+    [SerializeField] TMP_Text capSpaceText;
+    [SerializeField] TMP_Text draftPicksText;
+    [SerializeField] TMP_Text leagueYearText;
 
     [Header("Script References")]
     private EmployeeLists employeeLists;
     private GeneralManager generalManager;
     private UIManager uiManager;
+    private TestGeneration testGeneration;
 
     private void Start()
     {
         employeeLists = GetComponent<EmployeeLists>();
         generalManager = GetComponent<GeneralManager>();
         uiManager = GetComponent<UIManager>();
+        testGeneration = GetComponent<TestGeneration>();
+
+        
     }
 
     public void RefreshUI()
@@ -34,8 +46,11 @@ public class UIManager : MonoBehaviour
         RefreshRosterUI();
         RefreshDraftUI();
         RefreshFreeAgentUI();
+        RefreshExpiringContractsUI();
 
         UpdateCapSpace();
+        UpdateDraftPicks();
+        UpdateLeagueYear();
     }
 
     private void RefreshRosterUI()
@@ -74,6 +89,18 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void RefreshExpiringContractsUI()
+    {
+        ClearGrid(expiringContractsLayout);
+
+        foreach (var expiringContract in employeeLists.pendingFreeAgents)
+        {
+            GameObject cardObject = Instantiate(expiringContractCard, expiringContractsLayout);
+            FreeAgentCard card = cardObject.GetComponent<FreeAgentCard>();
+            card.GetEmployeeStats(expiringContract);
+        }
+    }
+
     private void UpdateCapSpace()
     {
         generalManager.currentUsedCapSpace = 0;
@@ -83,7 +110,17 @@ public class UIManager : MonoBehaviour
             generalManager.currentUsedCapSpace += employee.hourlyWage;
         }
 
-        uiManager.capSpaceText.text = $"${generalManager.currentUsedCapSpace} / $275";
+        capSpaceText.text = $"${generalManager.currentUsedCapSpace} / $275";
+    }
+
+    public void UpdateDraftPicks()
+    {
+        draftPicksText.text = $"{generalManager.currentYear} Draft Picks: {generalManager.draftPicks}";
+    }
+
+    public void UpdateLeagueYear()
+    {
+        leagueYearText.text = generalManager.currentYear.ToString();
     }
 
     private void ClearGrid(Transform grid)
@@ -92,5 +129,16 @@ public class UIManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    public void ChangeUI(Transform screenToShow)
+    {
+        foreach (Transform screen in layouts)
+        {
+            screen.gameObject.SetActive(false);
+        }
+
+        screenToShow.gameObject.SetActive(true);
+        RefreshUI();
     }
 }

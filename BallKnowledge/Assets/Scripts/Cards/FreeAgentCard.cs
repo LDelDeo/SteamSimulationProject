@@ -8,10 +8,12 @@ public class FreeAgentCard : EmployeeCard
     [Header("Free Agent Card Visuals")]
     [SerializeField] TMP_Text ageText;
     [SerializeField] TMP_Text requestedWageText;
+    [SerializeField] TMP_Text contractYearsText;
     #endregion
 
     private string ageValue;
     private int requestedWageValue;
+    private int contractYears = 1;
 
     private Employee freeAgent;
 
@@ -41,8 +43,6 @@ public class FreeAgentCard : EmployeeCard
         requestedWageText.text = $"${requestedWageValue}/hr";
     }
 
-    
-
     #region Signing Functionality
     private void GrabEmployee(Employee employee)
     {
@@ -55,15 +55,49 @@ public class FreeAgentCard : EmployeeCard
 
         if ((manager.currentUsedCapSpace + freeAgentToSign.hourlyWage) < manager.maxCapSpace && employeeLists.HasRosterSpace(freeAgentToSign))
         {
+            freeAgentToSign.yearsUnderContract = contractYears;
+
             employeeLists.AddEmployee(freeAgentToSign, employeeLists.currentRoster);
             employeeLists.RemoveEmployee(freeAgentToSign, employeeLists.freeAgentClass);
 
             uiManager.RefreshUI();
         }
-        else
+    }
+
+    public void ResignPlayer(FreeAgentCard expiringContractCard)
+    {
+        Employee employeeToResign = expiringContractCard.freeAgent;
+        //int minWage = freeAgent.value * 2;
+        //int maxWage = freeAgent.value * 4;
+
+        //var requestedWage = Random.Range(minWage, maxWage);
+        //employeeToResign.hourlyWage = requestedWage;
+
+        if ((manager.currentUsedCapSpace + employeeToResign.hourlyWage) < manager.maxCapSpace && employeeLists.HasRosterSpace(employeeToResign))
         {
-            Debug.Log("Issue");
+            employeeToResign.yearsUnderContract = contractYears;
+
+            employeeLists.AddEmployee(employeeToResign, employeeLists.currentRoster);
+            employeeLists.RemoveEmployee(employeeToResign, employeeLists.pendingFreeAgents);
+
+            uiManager.RefreshUI();
         }
+    }
+
+    public void AdjustContractYears(bool increase)
+    {
+        if (increase) 
+        { 
+            contractYears++;
+            if (contractYears > 7) { contractYears = 1; }
+        }
+        else if (!increase) 
+        { 
+            contractYears--;
+            if (contractYears < 1) { contractYears = 7; }
+        }
+
+        contractYearsText.text = contractYears.ToString();
     }
     #endregion
 }
