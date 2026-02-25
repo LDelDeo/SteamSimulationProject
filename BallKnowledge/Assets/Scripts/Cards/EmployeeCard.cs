@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 public class EmployeeCard : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class EmployeeCard : MonoBehaviour
     protected GeneralManager manager;
     protected EmployeeLists employeeLists;
     protected UIManager uiManager;
+
+    [SerializeField] private GameObject employeeStatsPrefab;
+    private GameObject employeeStatsTransform;
 
     #region Visuals
     [Header("Employee Card Visuals")]
@@ -23,11 +27,14 @@ public class EmployeeCard : MonoBehaviour
     protected string employeePosition;
     protected string employeeOverall;
 
+    private Employee thisEmployee;
+
     private void Awake()
     {
         manager = FindFirstObjectByType<GeneralManager>();
         employeeLists = FindFirstObjectByType<EmployeeLists>();
         uiManager = FindFirstObjectByType<UIManager>();
+        employeeStatsTransform =  GameObject.Find("Employee Stats Layout");
     }
 
     public virtual void GetEmployeeStats(Employee employee)
@@ -39,6 +46,7 @@ public class EmployeeCard : MonoBehaviour
 
         SetStats();
         SetEmployeeCardBackground(employee);
+        GrabEmployee(employee);
     }
 
     #region Setting Values
@@ -82,6 +90,24 @@ public class EmployeeCard : MonoBehaviour
                 employeeCardBackground.color = new Color32(189, 23, 11, 255); // Red
                 break;
         }
+    }
+    #endregion
+
+    #region Roster Functionality
+    private void GrabEmployee(Employee employee)
+    {
+        thisEmployee = employee;
+    }
+
+    public void ShowEmployeeStats()
+    {
+        foreach(Transform child in employeeStatsTransform.transform)
+            Destroy(child.gameObject);
+
+        GameObject employeeStatsObject = Instantiate(employeeStatsPrefab, employeeStatsTransform.transform);
+
+        EmployeeProfile employeeStats = employeeStatsObject.GetComponent<EmployeeProfile>();
+        employeeStats.GetEmployeeStats(thisEmployee);
     }
     #endregion
 }

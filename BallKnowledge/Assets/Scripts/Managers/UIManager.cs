@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 {
     [Header("UI References")]
     public Transform rosterGrid;
+    public Transform employeeStatsLayout;
     public GameObject employeeCard;
 
     public Transform prospectLayout;
@@ -67,6 +68,9 @@ public class UIManager : MonoBehaviour
             EmployeeCard card = cardObject.GetComponent<EmployeeCard>();
             card.GetEmployeeStats(employee);
         }
+
+        foreach (Transform child in employeeStatsLayout.transform)
+            Destroy(child.gameObject);
     }
 
     private void RefreshDraftUI()

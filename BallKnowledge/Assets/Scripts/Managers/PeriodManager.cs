@@ -214,6 +214,7 @@ public class PeriodManager : MonoBehaviour
                 statIncreases.Add(randomStatIncrease);
             }
             
+            // Maybe make it so if its greater than 100, set it to 100
             if (employee.efficiency <= (100 - statIncreases[0]))
                 employee.efficiency += statIncreases[0];
 
@@ -238,6 +239,21 @@ public class PeriodManager : MonoBehaviour
             employee.communication -= 2;
             employee.teamwork -= 2;
             employee.iq -= 2;
+
+            if (employee.efficiency < 0)
+                employee.efficiency = 0;
+
+            if (employee.customerService < 0)
+                employee.customerService = 0;
+
+            if (employee.communication < 0)
+                employee.communication = 0;
+
+            if (employee.teamwork < 0)
+                employee.teamwork = 0;
+
+            if (employee.iq < 0)
+                employee.iq = 0;
         }
         
         employee.overall = (employee.efficiency + 

@@ -617,16 +617,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rosterGrid: {fileID: 1314913534}
+  employeeStatsLayout: {fileID: 1988148091}
   employeeCard: {fileID: 4974057881242360164, guid: 0855d123b2e2ffe4f999bd7c4e108067, type: 3}
   prospectLayout: {fileID: 1774738606}
   prospectCard: {fileID: 7081134768087405561, guid: 577545b5e4f52564c80d988ee66595f1, type: 3}
   freeAgencyLayout: {fileID: 1008673539}
   freeAgentCard: {fileID: 7081134768087405561, guid: d1c578595bcf96549826d13e389b4f30, type: 3}
-  freeAgentRectTransform: {fileID: 1008673539}
   expiringContractsLayout: {fileID: 489196366}
   expiringContractCard: {fileID: 7081134768087405561, guid: 6d1950e7d01e213469762622f0209b08, type: 3}
   retiringEmployeeLayout: {fileID: 2096428100}
-  retiringEmployeeCard: {fileID: 7081134768087405561, guid: e34401bb918d6284b81175dcc00e719b, type: 3}
+  retiringEmployeeCard: {fileID: 7081134768087405561, guid: 1278cc473e986cd41a3456d00fe2afff, type: 3}
   layouts:
   - {fileID: 1774738606}
   - {fileID: 489196366}
@@ -2401,8 +2401,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000011444, y: -0.0011749}
-  m_SizeDelta: {x: 800, y: 450.08}
+  m_AnchoredPosition: {x: -133.3701, y: -0.034061}
+  m_SizeDelta: {x: 533.2599, y: 450.01}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1314913535
 MonoBehaviour:
@@ -2908,6 +2908,41 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1988148090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1988148091}
+  m_Layer: 5
+  m_Name: Employee Stats Layout
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1988148091
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988148090}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2109612804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 229, y: 39}
+  m_SizeDelta: {x: 239.0974, y: 450.01}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2096428099
 GameObject:
   m_ObjectHideFlags: 0
@@ -3083,6 +3118,7 @@ RectTransform:
   - {fileID: 10640547}
   - {fileID: 179650188}
   - {fileID: 1141468902}
+  - {fileID: 1988148091}
   - {fileID: 1314913534}
   - {fileID: 1764305341}
   - {fileID: 984479362}
