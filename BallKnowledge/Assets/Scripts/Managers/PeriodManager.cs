@@ -29,6 +29,7 @@ public class PeriodManager : MonoBehaviour
     private EmployeeCard employeeCardObject;
     private ProspectCard prospectCardObject;
     private FreeAgentCard freeAgentCardObject;
+    private RetirementCard retirementCardObject;
 
     private EmployeeLists employeeLists;
     private UIManager uiManager;
@@ -46,6 +47,7 @@ public class PeriodManager : MonoBehaviour
         employeeCardObject = uiManager.employeeCard.GetComponent<EmployeeCard>();
         prospectCardObject = uiManager.prospectCard.GetComponent<ProspectCard>();
         freeAgentCardObject = uiManager.freeAgentCard.GetComponent<FreeAgentCard>();
+        retirementCardObject = uiManager.retiringEmployeeCard.GetComponent<RetirementCard>();
 
         CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGrid);
 
@@ -86,9 +88,12 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Retirements:
+                CheckforRetirement();
+                uiManager.ChangeUI(uiManager.retiringEmployeeLayout);
                 break;
 
             case Period.ExpiringContracts:
+                employeeLists.ClearList(employeeLists.retiringEmployees);
                 CheckExpiringContracts();
                 uiManager.ChangeUI(uiManager.expiringContractsLayout);
                 break; 
@@ -152,15 +157,136 @@ public class PeriodManager : MonoBehaviour
         {
             employee.age++;
             employee.yearsUnderContract--;
-
+            UpdateEmployeeOverall(employee);
         }
+    }
+
+    private void UpdateEmployeeOverall(Employee employee)
+    {
+        List<int> statIncreases = new List<int>();
+        int minStatsIncrease = 0;
+        int maxStatsIncrease = 0;
+
+        switch (employee.workEthic)
+        {
+            case EmployeeEnumerators.WorkEthic.Bum:
+                minStatsIncrease = 0;
+                maxStatsIncrease = 1;
+                break;
+
+            case EmployeeEnumerators.WorkEthic.Lazy:
+                minStatsIncrease = 0;
+                maxStatsIncrease = 2;
+                break;
+
+            case EmployeeEnumerators.WorkEthic.Paycheck_Collector:
+                minStatsIncrease = 0;
+                maxStatsIncrease = 3;
+                break;
+
+            case EmployeeEnumerators.WorkEthic.Gets_The_Job_Done:
+                minStatsIncrease = 1;
+                maxStatsIncrease = 3;
+                break;
+
+            case EmployeeEnumerators.WorkEthic.Motivated:
+                minStatsIncrease = 2;
+                maxStatsIncrease = 3;
+                break;
+
+            case EmployeeEnumerators.WorkEthic.Grinder:
+                minStatsIncrease = 2;
+                maxStatsIncrease = 4;
+                break;
+
+            case EmployeeEnumerators.WorkEthic.X_Factor:
+                minStatsIncrease = 3;
+                maxStatsIncrease = 5;
+                break;
+        }
+
+        
+        if (employee.age <= 31)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                int randomStatIncrease = Random.Range(minStatsIncrease, maxStatsIncrease);
+                statIncreases.Add(randomStatIncrease);
+            }
+            
+            if (employee.efficiency <= (100 - statIncreases[0]))
+                employee.efficiency += statIncreases[0];
+
+            if (employee.customerService <= (100 - statIncreases[1]))
+                employee.customerService += statIncreases[1];
+
+            if (employee.communication <= (100 - statIncreases[2]))
+                employee.communication += statIncreases[2];
+
+            if (employee.teamwork <= (100 - statIncreases[3]))
+                employee.teamwork += statIncreases[3];
+
+            if (employee.iq <= (100 - statIncreases[4]))
+                employee.iq += statIncreases[4];
+
+            statIncreases.Clear();
+        }
+        else
+        {
+            employee.efficiency -= 2;
+            employee.customerService -= 2;
+            employee.communication -= 2;
+            employee.teamwork -= 2;
+            employee.iq -= 2;
+        }
+        
+        employee.overall = (employee.efficiency + 
+                            employee.customerService + 
+                            employee.communication +
+                            employee.teamwork +
+                            employee.iq) 
+                            / 5;
     }
 
     private void CheckforRetirement()
     {
-        // Calculate the retirement percentages
-        // If retiring, add to retirement list, create a retirement card
-        // Allow player to ackowledge or add to the fast food hall of fame
+        int randomNumber = Random.Range(1, 101); 
+
+        foreach (var employee in employeeLists.currentRoster.ToList())
+        {
+            switch (employee.age)
+            {
+                case 35:
+                    if (randomNumber > 0 && randomNumber < 21) { AddToRetirement(employee); } // 20% Chance
+                    break;
+
+                case 36:
+                    if (randomNumber > 0 && randomNumber < 31) { AddToRetirement(employee); } // 30% Chance
+                    break;
+
+                case 37:
+                    if (randomNumber > 0 && randomNumber < 41) { AddToRetirement(employee); } // 40% Chance
+                    break;
+
+                case 38:
+                    if (randomNumber > 0 && randomNumber < 61) { AddToRetirement(employee); } // 60% Chance
+                    break;
+
+                case 39:
+                    if (randomNumber > 0 && randomNumber < 81) { AddToRetirement(employee); } // 80% Chance
+                    break;
+
+                case 40:
+                    AddToRetirement(employee); // 100% Chance
+                    break;
+            }
+        }
+    }
+
+    private void AddToRetirement(Employee employee)
+    {
+        employeeLists.AddEmployee(employee, employeeLists.retiringEmployees);
+        employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
     }
 
     private void CheckExpiringContracts()
@@ -169,6 +295,14 @@ public class PeriodManager : MonoBehaviour
         {
             if (employee.yearsUnderContract == 0)
             {
+                employee.value = employeeFactory.EmployeeValueCalucator(employee);
+
+                int minWage = employee.value * 2;
+                int maxWage = employee.value * 4;
+
+                var requestedWage = Random.Range(minWage, maxWage);
+                employee.hourlyWage = requestedWage;
+
                 employeeLists.AddEmployee(employee, employeeLists.pendingFreeAgents);
                 employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
             }
@@ -177,9 +311,15 @@ public class PeriodManager : MonoBehaviour
 
     private void LetExpiringContractsWalk()
     {
-        // Maybe here we can recalcute/randomize the asking price once they hit free agency so you might be able to get them cheaper or more expensive
         foreach (var expiringContract in employeeLists.pendingFreeAgents.ToList())
         {
+            // Recalcutes/randomizes the asking price once they hit free agency so you might be able to get them cheaper or more expensive
+            int minWage = expiringContract.value * 2;
+            int maxWage = expiringContract.value * 4;
+
+            var requestedWage = Random.Range(minWage, maxWage);
+            expiringContract.hourlyWage = requestedWage;
+
             employeeLists.AddEmployee(expiringContract, employeeLists.freeAgentClass);
             employeeLists.RemoveEmployee(expiringContract, employeeLists.pendingFreeAgents);
         }

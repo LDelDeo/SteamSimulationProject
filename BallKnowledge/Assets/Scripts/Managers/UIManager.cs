@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +19,9 @@ public class UIManager : MonoBehaviour
 
     public Transform expiringContractsLayout;
     public GameObject expiringContractCard;
+
+    public Transform retiringEmployeeLayout;
+    public GameObject retiringEmployeeCard;
 
     public Transform[] layouts;
 
@@ -37,8 +42,6 @@ public class UIManager : MonoBehaviour
         generalManager = GetComponent<GeneralManager>();
         uiManager = GetComponent<UIManager>();
         testGeneration = GetComponent<TestGeneration>();
-
-        
     }
 
     public void RefreshUI()
@@ -47,6 +50,7 @@ public class UIManager : MonoBehaviour
         RefreshDraftUI();
         RefreshFreeAgentUI();
         RefreshExpiringContractsUI();
+        RefreshRetirementsUI();
 
         UpdateCapSpace();
         UpdateDraftPicks();
@@ -98,6 +102,18 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(expiringContractCard, expiringContractsLayout);
             FreeAgentCard card = cardObject.GetComponent<FreeAgentCard>();
             card.GetEmployeeStats(expiringContract);
+        }
+    }
+
+    private void RefreshRetirementsUI()
+    {
+        ClearGrid(retiringEmployeeLayout);
+
+        foreach (var retirement in employeeLists.retiringEmployees)
+        {
+            GameObject cardObject = Instantiate(retiringEmployeeCard, retiringEmployeeLayout);
+            RetirementCard card = cardObject.GetComponent<RetirementCard>();
+            card.GetEmployeeStats(retirement);
         }
     }
 

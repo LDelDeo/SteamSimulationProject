@@ -23,7 +23,7 @@ public class EmployeeCard : MonoBehaviour
     protected string employeePosition;
     protected string employeeOverall;
 
-    private void Start()
+    private void Awake()
     {
         manager = FindFirstObjectByType<GeneralManager>();
         employeeLists = FindFirstObjectByType<EmployeeLists>();

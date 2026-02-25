@@ -67,11 +67,6 @@ public class FreeAgentCard : EmployeeCard
     public void ResignPlayer(FreeAgentCard expiringContractCard)
     {
         Employee employeeToResign = expiringContractCard.freeAgent;
-        //int minWage = freeAgent.value * 2;
-        //int maxWage = freeAgent.value * 4;
-
-        //var requestedWage = Random.Range(minWage, maxWage);
-        //employeeToResign.hourlyWage = requestedWage;
 
         if ((manager.currentUsedCapSpace + employeeToResign.hourlyWage) < manager.maxCapSpace && employeeLists.HasRosterSpace(employeeToResign))
         {

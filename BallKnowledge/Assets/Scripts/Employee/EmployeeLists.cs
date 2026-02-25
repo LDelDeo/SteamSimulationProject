@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
 
 public class EmployeeLists : MonoBehaviour
@@ -25,8 +24,7 @@ public class EmployeeLists : MonoBehaviour
             return;
         }
 
-        if (list == currentRoster || list == draftClass || list == freeAgentClass || list == pendingFreeAgents)
-            list.Add(employee);
+        list.Add(employee);
     }
 
     public void RemoveEmployee(Employee employee, List<Employee> list)
