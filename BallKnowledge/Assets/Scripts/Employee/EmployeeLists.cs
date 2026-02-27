@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EmployeeLists : MonoBehaviour
 {
-    RosterConstruction rosterConstruction = new RosterConstruction();
+    public RosterConstruction rosterConstruction = new RosterConstruction();
 
     #region Employee Lists
     public List<Employee> currentRoster = new List<Employee>();
@@ -69,8 +69,8 @@ public class EmployeeLists : MonoBehaviour
                         rosterConstruction.currentPattyFlipper--;
                 break;
 
-                case EmployeeEnumerators.JobType.Expiditer:
-                        rosterConstruction.currentExpiditer--;
+                case EmployeeEnumerators.JobType.Expediter:
+                        rosterConstruction.currentExpediter--;
                 break;
 
                 case EmployeeEnumerators.JobType.Shift_Manager:
@@ -170,10 +170,10 @@ public class EmployeeLists : MonoBehaviour
                 }
                 else { break; }
 
-            case EmployeeEnumerators.JobType.Expiditer:
-                if (rosterConstruction.currentExpiditer< rosterConstruction.maxExpiditer)
+            case EmployeeEnumerators.JobType.Expediter:
+                if (rosterConstruction.currentExpediter< rosterConstruction.maxExpediter)
                 {
-                    rosterConstruction.currentExpiditer++;
+                    rosterConstruction.currentExpediter++;
                     return true;
                 }
                 else { break; }
@@ -206,7 +206,7 @@ public class RosterConstruction
     public int currentBusser = 0;
     public int maxJanitor { get; private set; } = 2;
     public int currentJanitor = 0;
-    public int maxDriveThruAttendee { get; private set; } = 1;
+    public int maxDriveThruAttendee { get; private set; } = 2;
     public int currentDriveThruAttendee = 0;
     public int maxCashier { get; private set; } = 3;
     public int currentCashier = 0;
@@ -216,12 +216,12 @@ public class RosterConstruction
     public int currentPrepCook = 0;
     public int maxLineCook { get; private set; } = 2;
     public int currentLineCook = 0;
-    public int maxFryCook { get; private set; } = 1;
+    public int maxFryCook { get; private set; } = 2;
     public int currentFryCook = 0;
     public int maxPattyFlipper { get; private set; } = 1;
     public int currentPattyFlipper = 0;
-    public int maxExpiditer { get; private set; } = 1;
-    public int currentExpiditer = 0;
+    public int maxExpediter { get; private set; } = 1;
+    public int currentExpediter = 0;
     public int maxShiftManager { get; private set; } = 1;
     public int currentShiftManager = 0;
     public int maxManager { get; private set; } = 1;

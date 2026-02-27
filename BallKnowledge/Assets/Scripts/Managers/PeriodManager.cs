@@ -49,7 +49,8 @@ public class PeriodManager : MonoBehaviour
         freeAgentCardObject = uiManager.freeAgentCard.GetComponent<FreeAgentCard>();
         retirementCardObject = uiManager.retiringEmployeeCard.GetComponent<RetirementCard>();
 
-        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGrid);
+        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage);
+        uiManager.RefreshUI();
 
         UpdatePeriod();
     }
@@ -84,7 +85,7 @@ public class PeriodManager : MonoBehaviour
         switch (currentPeriod)
         {
             case Period.StartOfYear:
-                uiManager.ChangeUI(uiManager.rosterGrid);
+                uiManager.ChangeUI(uiManager.rosterScreen);
                 break;
 
             case Period.Retirements:

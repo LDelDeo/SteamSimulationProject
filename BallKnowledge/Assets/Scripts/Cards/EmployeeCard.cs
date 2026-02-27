@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using System;
 
 public class EmployeeCard : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public class EmployeeCard : MonoBehaviour
         manager = FindFirstObjectByType<GeneralManager>();
         employeeLists = FindFirstObjectByType<EmployeeLists>();
         uiManager = FindFirstObjectByType<UIManager>();
-        employeeStatsTransform =  GameObject.Find("Employee Stats Layout");
+        employeeStatsTransform =  GameObject.Find("Single Layout (Employee Profile)");
     }
 
     public virtual void GetEmployeeStats(Employee employee)

@@ -23,7 +23,7 @@ public class TestGeneration : MonoBehaviour
         var freeAgentCardObject = uiManager.freeAgentCard.GetComponent<FreeAgentCard>();
 
         // Create Employees for Roster (We can use this for when you start the game)
-        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGrid);
+        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage);
 
         // Create Employees for Draft Class (Create this list for the annual draft in the offseason)
         CreateAnEmployee(draftClassSize, employeeFactory, employeeLists, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);

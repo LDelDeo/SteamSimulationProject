@@ -224,7 +224,7 @@ public class EmployeeEnumerators
         Line_Cook,
         Fry_Cook,
         Patty_Flipper,
-        Expiditer,
+        Expediter,
         Shift_Manager,
         Manager
     }
