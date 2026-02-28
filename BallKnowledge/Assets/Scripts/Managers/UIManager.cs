@@ -12,11 +12,15 @@ public class UIManager : MonoBehaviour
     public Transform rosterGridStorage;
     public Transform rosterScreen;
     public Transform employeeStatsLayout;
+
     public Transform[] rosterSlots;
     public TMP_Text[] rosterSlotText;
+
     public GameObject OffenseScreen;
     public GameObject DefenseScreen;
     public GameObject employeeCard;
+
+    private bool isRosterShowing;
 
     [Header("Draft Screen UI")]
     public Transform prospectLayout;
@@ -46,14 +50,14 @@ public class UIManager : MonoBehaviour
     private EmployeeLists employeeLists;
     private GeneralManager generalManager;
     private UIManager uiManager;
-    private TestGeneration testGeneration;
+    private PeriodManager periodManager;
 
     private void Start()
     {
         employeeLists = GetComponent<EmployeeLists>();
         generalManager = GetComponent<GeneralManager>();
         uiManager = GetComponent<UIManager>();
-        testGeneration = GetComponent<TestGeneration>();
+        periodManager = GetComponent<PeriodManager>();
 
         OffenseScreen.SetActive(true);
         DefenseScreen.SetActive(false);
@@ -220,7 +224,7 @@ public class UIManager : MonoBehaviour
             generalManager.currentUsedCapSpace += employee.hourlyWage;
         }
 
-        capSpaceText.text = $"${generalManager.currentUsedCapSpace} / $275";
+        capSpaceText.text = $"${generalManager.currentUsedCapSpace} / ${generalManager.maxCapSpace}";
     }
 
     public void UpdateDraftPicks()
@@ -252,6 +256,16 @@ public class UIManager : MonoBehaviour
 
         screenToShow.gameObject.SetActive(true);
         RefreshUI();
+    }
+
+    public void ShowRosterScreen()
+    {
+        isRosterShowing = !isRosterShowing;
+
+        if (isRosterShowing) { rosterScreen.gameObject.SetActive(true); }
+        else if (!isRosterShowing && periodManager.currentPeriod != PeriodManager.Period.StartOfYear) { rosterScreen.gameObject.SetActive(false); }
+
+        RefreshRosterUI();
     }
     #endregion
 }

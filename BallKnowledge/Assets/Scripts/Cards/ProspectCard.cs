@@ -12,6 +12,7 @@ public class ProspectCard : EmployeeCard
     [SerializeField] TMP_Text statFour;
     [SerializeField] TMP_Text statFive;
     [SerializeField] TMP_Text workEthic;
+    [SerializeField] TMP_Text age;
     #endregion
 
     private int statOneValue;
@@ -19,8 +20,8 @@ public class ProspectCard : EmployeeCard
     private int statThreeValue;
     private int statFourValue;
     private int statFiveValue;
-
     private EmployeeEnumerators.WorkEthic employeeWorkEthic;
+    private int ageValue;
 
     private int amountOfVisibleStats;
 
@@ -40,6 +41,8 @@ public class ProspectCard : EmployeeCard
         statFiveValue = employee.iq;
 
         employeeWorkEthic = employee.workEthic;
+
+        ageValue = employee.age;
         
         SetStats();
         GrabEmployee(employee);
@@ -50,6 +53,7 @@ public class ProspectCard : EmployeeCard
         firstNameText.text = employeeFirstName;
         lastNameText.text = employeeLastName;
         positionText.text = employeePosition;
+        age.text = $"Age: {ageValue}";
 
         amountOfVisibleStats = 0;
 
@@ -115,6 +119,8 @@ public class ProspectCard : EmployeeCard
 
         if (manager.draftPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
         {
+            // add to players drafted here
+
             employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
             employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 

@@ -15,7 +15,7 @@ public class GeneralManager : MonoBehaviour
 
     [Header("Free Agency Stats")]
     public int currentUsedCapSpace { get; set; }
-    public int maxCapSpace { get; private set; } = 275;
+    public int maxCapSpace { get; private set; } = 625;
 
     [Header("Legacy Stats")]
     public int championshipsWon { get; set; }

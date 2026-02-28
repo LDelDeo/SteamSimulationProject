@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class EmployeeFactory
@@ -247,4 +248,8 @@ public class EmployeeArrays
     public string[] maleNames = { "Luke", "John", "Josh", "Tom", "Mike", "Owen", "Jared", "Aaron", "Noah" };
     public string[] femaleNames = { "Fallon", "Jenna", "Eden", "Alane", "Carly", "Halie" };
     public string[] lastNames = { "Placeholder1", "Placeholder2" };
+
+    //public List<string> maleNames = new List<string>();
+    //public List<string> femaleNames = new List<string>();
+    //public List<string> lastNames = new List<string>();
 }

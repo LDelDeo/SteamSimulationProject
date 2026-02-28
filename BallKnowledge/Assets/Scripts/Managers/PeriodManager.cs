@@ -5,8 +5,8 @@ using UnityEngine;
 public class PeriodManager : MonoBehaviour
 {
     [Header("Current Period")]
-    [SerializeField] Period currentPeriod;
-    [SerializeField] int currentPeriodIndex = 0;
+    public Period currentPeriod;
+    public int currentPeriodIndex = 0;
     public enum Period
     {
         StartOfYear = 0,
@@ -35,6 +35,8 @@ public class PeriodManager : MonoBehaviour
     private UIManager uiManager;
     private GeneralManager generalManager;
     private EmployeeFactory employeeFactory;
+
+    EmployeeRNG employeeRNG = new EmployeeRNG();
 
     private void Start()
     {
@@ -144,7 +146,7 @@ public class PeriodManager : MonoBehaviour
             EmployeeCard cardInstance = cardObject.GetComponent<EmployeeCard>();
 
             cardInstance.GetEmployeeStats(employee);
-            employeeFactory.PrintStats(employee);
+            //employeeFactory.PrintStats(employee);
         }
     }
 
@@ -152,12 +154,17 @@ public class PeriodManager : MonoBehaviour
     private void NewLeagueYear()
     {
         generalManager.currentYear++;
+        generalManager.seasonsElapsed++;
         generalManager.draftPicks = 3;
 
         foreach (var employee in employeeLists.currentRoster)
         {
             employee.age++;
             employee.yearsUnderContract--;
+
+            if (employee.isRookie)
+                employee.isRookie = false;
+
             UpdateEmployeeOverall(employee);
         }
     }
@@ -313,12 +320,7 @@ public class PeriodManager : MonoBehaviour
             if (employee.yearsUnderContract == 0)
             {
                 employee.value = employeeFactory.EmployeeValueCalucator(employee);
-
-                int minWage = employee.value * 2;
-                int maxWage = employee.value * 4;
-
-                var requestedWage = Random.Range(minWage, maxWage);
-                employee.hourlyWage = requestedWage;
+                employee.hourlyWage = employeeRNG.GetRandomWage(employee);
 
                 employeeLists.AddEmployee(employee, employeeLists.pendingFreeAgents);
                 employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
@@ -331,11 +333,7 @@ public class PeriodManager : MonoBehaviour
         foreach (var expiringContract in employeeLists.pendingFreeAgents.ToList())
         {
             // Recalcutes/randomizes the asking price once they hit free agency so you might be able to get them cheaper or more expensive
-            int minWage = expiringContract.value * 2;
-            int maxWage = expiringContract.value * 4;
-
-            var requestedWage = Random.Range(minWage, maxWage);
-            expiringContract.hourlyWage = requestedWage;
+            expiringContract.hourlyWage = employeeRNG.GetRandomWage(expiringContract);
 
             employeeLists.AddEmployee(expiringContract, employeeLists.freeAgentClass);
             employeeLists.RemoveEmployee(expiringContract, employeeLists.pendingFreeAgents);

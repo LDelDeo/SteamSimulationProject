@@ -42,6 +42,14 @@ public class EmployeeProfile : EmployeeCard
 
     private Employee thisEmployee;
 
+    private PeriodManager periodManager;
+    EmployeeRNG employeeRNG = new EmployeeRNG();
+
+    private void Start()
+    {
+        periodManager = FindFirstObjectByType<PeriodManager>();
+    }
+
     public override void GetEmployeeStats(Employee employee)
     {
         employeeFirstName = employee.firstName;
@@ -72,8 +80,9 @@ public class EmployeeProfile : EmployeeCard
     {
         firstNameText.text = employeeFirstName;
         lastNameText.text = employeeLastName;
-        genderText.text = genderValue.ToString();
+        genderText.text = genderValue;
         ageText.text = $"Age: {ageValue}";
+        isRookieText.text = isRookieValue;
         positionText.text = employeePosition;
         workEthicText.text = $"Work Ethics: {workEthicValue}";
         hourlyWageText.text = $"{hourlyWageValue}/hr";
@@ -98,15 +107,15 @@ public class EmployeeProfile : EmployeeCard
 
     public void CutEmployee()
     {
-        Debug.Log(thisEmployee.jobPosition);
+        // add to cut players
+
         employeeLists.AddEmployee(thisEmployee, employeeLists.freeAgentClass);
         employeeLists.RemoveEmployee(thisEmployee, employeeLists.currentRoster);
 
-        int minWage = thisEmployee.value * 2;
-        int maxWage = thisEmployee.value * 4;
-
-        var requestedWage = Random.Range(minWage, maxWage);
-        thisEmployee.hourlyWage = requestedWage;
+        // If the current period is free agency and you cut a player, they won't update their requested wage in the current free agency class,
+        // this prevents a glitch where you can keep cutting and signing to get the best possible contract value. It stays consistent through out
+        if (periodManager.currentPeriod != PeriodManager.Period.FreeAgency)
+            thisEmployee.hourlyWage = employeeRNG.GetRandomWage(thisEmployee);
 
         uiManager.RefreshUI();
     }
