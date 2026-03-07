@@ -7,11 +7,13 @@ public class FreeAgentCard : EmployeeCard
     #region Free Agent Visuals
     [Header("Free Agent Card Visuals")]
     [SerializeField] TMP_Text ageText;
+    [SerializeField] TMP_Text personalityText;
     [SerializeField] TMP_Text requestedWageText;
     [SerializeField] TMP_Text contractYearsText;
     #endregion
 
     private string ageValue;
+    private string personalityValue;
     private int requestedWageValue;
     private int contractYears = 1;
 
@@ -25,6 +27,7 @@ public class FreeAgentCard : EmployeeCard
         employeeOverall = employee.overall.ToString();
 
         ageValue = employee.age.ToString();
+        personalityValue = employee.personalityTrait.ToString();
         requestedWageValue = employee.hourlyWage;
 
         SetStats();
@@ -40,6 +43,7 @@ public class FreeAgentCard : EmployeeCard
         overallText.text = employeeOverall;
 
         ageText.text = $"Age: {ageValue}";
+        personalityText.text = $"Personality: {personalityValue}";
         requestedWageText.text = $"${requestedWageValue}/hr";
     }
 

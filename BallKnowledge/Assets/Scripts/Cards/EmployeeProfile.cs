@@ -12,6 +12,7 @@ public class EmployeeProfile : EmployeeCard
     [SerializeField] TMP_Text yearsUnderContractText;
     [SerializeField] TMP_Text jobPositionText;
     [SerializeField] TMP_Text workEthicText;
+    [SerializeField] TMP_Text personalityText;
     [SerializeField] TMP_Text efficiencyText;
     [SerializeField] TMP_Text customerServiceText;
     [SerializeField] TMP_Text communicationText;
@@ -30,6 +31,7 @@ public class EmployeeProfile : EmployeeCard
     private string yearsUnderContractValue;
     private string jobPositionValue;
     private string workEthicValue;
+    private string personalityValue;
     private string efficiencyValue;
     private string customerServiceValue;
     private string communicationValue;
@@ -61,6 +63,7 @@ public class EmployeeProfile : EmployeeCard
         yearsUnderContractValue = employee.yearsUnderContract.ToString();
         jobPositionValue = employee.jobPosition.ToString();
         workEthicValue = employee.workEthic.ToString();
+        personalityValue = employee.personalityTrait.ToString();
         employeeOverall = employee.overall.ToString();
         efficiencyValue = employee.efficiency.ToString();
         customerServiceValue = employee.customerService.ToString();
@@ -85,6 +88,7 @@ public class EmployeeProfile : EmployeeCard
         isRookieText.text = isRookieValue;
         positionText.text = employeePosition;
         workEthicText.text = $"Work Ethics: {workEthicValue}";
+        personalityText.text = $"Personality: {personalityValue}";
         hourlyWageText.text = $"{hourlyWageValue}/hr";
         yearsUnderContractText.text = $"{yearsUnderContractValue} year(s) remaining";
         efficiencyText.text = $"Efficiency: {efficiencyValue}";

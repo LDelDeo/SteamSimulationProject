@@ -15,6 +15,7 @@ public class Employee
 
     public EmployeeEnumerators.JobType jobPosition;
     public EmployeeEnumerators.WorkEthic workEthic;
+    public EmployeeEnumerators.PersonalityTrait personalityTrait;
 
     public int efficiency;
     public int customerService;

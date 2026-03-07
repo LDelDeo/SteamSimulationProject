@@ -37,6 +37,7 @@ public class PeriodManager : MonoBehaviour
     private EmployeeFactory employeeFactory;
 
     EmployeeRNG employeeRNG = new EmployeeRNG();
+    EmployeeArrays employeeArrays = new EmployeeArrays();
 
     private void Start()
     {
@@ -46,12 +47,14 @@ public class PeriodManager : MonoBehaviour
 
         employeeFactory = new EmployeeFactory();
 
+        employeeArrays.JsonToList();
+
         employeeCardObject = uiManager.employeeCard.GetComponent<EmployeeCard>();
         prospectCardObject = uiManager.prospectCard.GetComponent<ProspectCard>();
         freeAgentCardObject = uiManager.freeAgentCard.GetComponent<FreeAgentCard>();
         retirementCardObject = uiManager.retiringEmployeeCard.GetComponent<RetirementCard>();
 
-        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage);
+        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeArrays, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage);
         uiManager.RefreshUI();
 
         UpdatePeriod();
@@ -102,7 +105,7 @@ public class PeriodManager : MonoBehaviour
                 break; 
 
             case Period.FreeAgency:
-                CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyLayout);
+                CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyLayout);
                 LetExpiringContractsWalk();
                 uiManager.ChangeUI(uiManager.freeAgencyLayout);
                 break;
@@ -112,10 +115,14 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.EmployeeEvents:
+                CheckForEmployeeEvent();
+                uiManager.ChangeUI(uiManager.disgruntledEmployeeLayout);
+                // Load those employees in cards and assign each a random event
+                // Allow user to deal with these situations
                 break;
 
             case Period.Draft:
-                CreateAnEmployee(draftClassSize, employeeFactory, employeeLists, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
+                CreateAnEmployee(draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
                 uiManager.ChangeUI(uiManager.prospectLayout);
                 break;
 
@@ -133,11 +140,11 @@ public class PeriodManager : MonoBehaviour
     }
     #endregion
 
-    private void CreateAnEmployee(int employeeCount, EmployeeFactory employeeFactory, EmployeeLists employeeLists, List<Employee> listToAddTo, EmployeeCard employeeCard, Transform layout)
+    private void CreateAnEmployee(int employeeCount, EmployeeFactory employeeFactory, EmployeeLists employeeLists, EmployeeArrays employeeArrays, List<Employee> listToAddTo, EmployeeCard employeeCard, Transform layout)
     {
         for (int i = 0; i < employeeCount; i++)
         {
-            employeeFactory.CreateEmployee(employeeLists, listToAddTo);
+            employeeFactory.CreateEmployee(employeeLists, employeeArrays, listToAddTo);
         }
 
         foreach (var employee in listToAddTo)
@@ -338,6 +345,58 @@ public class PeriodManager : MonoBehaviour
             employeeLists.AddEmployee(expiringContract, employeeLists.freeAgentClass);
             employeeLists.RemoveEmployee(expiringContract, employeeLists.pendingFreeAgents);
         }
+    }
+
+    private void CheckForEmployeeEvent()
+    {
+        foreach (var employee in employeeLists.currentRoster.ToList())
+        {
+            int randomNumber = Random.Range(1, 101);
+
+            switch (employee.personalityTrait)
+            {
+                case EmployeeEnumerators.PersonalityTrait.Toxic:
+                    if (randomNumber > 0 && randomNumber < 81) { EmployeeIsDisgruntled(employee); } // 80% Chance
+                    return;
+
+                case EmployeeEnumerators.PersonalityTrait.Selfish:
+                    if (randomNumber > 0 && randomNumber < 61) { EmployeeIsDisgruntled(employee); } // 60% Chance
+                    return;
+
+                case EmployeeEnumerators.PersonalityTrait.Difficult:
+                    if (randomNumber > 0 && randomNumber < 46) { EmployeeIsDisgruntled(employee); } // 45% Chance
+                    return;
+
+                case EmployeeEnumerators.PersonalityTrait.Team_Player:
+                    if (randomNumber > 0 && randomNumber < 26) { EmployeeIsDisgruntled(employee); } // 25% Chance
+                    return;
+
+                case EmployeeEnumerators.PersonalityTrait.Saint:
+                    if (randomNumber > 0 && randomNumber < 11) { EmployeeIsDisgruntled(employee); } // 10% Chance
+                    return;
+
+                case EmployeeEnumerators.PersonalityTrait.Perfectionist:
+                    // 0% Chance
+                    return;
+            }
+        } 
+    }
+
+    private string EmployeeIsDisgruntled(Employee employee)
+    {
+        employeeLists.AddEmployee(employee, employeeLists.disgruntledEmployees);
+        employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
+
+        int randomNumber = Random.Range(0, 3);
+
+        switch (randomNumber)
+        {
+            case 0: return "Event1";
+            case 1: return "Event2";
+            case 2: return "Event3";
+        }
+
+        return null;
     }
     #endregion
 }

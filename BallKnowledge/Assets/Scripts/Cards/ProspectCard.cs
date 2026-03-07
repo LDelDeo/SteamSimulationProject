@@ -12,6 +12,7 @@ public class ProspectCard : EmployeeCard
     [SerializeField] TMP_Text statFour;
     [SerializeField] TMP_Text statFive;
     [SerializeField] TMP_Text workEthic;
+    [SerializeField] TMP_Text personality;
     [SerializeField] TMP_Text age;
     #endregion
 
@@ -21,6 +22,7 @@ public class ProspectCard : EmployeeCard
     private int statFourValue;
     private int statFiveValue;
     private EmployeeEnumerators.WorkEthic employeeWorkEthic;
+    private string personalityValue;
     private int ageValue;
 
     private int amountOfVisibleStats;
@@ -41,6 +43,7 @@ public class ProspectCard : EmployeeCard
         statFiveValue = employee.iq;
 
         employeeWorkEthic = employee.workEthic;
+        personalityValue = employee.personalityTrait.ToString();
 
         ageValue = employee.age;
         
@@ -63,6 +66,7 @@ public class ProspectCard : EmployeeCard
         IsStatVisible(statFour, statFourValue);
         IsStatVisible(statFive, statFiveValue);
 
+        personality.text = $"Personality: {personalityValue}";
         RevealDevelopmentTrait();
         RevealOverall();     
     }

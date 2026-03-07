@@ -1,23 +1,24 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EmployeeFactory
 {
-    public void CreateEmployee(EmployeeLists employeeLists, List<Employee> listToAddTo)
+    public void CreateEmployee(EmployeeLists employeeLists, EmployeeArrays employeeArrays, List<Employee> listToAddTo)
     {
         Employee employee = new Employee();
 
         EmployeeRNG employeeRNG = new EmployeeRNG();
-        EmployeeArrays employeeArrays = new EmployeeArrays();
 
         employee.gender = employeeRNG.GetGender();
 
-        if (employee.gender == EmployeeEnumerators.EmployeeGender.Male) { employee.firstName = employeeRNG.GetRandomStringFromArray(employeeArrays.maleNames); }
-        else if (employee.gender == EmployeeEnumerators.EmployeeGender.Female) { employee.firstName = employeeRNG.GetRandomStringFromArray(employeeArrays.femaleNames); }
+        if (employee.gender == EmployeeEnumerators.EmployeeGender.Male) { employee.firstName = employeeRNG.GetRandomStringFromList(employeeArrays.maleNamesList); }
+        else if (employee.gender == EmployeeEnumerators.EmployeeGender.Female) { employee.firstName = employeeRNG.GetRandomStringFromList(employeeArrays.femaleNamesList); }
 
-        employee.lastName = employeeRNG.GetRandomStringFromArray(employeeArrays.lastNames);
+        employee.lastName = employeeRNG.GetRandomStringFromList(employeeArrays.lastNamesList);
 
         if (listToAddTo == employeeLists.draftClass) { employee.isRookie = true; }    
         else { employee.isRookie = false; }
@@ -36,6 +37,7 @@ public class EmployeeFactory
 
         employee.jobPosition = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.JobType>();
         employee.workEthic = EmployeeRNG.GetWorkEthic();
+        employee.personalityTrait = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.PersonalityTrait>();
 
         employee.efficiency = employeeRNG.GetRandomStat();
         employee.customerService = employeeRNG.GetRandomStat();
@@ -159,10 +161,10 @@ public class EmployeeRNG
         return ageOutput;
     }
 
-    public string GetRandomStringFromArray(string[] array)
+    public string GetRandomStringFromList(List<string> list)
     {
-        var randomNumber = UnityEngine.Random.Range(0, array.Length);
-        return array[randomNumber];
+        var randomNumber = UnityEngine.Random.Range(0, list.Count);
+        return list[randomNumber];
     }
 
     public static T GetRandomEnumValue<T>()
@@ -240,16 +242,42 @@ public class EmployeeEnumerators
         Grinder,
         X_Factor
     }
+
+    public enum PersonalityTrait
+    {
+        Toxic,
+        Selfish,
+        Difficult,
+        Team_Player,
+        Saint,
+        Perfectionist
+    }
 }
 
 public class EmployeeArrays
 {
-    // We could Import from JSON instead
-    public string[] maleNames = { "Luke", "John", "Josh", "Tom", "Mike", "Owen", "Jared", "Aaron", "Noah" };
-    public string[] femaleNames = { "Fallon", "Jenna", "Eden", "Alane", "Carly", "Halie" };
-    public string[] lastNames = { "Placeholder1", "Placeholder2" };
+    public List<string> maleNamesList = new List<string>();
+    public List<string> femaleNamesList = new List<string>();
+    public List<string> lastNamesList = new List<string>();
 
-    //public List<string> maleNames = new List<string>();
-    //public List<string> femaleNames = new List<string>();
-    //public List<string> lastNames = new List<string>();
+    public List<string> LoadNamesFromJson(string fileName)
+    {   
+        TextAsset jsonText = Resources.Load<TextAsset>(fileName);
+        NamesList data = JsonUtility.FromJson<NamesList>(jsonText.text);
+
+        return data.names;
+    }
+
+    public void JsonToList()
+    {
+        maleNamesList.AddRange(LoadNamesFromJson("MaleNames"));
+        femaleNamesList.AddRange(LoadNamesFromJson("FemaleNames"));
+        lastNamesList.AddRange(LoadNamesFromJson("LastNames"));
+    }
+}
+
+[System.Serializable]
+public class NamesList
+{
+    public List<string> names;
 }

@@ -12,6 +12,7 @@ public class EmployeeLists : MonoBehaviour
     public List<Employee> pendingFreeAgents = new List<Employee>();
     public List<Employee> freeAgentClass = new List<Employee>();
     public List<Employee> retiringEmployees = new List<Employee>();
+    public List<Employee> disgruntledEmployees = new List<Employee>();
     public List<Employee> employeeHallOfFame = new List<Employee>();
     #endregion
 

@@ -38,6 +38,10 @@ public class UIManager : MonoBehaviour
     public Transform retiringEmployeeLayout;
     public GameObject retiringEmployeeCard;
 
+    [Header("Employee Events Screen UI")]
+    public Transform disgruntledEmployeeLayout;
+    public GameObject disgruntledCard;
+
     [Header("Layout Array")]
     public Transform[] layouts;
 
@@ -70,6 +74,7 @@ public class UIManager : MonoBehaviour
         RefreshFreeAgentUI();
         RefreshExpiringContractsUI();
         RefreshRetirementsUI();
+        RefreshDisgruntledEmployeesUI();
 
         UpdateCapSpace();
         UpdateDraftPicks();
@@ -211,6 +216,18 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(retiringEmployeeCard, retiringEmployeeLayout);
             RetirementCard card = cardObject.GetComponent<RetirementCard>();
             card.GetEmployeeStats(retirement);
+        }
+    }
+
+    private void RefreshDisgruntledEmployeesUI()
+    {
+        ClearGrid(disgruntledEmployeeLayout);
+
+        foreach (var disgruntledEmployee in employeeLists.disgruntledEmployees)
+        {
+            GameObject cardObject = Instantiate(disgruntledCard, disgruntledEmployeeLayout);
+            DisgruntledCard card = cardObject.GetComponent<DisgruntledCard>();
+            card.GetEmployeeStats(disgruntledEmployee);
         }
     }
 
