@@ -547,8 +547,25 @@ MonoBehaviour:
   employeeStatsPrefab: {fileID: 7081134768087405561, guid: e34401bb918d6284b81175dcc00e719b, type: 3}
   firstNameText: {fileID: 4963443801334096991}
   lastNameText: {fileID: 8968466191258262781}
-  positionText: {fileID: 2529724590023329519}
+  isRookieText: {fileID: 0}
+  genderText: {fileID: 0}
+  jobPositionText: {fileID: 2529724590023329519}
+  workEthicText: {fileID: 0}
+  personalityText: {fileID: 0}
+  ageText: {fileID: 0}
+  hourlyWageText: {fileID: 0}
+  yearsUnderContractText: {fileID: 0}
+  efficiencyText: {fileID: 0}
+  customerServiceText: {fileID: 0}
+  communicationText: {fileID: 0}
+  teamworkText: {fileID: 0}
+  iqText: {fileID: 0}
   overallText: {fileID: 5500438760110727470}
+  valueText: {fileID: 0}
+  mvpsText: {fileID: 0}
+  employeeOfTheYearsText: {fileID: 0}
+  rookieOfTheYearsText: {fileID: 0}
+  championshipsText: {fileID: 0}
   employeeCardBackground: {fileID: 7945145504366696054}
 --- !u!1 &5005200678651881490
 GameObject:

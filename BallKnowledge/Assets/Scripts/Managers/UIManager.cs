@@ -96,6 +96,7 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(employeeCard, CheckEmployeeRosterSlot(employee));
             EmployeeCard card = cardObject.GetComponent<EmployeeCard>();
             card.GetEmployeeStats(employee);
+            card.SetEmployeeCardBackground(employee);
         }
 
         foreach (Transform child in employeeStatsLayout.transform)
@@ -192,6 +193,7 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(freeAgentCard, freeAgencyLayout);
             FreeAgentCard card = cardObject.GetComponent<FreeAgentCard>();
             card.GetEmployeeStats(freeAgent);
+            card.SetEmployeeCardBackground(freeAgent);
         }
     }
 
@@ -204,6 +206,7 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(expiringContractCard, expiringContractsLayout);
             FreeAgentCard card = cardObject.GetComponent<FreeAgentCard>();
             card.GetEmployeeStats(expiringContract);
+            card.SetEmployeeCardBackground(expiringContract);
         }
     }
 
@@ -216,6 +219,7 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(retiringEmployeeCard, retiringEmployeeLayout);
             RetirementCard card = cardObject.GetComponent<RetirementCard>();
             card.GetEmployeeStats(retirement);
+            card.SetEmployeeCardBackground(retirement);
         }
     }
 
@@ -228,6 +232,7 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(disgruntledCard, disgruntledEmployeeLayout);
             DisgruntledCard card = cardObject.GetComponent<DisgruntledCard>();
             card.GetEmployeeStats(disgruntledEmployee);
+            card.SetEmployeeCardBackground(disgruntledEmployee);
         }
     }
 
@@ -246,7 +251,8 @@ public class UIManager : MonoBehaviour
 
     public void UpdateDraftPicks()
     {
-        draftPicksText.text = $"{generalManager.currentYear} Draft Picks: {generalManager.draftPicks}";
+        generalManager.totalDraftPicks = (generalManager.firstRoundPicks + generalManager.secondRoundPicks + generalManager.thirdRoundPicks);
+        draftPicksText.text = $"{generalManager.currentYear} Draft Picks: {generalManager.totalDraftPicks}";
     }
 
     public void UpdateLeagueYear()

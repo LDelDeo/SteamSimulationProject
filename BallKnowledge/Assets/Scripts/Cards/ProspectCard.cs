@@ -4,49 +4,14 @@ using UnityEngine.UI;
 
 public class ProspectCard : EmployeeCard
 {
-    #region Prospect Visuals
-    [Header("Prospect Card Visuals")]
-    [SerializeField] TMP_Text statOne;
-    [SerializeField] TMP_Text statTwo;
-    [SerializeField] TMP_Text statThree;
-    [SerializeField] TMP_Text statFour;
-    [SerializeField] TMP_Text statFive;
-    [SerializeField] TMP_Text workEthic;
-    [SerializeField] TMP_Text personality;
-    [SerializeField] TMP_Text age;
-    #endregion
-
-    private int statOneValue;
-    private int statTwoValue;
-    private int statThreeValue;
-    private int statFourValue;
-    private int statFiveValue;
-    private EmployeeEnumerators.WorkEthic employeeWorkEthic;
-    private string personalityValue;
-    private int ageValue;
-
     private int amountOfVisibleStats;
 
     private Employee prospect;
 
     public override void GetEmployeeStats(Employee employee)
     {
-        employeeFirstName = employee.firstName;
-        employeeLastName = employee.lastName;
-        employeePosition = employee.jobPosition.ToString();
-        employeeOverall = employee.overall.ToString();
+        base.GetEmployeeStats(employee);
 
-        statOneValue = employee.efficiency;
-        statTwoValue = employee.customerService;
-        statThreeValue = employee.communication;
-        statFourValue = employee.teamwork;
-        statFiveValue = employee.iq;
-
-        employeeWorkEthic = employee.workEthic;
-        personalityValue = employee.personalityTrait.ToString();
-
-        ageValue = employee.age;
-        
         SetStats();
         GrabEmployee(employee);
     }
@@ -55,18 +20,18 @@ public class ProspectCard : EmployeeCard
     {
         firstNameText.text = employeeFirstName;
         lastNameText.text = employeeLastName;
-        positionText.text = employeePosition;
-        age.text = $"Age: {ageValue}";
+        jobPositionText.text = employeeJobPosition.ToString();
+        ageText.text = $"Age: {employeeAge}";
+        personalityText.text = $"Personality: {employeePersonalityTrait}";
 
         amountOfVisibleStats = 0;
 
-        IsStatVisible(statOne, statOneValue);
-        IsStatVisible(statTwo, statTwoValue);
-        IsStatVisible(statThree, statThreeValue);
-        IsStatVisible(statFour, statFourValue);
-        IsStatVisible(statFive, statFiveValue);
+        IsStatVisible(efficiencyText, employeeEfficiency);
+        IsStatVisible(customerServiceText, employeeCustomerService);
+        IsStatVisible(communicationText, employeeCommunication);
+        IsStatVisible(teamworkText, employeeTeamwork);
+        IsStatVisible(iqText, employeeIq);
 
-        personality.text = $"Personality: {personalityValue}";
         RevealDevelopmentTrait();
         RevealOverall();     
     }
@@ -88,11 +53,11 @@ public class ProspectCard : EmployeeCard
     {
         if (amountOfVisibleStats == 0)
         {
-            workEthic.text = $"Work Ethic: {employeeWorkEthic}";
+            workEthicText.text = $"Work Ethic: {employeeWorkEthic}";
         }
         else
         {
-            workEthic.text = "Work Ethic: ?";
+            workEthicText.text = "Work Ethic: ?";
         }
     }
 
@@ -120,19 +85,55 @@ public class ProspectCard : EmployeeCard
     public void DraftPlayer(ProspectCard prospectCard)
     {
         Employee prospectToDraft = prospectCard.prospect;
-
-        if (manager.draftPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
+        
+        switch (draftManager.currentRound)
         {
-            // add to players drafted here
+            case 1:
+                if (manager.firstRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
+                {
+                    manager.playersDrafted++;
 
-            employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
-            employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
+                    employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
+                    employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 
-            manager.draftPicks--;
-            manager.playersDrafted++;
+                    manager.firstRoundPicks--;
+                    manager.playersDrafted++;
 
-            uiManager.RefreshUI();
+                    uiManager.RefreshUI();
+                }
+                break;
+         
+            case 2:
+                if (manager.secondRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
+                {
+                    manager.playersDrafted++;
+
+                    employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
+                    employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
+
+                    manager.secondRoundPicks--;
+                    manager.playersDrafted++;
+
+                    uiManager.RefreshUI();
+                }
+                break;
+       
+            case 3:
+                if (manager.thirdRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
+                {
+                    manager.playersDrafted++;
+
+                    employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
+                    employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
+
+                    manager.thirdRoundPicks--;
+                    manager.playersDrafted++;
+
+                    uiManager.RefreshUI();
+                }
+                break;
         }
+        
     }
     #endregion
 }

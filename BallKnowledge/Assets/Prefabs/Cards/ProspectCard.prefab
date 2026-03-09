@@ -1730,17 +1730,26 @@ MonoBehaviour:
   employeeStatsPrefab: {fileID: 0}
   firstNameText: {fileID: 1397500282645614970}
   lastNameText: {fileID: 7043712740975742067}
-  positionText: {fileID: 2933537616059309716}
+  isRookieText: {fileID: 0}
+  genderText: {fileID: 0}
+  jobPositionText: {fileID: 2933537616059309716}
+  workEthicText: {fileID: 6193387579892959418}
+  personalityText: {fileID: 8114137437539327100}
+  ageText: {fileID: 4595649220327276994}
+  hourlyWageText: {fileID: 0}
+  yearsUnderContractText: {fileID: 0}
+  efficiencyText: {fileID: 2718026593568355127}
+  customerServiceText: {fileID: 8318842754056190259}
+  communicationText: {fileID: 2669210373821275231}
+  teamworkText: {fileID: 2366916441859130474}
+  iqText: {fileID: 2507509378685341118}
   overallText: {fileID: 5787639335423893185}
+  valueText: {fileID: 0}
+  mvpsText: {fileID: 0}
+  employeeOfTheYearsText: {fileID: 0}
+  rookieOfTheYearsText: {fileID: 0}
+  championshipsText: {fileID: 0}
   employeeCardBackground: {fileID: 5135445610804419322}
-  statOne: {fileID: 2718026593568355127}
-  statTwo: {fileID: 8318842754056190259}
-  statThree: {fileID: 2669210373821275231}
-  statFour: {fileID: 2366916441859130474}
-  statFive: {fileID: 2507509378685341118}
-  workEthic: {fileID: 6193387579892959418}
-  personality: {fileID: 8114137437539327100}
-  age: {fileID: 4595649220327276994}
 --- !u!1 &7467116837875991726
 GameObject:
   m_ObjectHideFlags: 0

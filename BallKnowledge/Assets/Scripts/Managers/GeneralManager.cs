@@ -10,7 +10,10 @@ public class GeneralManager : MonoBehaviour
     public int playersTraded { get; set; }
 
     [Header("Draft Stats")]
-    public int draftPicks { get; set; } = 3;
+    public int totalDraftPicks { get; set; }
+    public int firstRoundPicks { get; set; } = 1;
+    public int secondRoundPicks { get; set; } = 1;
+    public int thirdRoundPicks { get; set; } = 1;
     public int playersDrafted { get; set; }
 
     [Header("Free Agency Stats")]

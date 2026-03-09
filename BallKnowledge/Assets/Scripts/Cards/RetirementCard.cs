@@ -1,44 +1,34 @@
-﻿using UnityEngine;
-using TMPro;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class RetirementCard : EmployeeCard
 {
-    #region Free Agent Visuals
     [Header("Retirement Card Visuals")]
-    [SerializeField] TMP_Text ageText;
-    [SerializeField] TMP_Text currentWageText;
-
-    [SerializeField] GameObject actionCanvas;
-    [SerializeField] TMP_Text outcomeText;
-
+    [SerializeField] GameObject actionCanvasPrefab;   
     [SerializeField] Button convinceToStayButton;
     [SerializeField] Button ackowledgeRetirementButton;
     [SerializeField] Button hallOfFameButton;
-    #endregion
-
-    private string ageValue;
-    private int upcomingCapHit;
+    private GameObject retirementLayoutTransform;
+    private GameObject actionCanvasObject;
+    private GameObject outcomeText;
+    private GameObject closeCanvasButton;
 
     private Employee retiredEmployee;
 
     private void Start()
     {
+        retirementLayoutTransform = GameObject.Find("Horizontal Layout (Retirements)");
+
         ButtonEnabler(true, true, false);
     }
 
     public override void GetEmployeeStats(Employee employee)
     {
-        employeeFirstName = employee.firstName;
-        employeeLastName = employee.lastName;
-        employeePosition = employee.jobPosition.ToString();
-        employeeOverall = employee.overall.ToString();
-
-        ageValue = employee.age.ToString();
-        upcomingCapHit = employee.hourlyWage;
+        base.GetEmployeeStats(employee);
 
         SetStats();
-        SetEmployeeCardBackground(employee);
         GrabEmployee(employee);
     }
 
@@ -46,17 +36,27 @@ public class RetirementCard : EmployeeCard
     {
         firstNameText.text = employeeFirstName;
         lastNameText.text = employeeLastName;
-        positionText.text = employeePosition;
-        overallText.text = employeeOverall;
+        jobPositionText.text = employeeJobPosition.ToString();
+        overallText.text = employeeOverall.ToString();
 
-        ageText.text = $"Age: {ageValue}";
-        currentWageText.text = $"${upcomingCapHit}/hr";
+        ageText.text = $"Age: {employeeAge}";
+        hourlyWageText.text = $"${employeeHourlyWage}/hr";
     }
 
     #region Retirement Functionality
     private void GrabEmployee(Employee employee)
     {
         retiredEmployee = employee;
+    }
+
+    private void FindActionCanvas()
+    {
+        actionCanvasObject = GameObject.Find("Action Canvas(Clone)");
+
+        outcomeText = GameObject.Find("Outcome Text");
+
+        closeCanvasButton = GameObject.Find("Acknowledge Button");
+        closeCanvasButton.GetComponent<Button>().onClick.AddListener(CloseActionCanvas);
     }
 
     public void ConvinceToStay(RetirementCard retirementCard)
@@ -70,8 +70,9 @@ public class RetirementCard : EmployeeCard
 
             if (randomNumber >= 8)
             {
-                actionCanvas.SetActive(true);
-                outcomeText.text = $"Welcome {employeeRetiring.firstName} {employeeRetiring.lastName} back for at least another year!";
+                Instantiate(actionCanvasPrefab, retirementLayoutTransform.transform);
+                FindActionCanvas();
+                outcomeText.GetComponent<TMP_Text>().text = $"Welcome {employeeRetiring.firstName} {employeeRetiring.lastName} back for at least another year!";
 
                 employeeLists.AddEmployee(employeeRetiring, employeeLists.currentRoster);
                 employeeLists.RemoveEmployee(employeeRetiring, employeeLists.retiringEmployees);
@@ -80,8 +81,9 @@ public class RetirementCard : EmployeeCard
             }
             else
             {
-                actionCanvas.SetActive(true);
-                outcomeText.text = $"{employeeRetiring.firstName} {employeeRetiring.lastName} is retiring for good, but appreciates the offer to come back";
+                Instantiate(actionCanvasPrefab, retirementLayoutTransform.transform);
+                FindActionCanvas();
+                outcomeText.GetComponent<TMP_Text>().text = $"{employeeRetiring.firstName} {employeeRetiring.lastName} is retiring for good, but appreciates the offer to come back";
 
                 ButtonEnabler(false, false, true);
             }
@@ -97,8 +99,9 @@ public class RetirementCard : EmployeeCard
     {
         Employee employeeRetiring = retirementCard.retiredEmployee;
 
-        actionCanvas.SetActive(true);
-        outcomeText.text = $"{employeeRetiring.firstName} {employeeRetiring.lastName} is honored to be added to (team name)'s hall of fame";
+        Instantiate(actionCanvasPrefab, retirementLayoutTransform.transform);
+        FindActionCanvas();
+        outcomeText.GetComponent<TMP_Text>().text = $"{employeeRetiring.firstName} {employeeRetiring.lastName} is honored to be added to (team name)'s hall of fame";
 
         employeeLists.AddEmployee(employeeRetiring, employeeLists.employeeHallOfFame);
 
@@ -114,8 +117,8 @@ public class RetirementCard : EmployeeCard
 
     public void CloseActionCanvas()
     {
-        actionCanvas.SetActive(false);
-        outcomeText.text = string.Empty;
+        FindActionCanvas();
+        Destroy(actionCanvasObject);
     }
     #endregion
 }

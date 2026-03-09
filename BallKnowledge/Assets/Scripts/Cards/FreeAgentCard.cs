@@ -4,34 +4,17 @@ using TMPro;
 
 public class FreeAgentCard : EmployeeCard
 {
-    #region Free Agent Visuals
-    [Header("Free Agent Card Visuals")]
-    [SerializeField] TMP_Text ageText;
-    [SerializeField] TMP_Text personalityText;
-    [SerializeField] TMP_Text requestedWageText;
+    [Header("Contract Negotiation's Visuals")]
     [SerializeField] TMP_Text contractYearsText;
-    #endregion
-
-    private string ageValue;
-    private string personalityValue;
-    private int requestedWageValue;
     private int contractYears = 1;
 
     private Employee freeAgent;
 
     public override void GetEmployeeStats(Employee employee)
     {
-        employeeFirstName = employee.firstName;
-        employeeLastName = employee.lastName;
-        employeePosition = employee.jobPosition.ToString();
-        employeeOverall = employee.overall.ToString();
-
-        ageValue = employee.age.ToString();
-        personalityValue = employee.personalityTrait.ToString();
-        requestedWageValue = employee.hourlyWage;
+        base.GetEmployeeStats(employee);
 
         SetStats();
-        SetEmployeeCardBackground(employee);
         GrabEmployee(employee);
     }
 
@@ -39,12 +22,11 @@ public class FreeAgentCard : EmployeeCard
     {
         firstNameText.text = employeeFirstName;
         lastNameText.text = employeeLastName;
-        positionText.text = employeePosition;
-        overallText.text = employeeOverall;
-
-        ageText.text = $"Age: {ageValue}";
-        personalityText.text = $"Personality: {personalityValue}";
-        requestedWageText.text = $"${requestedWageValue}/hr";
+        jobPositionText.text = employeeJobPosition.ToString();
+        overallText.text = employeeOverall.ToString();
+        ageText.text = $"Age: {employeeAge}";
+        personalityText.text = $"Personality: {employeePersonalityTrait}";
+        hourlyWageText.text = $"${employeeHourlyWage}/hr";
     }
 
     #region Signing Functionality

@@ -6,29 +6,70 @@ using System;
 
 public class EmployeeCard : MonoBehaviour
 {
-    [Header("Script References")]
     protected GeneralManager manager;
     protected EmployeeLists employeeLists;
     protected UIManager uiManager;
+    protected PeriodManager periodManager;
+    protected DraftManager draftManager;
+    protected EmployeeRNG employeeRNG = new EmployeeRNG();
 
     [SerializeField] private GameObject employeeStatsPrefab;
     private GameObject employeeStatsTransform;
 
+    private Employee thisEmployee;
+
     #region Visuals
-    [Header("Employee Card Visuals")]
+    [Header("Generic Card Visuals")]
     [SerializeField] protected TMP_Text firstNameText;
     [SerializeField] protected TMP_Text lastNameText;
-    [SerializeField] protected TMP_Text positionText;
+    [SerializeField] protected TMP_Text isRookieText;
+    [SerializeField] protected TMP_Text genderText;
+    [SerializeField] protected TMP_Text jobPositionText;
+    [SerializeField] protected TMP_Text workEthicText;
+    [SerializeField] protected TMP_Text personalityText;
+    [SerializeField] protected TMP_Text ageText;
+    [SerializeField] protected TMP_Text hourlyWageText;
+    [SerializeField] protected TMP_Text yearsUnderContractText;
+    [SerializeField] protected TMP_Text efficiencyText;
+    [SerializeField] protected TMP_Text customerServiceText;
+    [SerializeField] protected TMP_Text communicationText;
+    [SerializeField] protected TMP_Text teamworkText;
+    [SerializeField] protected TMP_Text iqText;
     [SerializeField] protected TMP_Text overallText;
+    [SerializeField] protected TMP_Text valueText;
+    [SerializeField] protected TMP_Text mvpsText;
+    [SerializeField] protected TMP_Text employeeOfTheYearsText;
+    [SerializeField] protected TMP_Text rookieOfTheYearsText;
+    [SerializeField] protected TMP_Text championshipsText;
     [SerializeField] protected Image employeeCardBackground;
     #endregion
 
+    #region Temporary Values
     protected string employeeFirstName;
     protected string employeeLastName;
-    protected string employeePosition;
-    protected string employeeOverall;
 
-    private Employee thisEmployee;
+    protected bool employeeIsRookie;
+
+    protected EmployeeEnumerators.EmployeeGender employeeGender;
+    protected EmployeeEnumerators.JobType employeeJobPosition;
+    protected EmployeeEnumerators.WorkEthic employeeWorkEthic;
+    protected EmployeeEnumerators.PersonalityTrait employeePersonalityTrait;
+
+    protected int employeeAge;
+    protected int employeeHourlyWage;
+    protected int employeeYearsUnderContract;
+    protected int employeeEfficiency;
+    protected int employeeCustomerService;
+    protected int employeeCommunication;
+    protected int employeeTeamwork;
+    protected int employeeIq;
+    protected int employeeOverall;
+    protected int employeeValue;
+    protected int employeeMVPs;
+    protected int employeeEmployeeOfTheYears;
+    protected int employeeRookieOfTheYears;
+    protected int employeeChampionships;
+    #endregion
 
     private void Awake()
     {
@@ -36,17 +77,38 @@ public class EmployeeCard : MonoBehaviour
         employeeLists = FindFirstObjectByType<EmployeeLists>();
         uiManager = FindFirstObjectByType<UIManager>();
         employeeStatsTransform =  GameObject.Find("Single Layout (Employee Profile)");
+        periodManager = FindFirstObjectByType<PeriodManager>();
+        draftManager = FindFirstObjectByType<DraftManager>();
     }
 
     public virtual void GetEmployeeStats(Employee employee)
     {
         employeeFirstName = employee.firstName;
         employeeLastName = employee.lastName;
-        employeePosition = employee.jobPosition.ToString();
-        employeeOverall = employee.overall.ToString();
+
+        employeeIsRookie = employee.isRookie;
+
+        employeeGender = employee.gender;
+        employeeJobPosition = employee.jobPosition;
+        employeeWorkEthic = employee.workEthic;
+        employeePersonalityTrait = employee.personalityTrait;
+
+        employeeAge = employee.age;
+        employeeHourlyWage = employee.hourlyWage;
+        employeeYearsUnderContract = employee.yearsUnderContract;
+        employeeEfficiency = employee.efficiency;
+        employeeCustomerService = employee.customerService;
+        employeeCommunication = employee.communication;
+        employeeTeamwork = employee.teamwork;
+        employeeIq = employee.iq;
+        employeeOverall = employee.overall;
+        employeeValue = employee.value;
+        employeeMVPs = employee.mostValuableEmployee;
+        employeeEmployeeOfTheYears = employee.employeeOfTheYear;
+        employeeRookieOfTheYears = employee.rookieOfTheYear;
+        employeeChampionships = employee.championships;
 
         SetStats();
-        SetEmployeeCardBackground(employee);
         GrabEmployee(employee);
     }
 
@@ -55,11 +117,11 @@ public class EmployeeCard : MonoBehaviour
     {
         firstNameText.text = employeeFirstName;
         lastNameText.text = employeeLastName;
-        positionText.text = employeePosition;
-        overallText.text = employeeOverall;
+        jobPositionText.text = employeeJobPosition.ToString();
+        overallText.text = employeeOverall.ToString();
     }
 
-    protected void SetEmployeeCardBackground(Employee employee)
+    public void SetEmployeeCardBackground(Employee employee)
     {
         switch (employee.workEthic)
         {

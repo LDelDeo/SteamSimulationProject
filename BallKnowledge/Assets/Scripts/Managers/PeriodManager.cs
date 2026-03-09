@@ -122,6 +122,7 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Draft:
+                employeeLists.ClearList(employeeLists.disgruntledEmployees);
                 CreateAnEmployee(draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
                 uiManager.ChangeUI(uiManager.prospectLayout);
                 break;
@@ -162,7 +163,11 @@ public class PeriodManager : MonoBehaviour
     {
         generalManager.currentYear++;
         generalManager.seasonsElapsed++;
-        generalManager.draftPicks = 3;
+
+        generalManager.firstRoundPicks += 1;
+        generalManager.secondRoundPicks += 1;
+        generalManager.thirdRoundPicks += 1;
+        uiManager.UpdateDraftPicks();
 
         foreach (var employee in employeeLists.currentRoster)
         {
@@ -357,46 +362,35 @@ public class PeriodManager : MonoBehaviour
             {
                 case EmployeeEnumerators.PersonalityTrait.Toxic:
                     if (randomNumber > 0 && randomNumber < 81) { EmployeeIsDisgruntled(employee); } // 80% Chance
-                    return;
+                    break;
 
                 case EmployeeEnumerators.PersonalityTrait.Selfish:
                     if (randomNumber > 0 && randomNumber < 61) { EmployeeIsDisgruntled(employee); } // 60% Chance
-                    return;
+                    break;
 
                 case EmployeeEnumerators.PersonalityTrait.Difficult:
                     if (randomNumber > 0 && randomNumber < 46) { EmployeeIsDisgruntled(employee); } // 45% Chance
-                    return;
+                    break;
 
                 case EmployeeEnumerators.PersonalityTrait.Team_Player:
                     if (randomNumber > 0 && randomNumber < 26) { EmployeeIsDisgruntled(employee); } // 25% Chance
-                    return;
+                    break;
 
                 case EmployeeEnumerators.PersonalityTrait.Saint:
                     if (randomNumber > 0 && randomNumber < 11) { EmployeeIsDisgruntled(employee); } // 10% Chance
-                    return;
+                    break;
 
                 case EmployeeEnumerators.PersonalityTrait.Perfectionist:
                     // 0% Chance
-                    return;
+                    break;
             }
         } 
     }
 
-    private string EmployeeIsDisgruntled(Employee employee)
+    private void EmployeeIsDisgruntled(Employee employee)
     {
         employeeLists.AddEmployee(employee, employeeLists.disgruntledEmployees);
         employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
-
-        int randomNumber = Random.Range(0, 3);
-
-        switch (randomNumber)
-        {
-            case 0: return "Event1";
-            case 1: return "Event2";
-            case 2: return "Event3";
-        }
-
-        return null;
     }
     #endregion
 }
