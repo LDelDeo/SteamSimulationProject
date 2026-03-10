@@ -9,8 +9,8 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [Header("Roster Screen UI")]
+    public GameObject rosterScreen;
     public Transform rosterGridStorage;
-    public Transform rosterScreen;
     public Transform employeeStatsLayout;
 
     public Transform[] rosterSlots;
@@ -23,38 +23,47 @@ public class UIManager : MonoBehaviour
     private bool isRosterShowing;
 
     [Header("Draft Screen UI")]
+    public GameObject draftScreen;
     public Transform prospectLayout;
     public GameObject prospectCard;
+    public TMP_Text currentRoundText;
+    public TMP_Text draftPicksByRoundText;
 
     [Header("Free Agency Screen UI")]
+    public GameObject freeAgencyScreen;
     public Transform freeAgencyLayout;
     public GameObject freeAgentCard;
 
     [Header("Restricted FA Screen UI")]
+    public GameObject expiringContractsScreen;
     public Transform expiringContractsLayout;
     public GameObject expiringContractCard;
 
     [Header("Retirement Screen UI")]
+    public GameObject retirementScreen;
     public Transform retiringEmployeeLayout;
     public GameObject retiringEmployeeCard;
 
     [Header("Employee Events Screen UI")]
+    public GameObject disgruntlementsScreen;
     public Transform disgruntledEmployeeLayout;
     public GameObject disgruntledCard;
 
     [Header("Layout Array")]
-    public Transform[] layouts;
+    public GameObject[] screens;
 
     [Header("HUD Stats")]
     [SerializeField] TMP_Text capSpaceText;
     [SerializeField] TMP_Text draftPicksText;
     [SerializeField] TMP_Text leagueYearText;
+    [SerializeField] public GameObject nextPeriodButton;
 
     [Header("Script References")]
     private EmployeeLists employeeLists;
     private GeneralManager generalManager;
     private UIManager uiManager;
     private PeriodManager periodManager;
+    private DraftManager draftManager;
 
     private void Start()
     {
@@ -62,6 +71,7 @@ public class UIManager : MonoBehaviour
         generalManager = GetComponent<GeneralManager>();
         uiManager = GetComponent<UIManager>();
         periodManager = GetComponent<PeriodManager>();
+        draftManager = GetComponent<DraftManager>();
 
         OffenseScreen.SetActive(true);
         DefenseScreen.SetActive(false);
@@ -253,6 +263,7 @@ public class UIManager : MonoBehaviour
     {
         generalManager.totalDraftPicks = (generalManager.firstRoundPicks + generalManager.secondRoundPicks + generalManager.thirdRoundPicks);
         draftPicksText.text = $"{generalManager.currentYear} Draft Picks: {generalManager.totalDraftPicks}";
+        draftPicksByRoundText.text = $"Round 1 Picks: {generalManager.firstRoundPicks} | Round 2 Picks: {generalManager.secondRoundPicks} | Round 3 Picks: {generalManager.thirdRoundPicks}";
     }
 
     public void UpdateLeagueYear()
@@ -270,14 +281,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void ChangeUI(Transform screenToShow)
+    public void ChangeUI(GameObject screenToShow)
     {
-        foreach (Transform screen in layouts)
+        foreach (GameObject screen in screens)
         {
-            screen.gameObject.SetActive(false);
+            screen.SetActive(false);
         }
 
-        screenToShow.gameObject.SetActive(true);
+        screenToShow.SetActive(true);
         RefreshUI();
     }
 
@@ -286,7 +297,7 @@ public class UIManager : MonoBehaviour
         isRosterShowing = !isRosterShowing;
 
         if (isRosterShowing) { rosterScreen.gameObject.SetActive(true); }
-        else if (!isRosterShowing && periodManager.currentPeriod != PeriodManager.Period.StartOfYear) { rosterScreen.gameObject.SetActive(false); }
+        else if (!isRosterShowing && periodManager.currentPeriod != PeriodManager.Period.StartOfYear) { rosterScreen.SetActive(false); }
 
         RefreshRosterUI();
     }

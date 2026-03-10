@@ -23,7 +23,6 @@ public class PeriodManager : MonoBehaviour
 
     [Header("List Sizes")]
     [SerializeField] int rosterCount;
-    [SerializeField] int draftClassSize;
     [SerializeField] int freeAgencyClassSize;
 
     private EmployeeCard employeeCardObject;
@@ -35,6 +34,7 @@ public class PeriodManager : MonoBehaviour
     private UIManager uiManager;
     private GeneralManager generalManager;
     private EmployeeFactory employeeFactory;
+    private DraftManager draftManager;
 
     EmployeeRNG employeeRNG = new EmployeeRNG();
     EmployeeArrays employeeArrays = new EmployeeArrays();
@@ -44,6 +44,7 @@ public class PeriodManager : MonoBehaviour
         employeeLists = GetComponent<EmployeeLists>();
         uiManager = GetComponent<UIManager>();
         generalManager = GetComponent<GeneralManager>();
+        draftManager = GetComponent<DraftManager>();
 
         employeeFactory = new EmployeeFactory();
 
@@ -95,19 +96,19 @@ public class PeriodManager : MonoBehaviour
 
             case Period.Retirements:
                 CheckforRetirement();
-                uiManager.ChangeUI(uiManager.retiringEmployeeLayout);
+                uiManager.ChangeUI(uiManager.retirementScreen);
                 break;
 
             case Period.ExpiringContracts:
                 employeeLists.ClearList(employeeLists.retiringEmployees);
                 CheckExpiringContracts();
-                uiManager.ChangeUI(uiManager.expiringContractsLayout);
+                uiManager.ChangeUI(uiManager.expiringContractsScreen);
                 break; 
 
             case Period.FreeAgency:
                 CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyLayout);
                 LetExpiringContractsWalk();
-                uiManager.ChangeUI(uiManager.freeAgencyLayout);
+                uiManager.ChangeUI(uiManager.freeAgencyScreen);
                 break;
 
             case Period.Trading:
@@ -116,15 +117,16 @@ public class PeriodManager : MonoBehaviour
 
             case Period.EmployeeEvents:
                 CheckForEmployeeEvent();
-                uiManager.ChangeUI(uiManager.disgruntledEmployeeLayout);
-                // Load those employees in cards and assign each a random event
-                // Allow user to deal with these situations
+                uiManager.ChangeUI(uiManager.disgruntlementsScreen);
                 break;
 
             case Period.Draft:
                 employeeLists.ClearList(employeeLists.disgruntledEmployees);
-                CreateAnEmployee(draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
-                uiManager.ChangeUI(uiManager.prospectLayout);
+
+                draftManager.currentRound = 1;
+                uiManager.nextPeriodButton.SetActive(false);
+                CreateAnEmployee(draftManager.draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
+                uiManager.ChangeUI(uiManager.draftScreen);
                 break;
 
             case Period.SeasonSimulation:
@@ -234,21 +236,20 @@ public class PeriodManager : MonoBehaviour
                 statIncreases.Add(randomStatIncrease);
             }
             
-            // Maybe make it so if its greater than 100, set it to 100
-            if (employee.efficiency <= (100 - statIncreases[0]))
-                employee.efficiency += statIncreases[0];
+            if (employee.efficiency > 100)
+                employee.efficiency = 100;
 
-            if (employee.customerService <= (100 - statIncreases[1]))
-                employee.customerService += statIncreases[1];
+            if (employee.customerService > 100)
+                employee.customerService = 100;
 
-            if (employee.communication <= (100 - statIncreases[2]))
-                employee.communication += statIncreases[2];
+            if (employee.communication > 100)
+                employee.communication = 100;
 
-            if (employee.teamwork <= (100 - statIncreases[3]))
-                employee.teamwork += statIncreases[3];
+            if (employee.teamwork > 100)
+                employee.teamwork = 100;
 
-            if (employee.iq <= (100 - statIncreases[4]))
-                employee.iq += statIncreases[4];
+            if (employee.iq > 100)
+                employee.iq = 100;
 
             statIncreases.Clear();
         }

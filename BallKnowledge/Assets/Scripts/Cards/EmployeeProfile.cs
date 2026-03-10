@@ -45,6 +45,9 @@ public class EmployeeProfile : EmployeeCard
 
     public void CutEmployee()
     {
+        if (thisEmployee.yearsUnderContract > 4) // Contracts with more than 4 years remaining cannot be cut
+            return;
+
         manager.playersCut++;
 
         employeeLists.AddEmployee(thisEmployee, employeeLists.freeAgentClass);
