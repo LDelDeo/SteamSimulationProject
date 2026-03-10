@@ -362,23 +362,23 @@ public class PeriodManager : MonoBehaviour
             switch (employee.personalityTrait)
             {
                 case EmployeeEnumerators.PersonalityTrait.Toxic:
-                    if (randomNumber > 0 && randomNumber < 81) { EmployeeIsDisgruntled(employee); } // 80% Chance
+                    if (randomNumber < 76) { EmployeeIsDisgruntled(employee); } // 75% Chance
                     break;
 
                 case EmployeeEnumerators.PersonalityTrait.Selfish:
-                    if (randomNumber > 0 && randomNumber < 61) { EmployeeIsDisgruntled(employee); } // 60% Chance
+                    if (randomNumber < 41) { EmployeeIsDisgruntled(employee); } // 40% Chance
                     break;
 
                 case EmployeeEnumerators.PersonalityTrait.Difficult:
-                    if (randomNumber > 0 && randomNumber < 46) { EmployeeIsDisgruntled(employee); } // 45% Chance
+                    if (randomNumber < 26) { EmployeeIsDisgruntled(employee); } // 25% Chance
                     break;
 
                 case EmployeeEnumerators.PersonalityTrait.Team_Player:
-                    if (randomNumber > 0 && randomNumber < 26) { EmployeeIsDisgruntled(employee); } // 25% Chance
+                    if (randomNumber < 16) { EmployeeIsDisgruntled(employee); } // 15% Chance
                     break;
 
                 case EmployeeEnumerators.PersonalityTrait.Saint:
-                    if (randomNumber > 0 && randomNumber < 11) { EmployeeIsDisgruntled(employee); } // 10% Chance
+                    if (randomNumber < 6) { EmployeeIsDisgruntled(employee); } // 5% Chance
                     break;
 
                 case EmployeeEnumerators.PersonalityTrait.Perfectionist:

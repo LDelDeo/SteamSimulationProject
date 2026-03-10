@@ -245,6 +245,7 @@ public class EmployeeEnumerators
 
     public enum PersonalityTrait
     {
+        // Add or change to Diva
         Toxic,
         Selfish,
         Difficult,
