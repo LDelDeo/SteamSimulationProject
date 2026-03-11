@@ -13,6 +13,7 @@ public class EmployeeLists : MonoBehaviour
     public List<Employee> freeAgentClass = new List<Employee>();
     public List<Employee> retiringEmployees = new List<Employee>();
     public List<Employee> disgruntledEmployees = new List<Employee>();
+    public List<Employee> tradeBlock = new List<Employee>();
     public List<Employee> employeeHallOfFame = new List<Employee>();
     #endregion
 

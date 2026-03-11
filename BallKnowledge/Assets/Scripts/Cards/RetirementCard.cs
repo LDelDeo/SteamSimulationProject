@@ -46,12 +46,12 @@ public class RetirementCard : EmployeeCard
     {
         Employee employeeRetiring = retirementCard.retiredEmployee;
 
-        if (employeeRetiring.age >= 40) { ButtonEnabler(false, true, true); }
+        if (employeeRetiring.age >= 40) { ButtonEnabler(false, true, true); } // If employee is 40 or older, 100% chance they retire
         else
         {
             int randomNumber = Random.Range(1, 11);
 
-            if (randomNumber >= 8)
+            if (randomNumber >= 8) // 80% chance employee stays another year if asked
             {
                 uiManager.EmployeeRetiring(employeeRetiring, false);
 
@@ -60,7 +60,7 @@ public class RetirementCard : EmployeeCard
 
                 ButtonEnabler(false, false, false);
             }
-            else
+            else // 20% chance employee retires for good if asked to stay
             {
                 uiManager.EmployeeRetiring(employeeRetiring, true);
 

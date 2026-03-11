@@ -1565,10 +1565,10 @@ MonoBehaviour:
       - m_Target: {fileID: 8374373777349628615}
         m_TargetAssemblyTypeName: DisgruntledCard, Assembly-CSharp
         m_MethodName: TradeEmployee
-        m_Mode: 1
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 8374373777349628615}
+          m_ObjectArgumentAssemblyTypeName: DisgruntledCard, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2312,7 +2312,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecc2c041ba5398942ae155f317d50c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  employeeStatsPrefab: {fileID: 7081134768087405561}
   firstNameText: {fileID: 1397500282645614970}
   lastNameText: {fileID: 7043712740975742067}
   isRookieText: {fileID: 0}
@@ -2335,7 +2334,6 @@ MonoBehaviour:
   rookieOfTheYearsText: {fileID: 0}
   championshipsText: {fileID: 0}
   employeeCardBackground: {fileID: 5135445610804419322}
-  actionCanvasPrefab: {fileID: 2703001920624651071, guid: 5cbad744723122e4393afe7fcea52d4b, type: 3}
   scenarioText: {fileID: 2711007557080692751}
   buttons:
   - {fileID: 7692030674605674307}

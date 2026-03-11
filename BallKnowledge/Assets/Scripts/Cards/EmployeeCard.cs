@@ -11,6 +11,7 @@ public class EmployeeCard : MonoBehaviour
     protected UIManager uiManager;
     protected PeriodManager periodManager;
     protected DraftManager draftManager;
+    protected TradeManager tradeManager;
     protected EmployeeRNG employeeRNG = new EmployeeRNG();
 
     private Employee thisEmployee;
@@ -75,6 +76,7 @@ public class EmployeeCard : MonoBehaviour
         uiManager = FindFirstObjectByType<UIManager>();
         periodManager = FindFirstObjectByType<PeriodManager>();
         draftManager = FindFirstObjectByType<DraftManager>();
+        tradeManager = FindFirstObjectByType<TradeManager>();
     }
 
     public virtual void GetEmployeeStats(Employee employee)

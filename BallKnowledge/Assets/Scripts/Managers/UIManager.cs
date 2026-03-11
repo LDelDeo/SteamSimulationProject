@@ -63,6 +63,11 @@ public class UIManager : MonoBehaviour
     public Transform disgruntledEmployeeContent;
     public GameObject disgruntledCardPrefab;
 
+    [Header("Trading Screen UI")]
+    public GameObject tradingScreen;
+    public Transform tradeBlockContent;
+    public Transform assetsToTradeContent;
+
     [Header("Layout Array")]
     public GameObject[] screens;
 
@@ -80,6 +85,7 @@ public class UIManager : MonoBehaviour
     private UIManager uiManager;
     private PeriodManager periodManager;
     private DraftManager draftManager;
+    private TradeManager tradeManager;
     private GeneralManager manager;
 
     private void Start()
@@ -89,6 +95,7 @@ public class UIManager : MonoBehaviour
         uiManager = GetComponent<UIManager>();
         periodManager = GetComponent<PeriodManager>();
         draftManager = GetComponent<DraftManager>();
+        tradeManager = GetComponent<TradeManager>();
         manager = GetComponent<GeneralManager>();
 
         OffenseScreen.SetActive(true);
@@ -103,6 +110,8 @@ public class UIManager : MonoBehaviour
         RefreshExpiringContractsUI();
         RefreshRetirementsUI();
         RefreshDisgruntledEmployeesUI();
+        RefreshTradeBlockUI();
+        RefreshUserAssetsUI();
 
         UpdateCapSpace();
         UpdateDraftPicks();
@@ -119,7 +128,7 @@ public class UIManager : MonoBehaviour
         closeActionCanvasButton.GetComponent<Button>().onClick.AddListener(CloseActionCanvas);
     }
 
-    public void OpenActionCanvas()
+    public void OpenActionCanvas() // We need an action canvas to ackowledge information as well as a descion mode with (Yes/No) buttons
     {
         Instantiate(actionCanvasPrefab, actionCanvasInstantiatePoint);
         FindActionCanvas();
@@ -227,6 +236,18 @@ public class UIManager : MonoBehaviour
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = $"You will be trading {amountOfPicks} {pickType} round pick(s) for an increase of ${additionalCapSpace} of cap space";
+    }
+
+    public void NoTradeInterest(Employee employee)
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} has generated no trade interest from other fast food franchises";
+    }
+
+    public void TradeEmployeeForPicks(Employee employee, string tradePackage)
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = $"(Insert other franchise here) is offering {tradePackage} in the upcoming draft for {employee.firstName} {employee.lastName}";
     }
     #endregion
 
@@ -383,6 +404,16 @@ public class UIManager : MonoBehaviour
             card.GetEmployeeStats(disgruntledEmployee);
             card.SetEmployeeCardBackground(disgruntledEmployee);
         }
+    }
+
+    private void RefreshTradeBlockUI()
+    {
+
+    }
+
+    private void RefreshUserAssetsUI()
+    {
+
     }
 
     #region HUD

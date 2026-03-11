@@ -39,6 +39,7 @@ public class PeriodManager : MonoBehaviour
     private GeneralManager generalManager;
     private EmployeeFactory employeeFactory;
     private DraftManager draftManager;
+    private TradeManager tradeManager;
 
     EmployeeRNG employeeRNG = new EmployeeRNG();
     EmployeeArrays employeeArrays = new EmployeeArrays();
@@ -49,6 +50,7 @@ public class PeriodManager : MonoBehaviour
         uiManager = GetComponent<UIManager>();
         generalManager = GetComponent<GeneralManager>();
         draftManager = GetComponent<DraftManager>();
+        tradeManager = GetComponent<TradeManager>();
 
         employeeFactory = new EmployeeFactory();
 
@@ -120,6 +122,7 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Trading:
+                CreateAnEmployee(tradeManager.tradeBlockSize, employeeFactory, employeeLists, employeeArrays, employeeLists.tradeBlock, freeAgentCardObject, uiManager.tradeBlockContent);
                 employeeLists.ClearList(employeeLists.freeAgentClass);
                 break;
 
@@ -143,6 +146,7 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Awards:
+                employeeLists.ClearList(employeeLists.tradeBlock);
                 break;
 
             case Period.SeasonReflection:

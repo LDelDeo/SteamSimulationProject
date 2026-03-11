@@ -149,10 +149,20 @@ public class DisgruntledCard : EmployeeCard
         disgruntledEmployee.hourlyWage = employeeRNG.GetRandomWage(disgruntledEmployee);
     }
 
-    public void TradeEmployee()
+    public void TradeEmployee(DisgruntledCard disgruntledCard)
     {
-        // Trading logic here, we need to make a draft pick value calculator similar to the employee value calculator
-        SettlementClosed();
+        Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
+
+        if (tradeManager.EmployeeValueInPicks(disgruntledEmployee) == TradeManager.TradePackages.NoTradeInterest)
+        {
+            uiManager.NoTradeInterest(disgruntledEmployee);
+            buttons[1].SetActive(false);
+        }
+        else
+        {
+            tradeManager.TradeEmployeeForPicks(disgruntledEmployee);
+            SettlementClosed();
+        }
     }
 
     public void RaiseEmployee(DisgruntledCard disgruntledCard)
@@ -259,6 +269,7 @@ public class DisgruntledCard : EmployeeCard
         scenarioText.text = "SETTLED";
 
         uiManager.UpdateCapSpace();
+        uiManager.UpdateDraftPicks();
     }
     #endregion
 }

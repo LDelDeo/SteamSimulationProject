@@ -35,7 +35,7 @@ public class FreeAgentCard : EmployeeCard
         freeAgent = employee;
     }
 
-    public void SignPlayer(FreeAgentCard freeAgentCard)
+    public void SignPlayer(FreeAgentCard freeAgentCard) // Maybe make it so not every free agent is interested in signing?
     {
         Employee freeAgentToSign = freeAgentCard.freeAgent;
 
@@ -52,7 +52,7 @@ public class FreeAgentCard : EmployeeCard
         else if (!employeeLists.HasRosterSpace(freeAgentToSign)) { uiManager.InsufficientRosterSpace(freeAgentToSign); }
     }
 
-    public void ResignPlayer(FreeAgentCard expiringContractCard)
+    public void ResignPlayer(FreeAgentCard expiringContractCard) // Maybe make it so not every free agent is interested in returning?
     {
         Employee employeeToResign = expiringContractCard.freeAgent;
 
