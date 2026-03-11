@@ -5,7 +5,10 @@ public class GeneralManager : MonoBehaviour
     [Header("League Stats")]
     public int currentYear { get; set; } = 2025;
 
-    [Header("Roster Stats")]
+    [Header("Franchise Stats")]
+    public string franchiseName { get; set; } = "My Franchise";
+
+    [Header("Roster Move Stats")]
     public int playersCut { get; set; }
     public int playersTraded { get; set; }
 
@@ -18,7 +21,7 @@ public class GeneralManager : MonoBehaviour
 
     [Header("Free Agency Stats")]
     public int currentUsedCapSpace { get; set; }
-    public int maxCapSpace { get; private set; } = 625;
+    public int maxCapSpace { get; set; } = 625;
 
     [Header("Legacy Stats")]
     public int championshipsWon { get; set; }

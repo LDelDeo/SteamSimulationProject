@@ -39,7 +39,7 @@ public class FreeAgentCard : EmployeeCard
     {
         Employee freeAgentToSign = freeAgentCard.freeAgent;
 
-        if ((manager.currentUsedCapSpace + freeAgentToSign.hourlyWage) < manager.maxCapSpace && employeeLists.HasRosterSpace(freeAgentToSign))
+        if (employeeLists.HasCapSpaceToCompleteTransaction(freeAgentToSign) && employeeLists.HasRosterSpace(freeAgentToSign))
         {
             freeAgentToSign.yearsUnderContract = contractYears;
 
@@ -48,13 +48,15 @@ public class FreeAgentCard : EmployeeCard
 
             uiManager.RefreshUI();
         }
+        else if (!employeeLists.HasCapSpaceToCompleteTransaction(freeAgentToSign)) { uiManager.InsufficientCapRoom(freeAgentToSign); }
+        else if (!employeeLists.HasRosterSpace(freeAgentToSign)) { uiManager.InsufficientRosterSpace(freeAgentToSign); }
     }
 
     public void ResignPlayer(FreeAgentCard expiringContractCard)
     {
         Employee employeeToResign = expiringContractCard.freeAgent;
 
-        if ((manager.currentUsedCapSpace + employeeToResign.hourlyWage) < manager.maxCapSpace && employeeLists.HasRosterSpace(employeeToResign))
+        if (employeeLists.HasCapSpaceToCompleteTransaction(employeeToResign) && employeeLists.HasRosterSpace(employeeToResign))
         {
             employeeToResign.yearsUnderContract = contractYears;
 
@@ -63,6 +65,8 @@ public class FreeAgentCard : EmployeeCard
 
             uiManager.RefreshUI();
         }
+        else if (!employeeLists.HasCapSpaceToCompleteTransaction(employeeToResign)) { uiManager.InsufficientCapRoom(employeeToResign); }
+        else if (!employeeLists.HasRosterSpace(employeeToResign)) { uiManager.InsufficientRosterSpace(employeeToResign); }
     }
 
     public void AdjustContractYears(bool increase)

@@ -13,9 +13,6 @@ public class EmployeeCard : MonoBehaviour
     protected DraftManager draftManager;
     protected EmployeeRNG employeeRNG = new EmployeeRNG();
 
-    [SerializeField] private GameObject employeeStatsPrefab;
-    private GameObject employeeStatsTransform;
-
     private Employee thisEmployee;
 
     #region Visuals
@@ -76,7 +73,6 @@ public class EmployeeCard : MonoBehaviour
         manager = FindFirstObjectByType<GeneralManager>();
         employeeLists = FindFirstObjectByType<EmployeeLists>();
         uiManager = FindFirstObjectByType<UIManager>();
-        employeeStatsTransform =  GameObject.Find("Single Layout (Employee Profile)");
         periodManager = FindFirstObjectByType<PeriodManager>();
         draftManager = FindFirstObjectByType<DraftManager>();
     }
@@ -164,10 +160,10 @@ public class EmployeeCard : MonoBehaviour
 
     public void ShowEmployeeStats()
     {
-        foreach(Transform child in employeeStatsTransform.transform)
+        foreach(Transform child in uiManager.employeeStatsContent)
             Destroy(child.gameObject);
 
-        GameObject employeeStatsObject = Instantiate(employeeStatsPrefab, employeeStatsTransform.transform);
+        GameObject employeeStatsObject = Instantiate(uiManager.employeeProfileCardPrefab, uiManager.employeeStatsContent);
 
         EmployeeProfile employeeStats = employeeStatsObject.GetComponent<EmployeeProfile>();
         employeeStats.GetEmployeeStats(thisEmployee);

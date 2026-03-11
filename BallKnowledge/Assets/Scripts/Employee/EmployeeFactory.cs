@@ -60,9 +60,10 @@ public class EmployeeFactory
     public int EmployeeValueCalucator(Employee employee)
     {
         var employeeValue = 0;
-        // Max Value = 24, Min Value = 3
+        // Max Value = 31, Min Value = 4
+        // Max Contract = 124/hr, Min Contract = $8/hr
         // These values have an affect on the amout of requested wage they'd like in negotiations
-        // Combination of age, work ethic and overall (We could possibly add positional value & awards won as well)
+        // Combination of age, work ethic, individual awards, championships and overall
 
         switch (employee.workEthic)
         {
@@ -114,25 +115,19 @@ public class EmployeeFactory
         else if (employee.age == 26) { employeeValue += 9; }
         else if (employee.age <= 25) { employeeValue += 10; }
 
-        return employeeValue;
-    }
+        int accolades = employee.rookieOfTheYear + employee.employeeOfTheYear + employee.mostValuableEmployee + employee.championships;
+        switch (accolades)
+        {
+            case 0: employeeValue += 1; break;
+            case 1: employeeValue += 2; break;
+            case 2: employeeValue += 3; break;
+            case 3: employeeValue += 4; break;
+            case 4: employeeValue += 5; break;
+            case 5: employeeValue += 6; break;
+            default: employeeValue += 7; break;
+        }
 
-    public void PrintStats(Employee employee)
-    {
-        Debug.Log("Employee Stats");
-        Debug.Log("==============");
-        Debug.Log($"First Name: {employee.firstName}");
-        Debug.Log($"Last Name: {employee.lastName}");
-        Debug.Log($"Sex: {employee.gender}");
-        Debug.Log($"Position: {employee.jobPosition}");
-        Debug.Log($"Development Trait: {employee.workEthic}");
-        Debug.Log($"Efficiency: {employee.efficiency}");
-        Debug.Log($"Customer Service: {employee.customerService}");
-        Debug.Log($"Communication: {employee.communication}");
-        Debug.Log($"Teamwork: {employee.teamwork}");
-        Debug.Log($"IQ: {employee.iq}");
-        Debug.Log($"Overall/Rating: {employee.overall}");
-        Debug.Log($"Employee Value: {employee.value}");
+        return employeeValue;
     }
 }
 

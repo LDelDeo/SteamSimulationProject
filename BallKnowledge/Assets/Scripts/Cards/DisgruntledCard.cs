@@ -6,24 +6,14 @@ using UnityEngine.UI;
 public class DisgruntledCard : EmployeeCard
 {
     [Header("Disgrunted Visuals")]
-    [SerializeField] GameObject actionCanvasPrefab;
     [SerializeField] TMP_Text scenarioText;
     [SerializeField] GameObject[] buttons; // 0 = Cut, 1 = Trade, 2 = Raise, 3 = Extend, 4 = Convince to Stay
-    private GameObject disgruntlementLayoutTransform;
-    private GameObject actionCanvasObject;
-    private GameObject outcomeText;
-    private GameObject closeCanvasButton;
 
     private int raiseAmount;
-    private int yearExtentionAmount;
+    private int yearExtensionAmount;
     private string reasonOfArrest;
 
     private Employee disgruntledEmployee;
-
-    private void Start()
-    {
-        disgruntlementLayoutTransform = GameObject.Find("Horizontal Layout (Disgruntlements)");
-    }
 
     public override void GetEmployeeStats(Employee employee)
     {
@@ -107,9 +97,9 @@ public class DisgruntledCard : EmployeeCard
     private void ScenarioThree()
     {
         int randomNumber = Random.Range(1, 4);
-        yearExtentionAmount = randomNumber;
+        yearExtensionAmount = randomNumber;
 
-        scenarioText.text = $"{employeeFirstName} will not work until they're given a {yearExtentionAmount} year contract extentsion";
+        scenarioText.text = $"{employeeFirstName} will not work until they're given a {yearExtensionAmount} year contract extentsion";
 
         buttons[3].SetActive(true); // Extend
         buttons[0].SetActive(true); // Cut
@@ -153,8 +143,7 @@ public class DisgruntledCard : EmployeeCard
         employeeLists.AddEmployee(disgruntledEmployee, employeeLists.freeAgentClass);
         employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
 
-        OpenActionCanvas();
-        outcomeText.GetComponent<TMP_Text>().text = $"Employee Cut. Cap Space Savings: ${disgruntledEmployee.hourlyWage}/hr";
+        uiManager.EmployeeCut(disgruntledEmployee);
         SettlementClosed();
 
         disgruntledEmployee.hourlyWage = employeeRNG.GetRandomWage(disgruntledEmployee);
@@ -170,28 +159,19 @@ public class DisgruntledCard : EmployeeCard
     {
         Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
 
-        if (manager.currentUsedCapSpace + disgruntledEmployee.hourlyWage + raiseAmount <= manager.maxCapSpace)
+        if (manager.currentUsedCapSpace + disgruntledEmployee.hourlyWage + raiseAmount <= manager.maxCapSpace && employeeLists.HasRosterSpace(disgruntledEmployee))
         {
             disgruntledEmployee.hourlyWage += raiseAmount;
 
-            if (employeeLists.HasRosterSpace(disgruntledEmployee))
-            {
-                employeeLists.AddEmployee(disgruntledEmployee, employeeLists.currentRoster);
-                employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
-            }
+            employeeLists.AddEmployee(disgruntledEmployee, employeeLists.currentRoster);
+            employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
 
-            OpenActionCanvas();
-            outcomeText.GetComponent<TMP_Text>().text = $"Contract raised by ${raiseAmount}/hr\n" +
-                                                        $" {disgruntledEmployee.firstName} now makes a total of " +
-                                                        $" ${disgruntledEmployee.hourlyWage}/hr\n" +
-                                                        $" and has {disgruntledEmployee.yearsUnderContract} year(s) remaining on their deal";
+            uiManager.EmployeeRaise(disgruntledEmployee, raiseAmount, true);
             SettlementClosed();
         }
         else
         {
-            OpenActionCanvas();
-            outcomeText.GetComponent<TMP_Text>().text = "You do not have the required cap room to reconstructure the deal" +
-                                                        $" You must free up ${(manager.currentUsedCapSpace + raiseAmount) - manager.maxCapSpace}";
+            uiManager.EmployeeRaise(disgruntledEmployee, raiseAmount, false);
         }
     }
 
@@ -199,19 +179,16 @@ public class DisgruntledCard : EmployeeCard
     {
         Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
 
-        disgruntledEmployee.yearsUnderContract += yearExtentionAmount;
-
         if (employeeLists.HasRosterSpace(disgruntledEmployee))
         {
+            disgruntledEmployee.yearsUnderContract += yearExtensionAmount;
+
             employeeLists.AddEmployee(disgruntledEmployee, employeeLists.currentRoster);
             employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
-        }
 
-        OpenActionCanvas();
-        outcomeText.GetComponent<TMP_Text>().text = $"Contract extended by {yearExtentionAmount} year(s)" +
-                                                    $" {disgruntledEmployee.firstName} now has a total of {disgruntledEmployee.yearsUnderContract} year(s) remaining on their deal" +
-                                                    $" and earns {disgruntledEmployee.hourlyWage}/hr during that time";
-        SettlementClosed();
+            uiManager.EmployeeExtention(disgruntledEmployee, yearExtensionAmount);
+            SettlementClosed();
+        }
     }
 
     public void ConvinceEmployeeToStay(DisgruntledCard disgruntledCard)
@@ -257,8 +234,7 @@ public class DisgruntledCard : EmployeeCard
     {
         if (changedMind)
         {
-            OpenActionCanvas();
-            outcomeText.GetComponent<TMP_Text>().text = $"{disgruntledEmployee.firstName} has had a change of heart and has decided to stay";
+            uiManager.EmployeeStaying(disgruntledEmployee);
             SettlementClosed();
 
             if (employeeLists.HasRosterSpace(disgruntledEmployee))
@@ -269,20 +245,9 @@ public class DisgruntledCard : EmployeeCard
         }
         else
         {
-            OpenActionCanvas();
-            outcomeText.GetComponent<TMP_Text>().text = $"{disgruntledEmployee.firstName} still wants out of your franchise";
+            uiManager.EmployeeWantsOut(disgruntledEmployee);
             buttons[4].SetActive(false);
         }
-    }
-
-    private void FindActionCanvas()
-    {
-        actionCanvasObject = GameObject.Find("Action Canvas(Clone)");
-
-        outcomeText = GameObject.Find("Outcome Text");
-
-        closeCanvasButton = GameObject.Find("Acknowledge Button");
-        closeCanvasButton.GetComponent<Button>().onClick.AddListener(CloseActionCanvas);
     }
 
     private void SettlementClosed()
@@ -292,18 +257,8 @@ public class DisgruntledCard : EmployeeCard
 
         scenarioText.color = Color.green;
         scenarioText.text = "SETTLED";
-    }
 
-    private void OpenActionCanvas()
-    {
-        Instantiate(actionCanvasPrefab, disgruntlementLayoutTransform.transform);
-        FindActionCanvas();
-    }
-
-    public void CloseActionCanvas()
-    {
-        FindActionCanvas();
-        Destroy(actionCanvasObject);
+        uiManager.UpdateCapSpace();
     }
     #endregion
 }

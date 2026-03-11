@@ -16,6 +16,13 @@ public class EmployeeLists : MonoBehaviour
     public List<Employee> employeeHallOfFame = new List<Employee>();
     #endregion
 
+    private GeneralManager manager;
+
+    private void Start()
+    {
+        manager = GetComponent<GeneralManager>();
+    }
+
     #region Adding & Subtracting Employees
     public void AddEmployee(Employee employee, List<Employee> list)
     {
@@ -197,6 +204,14 @@ public class EmployeeLists : MonoBehaviour
         }
 
         return false;
+    }
+
+    public bool HasCapSpaceToCompleteTransaction(Employee employee)
+    {
+        if ((manager.currentUsedCapSpace + employee.hourlyWage) <= manager.maxCapSpace)
+            return true;
+        else
+            return false;
     }
     #endregion
 }

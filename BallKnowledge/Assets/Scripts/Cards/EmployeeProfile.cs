@@ -31,8 +31,8 @@ public class EmployeeProfile : EmployeeCard
         teamworkText.text = $"Teamwork: {employeeTeamwork}";
         iqText.text = $"IQ: {employeeIq}";
         overallText.text = $"Overall: {employeeOverall}";
-        mvpsText.text = $"MVPs: {employeeMVPs}";
-        employeeOfTheYearsText.text = $"Employee of the Years: {employeeEmployeeOfTheYears}";
+        mvpsText.text = $"MVEs: {employeeMVPs}";
+        employeeOfTheYearsText.text = $"front/back of house eoty's: {employeeEmployeeOfTheYears}"; // Fix this here, we must make a function to get back of house/front of house positon
         rookieOfTheYearsText.text = $"Rookie of the Years: {employeeRookieOfTheYears}";
         championshipsText.text = $"Championships: {employeeChampionships}";
     }
@@ -45,10 +45,16 @@ public class EmployeeProfile : EmployeeCard
 
     public void CutEmployee()
     {
-        if (thisEmployee.yearsUnderContract > 4) // Contracts with more than 4 years remaining cannot be cut
+        // Contracts with more than 4 years remaining cannot be cut
+        if (thisEmployee.yearsUnderContract > 4)
+        {
+            uiManager.UncuttableContract();
             return;
+        }
 
         manager.playersCut++;
+
+        uiManager.EmployeeCut(thisEmployee);
 
         employeeLists.AddEmployee(thisEmployee, employeeLists.freeAgentClass);
         employeeLists.RemoveEmployee(thisEmployee, employeeLists.currentRoster);

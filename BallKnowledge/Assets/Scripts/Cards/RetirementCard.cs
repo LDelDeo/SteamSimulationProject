@@ -5,22 +5,15 @@ using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class RetirementCard : EmployeeCard
 {
-    [Header("Retirement Card Visuals")]
-    [SerializeField] GameObject actionCanvasPrefab;   
+    [Header("Retirement Card Visuals")]  
     [SerializeField] Button convinceToStayButton;
     [SerializeField] Button ackowledgeRetirementButton;
     [SerializeField] Button hallOfFameButton;
-    private GameObject retirementLayoutTransform;
-    private GameObject actionCanvasObject;
-    private GameObject outcomeText;
-    private GameObject closeCanvasButton;
 
     private Employee retiredEmployee;
 
     private void Start()
     {
-        retirementLayoutTransform = GameObject.Find("Horizontal Layout (Retirements)");
-
         ButtonEnabler(true, true, false);
     }
 
@@ -49,16 +42,6 @@ public class RetirementCard : EmployeeCard
         retiredEmployee = employee;
     }
 
-    private void FindActionCanvas()
-    {
-        actionCanvasObject = GameObject.Find("Action Canvas(Clone)");
-
-        outcomeText = GameObject.Find("Outcome Text");
-
-        closeCanvasButton = GameObject.Find("Acknowledge Button");
-        closeCanvasButton.GetComponent<Button>().onClick.AddListener(CloseActionCanvas);
-    }
-
     public void ConvinceToStay(RetirementCard retirementCard)
     {
         Employee employeeRetiring = retirementCard.retiredEmployee;
@@ -70,9 +53,7 @@ public class RetirementCard : EmployeeCard
 
             if (randomNumber >= 8)
             {
-                Instantiate(actionCanvasPrefab, retirementLayoutTransform.transform);
-                FindActionCanvas();
-                outcomeText.GetComponent<TMP_Text>().text = $"Welcome {employeeRetiring.firstName} {employeeRetiring.lastName} back for at least another year!";
+                uiManager.EmployeeRetiring(employeeRetiring, false);
 
                 employeeLists.AddEmployee(employeeRetiring, employeeLists.currentRoster);
                 employeeLists.RemoveEmployee(employeeRetiring, employeeLists.retiringEmployees);
@@ -81,9 +62,7 @@ public class RetirementCard : EmployeeCard
             }
             else
             {
-                Instantiate(actionCanvasPrefab, retirementLayoutTransform.transform);
-                FindActionCanvas();
-                outcomeText.GetComponent<TMP_Text>().text = $"{employeeRetiring.firstName} {employeeRetiring.lastName} is retiring for good, but appreciates the offer to come back";
+                uiManager.EmployeeRetiring(employeeRetiring, true);
 
                 ButtonEnabler(false, false, true);
             }
@@ -99,9 +78,7 @@ public class RetirementCard : EmployeeCard
     {
         Employee employeeRetiring = retirementCard.retiredEmployee;
 
-        Instantiate(actionCanvasPrefab, retirementLayoutTransform.transform);
-        FindActionCanvas();
-        outcomeText.GetComponent<TMP_Text>().text = $"{employeeRetiring.firstName} {employeeRetiring.lastName} is honored to be added to (team name)'s hall of fame";
+        uiManager.EmployeeIsJoiningHallOfFame(employeeRetiring);
 
         employeeLists.AddEmployee(employeeRetiring, employeeLists.employeeHallOfFame);
 
@@ -113,12 +90,6 @@ public class RetirementCard : EmployeeCard
         convinceToStayButton.interactable = stayBTN;
         ackowledgeRetirementButton.interactable = ackowledgeBTN;
         hallOfFameButton.interactable = hallOfFameBTN;
-    }
-
-    public void CloseActionCanvas()
-    {
-        FindActionCanvas();
-        Destroy(actionCanvasObject);
     }
     #endregion
 }

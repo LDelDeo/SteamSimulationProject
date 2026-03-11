@@ -25,6 +25,10 @@ public class PeriodManager : MonoBehaviour
     [SerializeField] int rosterCount;
     [SerializeField] int freeAgencyClassSize;
 
+    [Header("Annual Configuration")]
+    [SerializeField] int ageOfRegression;
+    [SerializeField] int amountOfRegressionPerStat; 
+
     private EmployeeCard employeeCardObject;
     private ProspectCard prospectCardObject;
     private FreeAgentCard freeAgentCardObject;
@@ -50,12 +54,12 @@ public class PeriodManager : MonoBehaviour
 
         employeeArrays.JsonToList();
 
-        employeeCardObject = uiManager.employeeCard.GetComponent<EmployeeCard>();
-        prospectCardObject = uiManager.prospectCard.GetComponent<ProspectCard>();
-        freeAgentCardObject = uiManager.freeAgentCard.GetComponent<FreeAgentCard>();
-        retirementCardObject = uiManager.retiringEmployeeCard.GetComponent<RetirementCard>();
+        employeeCardObject = uiManager.employeeCardPrefab.GetComponent<EmployeeCard>();
+        prospectCardObject = uiManager.prospectCardPrefab.GetComponent<ProspectCard>();
+        freeAgentCardObject = uiManager.freeAgentCardPrefab.GetComponent<FreeAgentCard>();
+        retirementCardObject = uiManager.retiringEmployeeCardPrefab.GetComponent<RetirementCard>();
 
-        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeArrays, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage);
+        CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeArrays, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage.transform);
         uiManager.RefreshUI();
 
         UpdatePeriod();
@@ -83,6 +87,8 @@ public class PeriodManager : MonoBehaviour
             case 9: currentPeriod = Period.SeasonReflection; break;
         }
 
+        uiManager.emptyListText.text = string.Empty;
+
         UpdatePeriod();
     }
 
@@ -96,17 +102,19 @@ public class PeriodManager : MonoBehaviour
 
             case Period.Retirements:
                 CheckforRetirement();
+                CheckforEmptyList(employeeLists.retiringEmployees, $"No Retirements in {generalManager.currentYear}");
                 uiManager.ChangeUI(uiManager.retirementScreen);
                 break;
 
             case Period.ExpiringContracts:
                 employeeLists.ClearList(employeeLists.retiringEmployees);
                 CheckExpiringContracts();
+                CheckforEmptyList(employeeLists.pendingFreeAgents, $"No Expiring Contracts in {generalManager.currentYear}");
                 uiManager.ChangeUI(uiManager.expiringContractsScreen);
                 break; 
 
             case Period.FreeAgency:
-                CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyLayout);
+                CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyContent);
                 LetExpiringContractsWalk();
                 uiManager.ChangeUI(uiManager.freeAgencyScreen);
                 break;
@@ -117,6 +125,7 @@ public class PeriodManager : MonoBehaviour
 
             case Period.EmployeeEvents:
                 CheckForEmployeeEvent();
+                CheckforEmptyList(employeeLists.disgruntledEmployees, $"No Disgruntled Employees in {generalManager.currentYear}");
                 uiManager.ChangeUI(uiManager.disgruntlementsScreen);
                 break;
 
@@ -125,7 +134,7 @@ public class PeriodManager : MonoBehaviour
 
                 draftManager.currentRound = 1;
                 uiManager.nextPeriodButton.SetActive(false);
-                CreateAnEmployee(draftManager.draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectLayout);
+                CreateAnEmployee(draftManager.draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectContent);
                 uiManager.ChangeUI(uiManager.draftScreen);
                 break;
 
@@ -156,7 +165,6 @@ public class PeriodManager : MonoBehaviour
             EmployeeCard cardInstance = cardObject.GetComponent<EmployeeCard>();
 
             cardInstance.GetEmployeeStats(employee);
-            //employeeFactory.PrintStats(employee);
         }
     }
 
@@ -228,7 +236,7 @@ public class PeriodManager : MonoBehaviour
         }
 
         
-        if (employee.age <= 31)
+        if (employee.age <= ageOfRegression)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -255,11 +263,11 @@ public class PeriodManager : MonoBehaviour
         }
         else
         {
-            employee.efficiency -= 2;
-            employee.customerService -= 2;
-            employee.communication -= 2;
-            employee.teamwork -= 2;
-            employee.iq -= 2;
+            employee.efficiency -= amountOfRegressionPerStat;
+            employee.customerService -= amountOfRegressionPerStat;
+            employee.communication -= amountOfRegressionPerStat;
+            employee.teamwork -= amountOfRegressionPerStat;
+            employee.iq -= amountOfRegressionPerStat;
 
             if (employee.efficiency < 0)
                 employee.efficiency = 0;
@@ -283,6 +291,12 @@ public class PeriodManager : MonoBehaviour
                             employee.teamwork +
                             employee.iq) 
                             / 5;
+    }
+
+    private void CheckforEmptyList(List<Employee> listToCheck, string emptyAction)
+    {
+        if (listToCheck.Count == 0)
+            uiManager.emptyListText.text = emptyAction;
     }
 
     private void CheckforRetirement()

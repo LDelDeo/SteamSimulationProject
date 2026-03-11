@@ -82,6 +82,8 @@ public class ProspectCard : EmployeeCard
         prospect = employee;
     }
 
+    // We shouldn't refresh the UI here as it updates all the prospects question marks, instead, we should replace the draft button with a DRAFTED tag
+    // Remember that cutting a player on the roster will update the UI as well
     public void DraftPlayer(ProspectCard prospectCard)
     {
         Employee prospectToDraft = prospectCard.prospect;
@@ -89,7 +91,7 @@ public class ProspectCard : EmployeeCard
         switch (draftManager.currentRound)
         {
             case 1:
-                if (manager.firstRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
+                if (manager.firstRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft) && employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft))
                 {
                     manager.playersDrafted++;
 
@@ -101,6 +103,9 @@ public class ProspectCard : EmployeeCard
 
                     uiManager.RefreshUI();
                 }
+                else if (manager.firstRoundPicks < 1) { uiManager.InsufficientDraftPicks("first"); }
+                else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
+                else if (!employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft)) { uiManager.InsufficientCapRoom(prospectToDraft); }
                 break;
          
             case 2:
@@ -116,6 +121,9 @@ public class ProspectCard : EmployeeCard
 
                     uiManager.RefreshUI();
                 }
+                else if (manager.secondRoundPicks < 1) { uiManager.InsufficientDraftPicks("second"); }
+                else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
+                else if (!employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft)) { uiManager.InsufficientCapRoom(prospectToDraft); }
                 break;
        
             case 3:
@@ -131,6 +139,9 @@ public class ProspectCard : EmployeeCard
 
                     uiManager.RefreshUI();
                 }
+                else if (manager.thirdRoundPicks < 1) { uiManager.InsufficientDraftPicks("third"); }
+                else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
+                else if (!employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft)) { uiManager.InsufficientCapRoom(prospectToDraft); }
                 break;
         }
         
