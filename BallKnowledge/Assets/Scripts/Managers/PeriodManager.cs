@@ -33,6 +33,7 @@ public class PeriodManager : MonoBehaviour
     private ProspectCard prospectCardObject;
     private FreeAgentCard freeAgentCardObject;
     private RetirementCard retirementCardObject;
+    private TradeAssetCard tradeAssetCardObject;
 
     private EmployeeLists employeeLists;
     private UIManager uiManager;
@@ -60,6 +61,7 @@ public class PeriodManager : MonoBehaviour
         prospectCardObject = uiManager.prospectCardPrefab.GetComponent<ProspectCard>();
         freeAgentCardObject = uiManager.freeAgentCardPrefab.GetComponent<FreeAgentCard>();
         retirementCardObject = uiManager.retiringEmployeeCardPrefab.GetComponent<RetirementCard>();
+        tradeAssetCardObject = uiManager.tradeAssetCardPrefab.GetComponent<TradeAssetCard>();
 
         CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeArrays, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage.transform);
         uiManager.RefreshUI();
@@ -122,11 +124,13 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Trading:
-                CreateAnEmployee(tradeManager.tradeBlockSize, employeeFactory, employeeLists, employeeArrays, employeeLists.tradeBlock, freeAgentCardObject, uiManager.tradeBlockContent);
                 employeeLists.ClearList(employeeLists.freeAgentClass);
+                CreateAnEmployee(tradeManager.tradeBlockSize, employeeFactory, employeeLists, employeeArrays, employeeLists.tradeBlock, tradeAssetCardObject, uiManager.tradeBlockContent);
+                uiManager.ChangeUI(uiManager.tradingScreen);
                 break;
 
             case Period.EmployeeEvents:
+                tradeManager.employeeToBeAcquired = null;
                 CheckForEmployeeEvent();
                 CheckforEmptyList(employeeLists.disgruntledEmployees, $"No Disgruntled Employees in {generalManager.currentYear}");
                 uiManager.ChangeUI(uiManager.disgruntlementsScreen);

@@ -10,7 +10,7 @@ public class GeneralManager : MonoBehaviour
 
     [Header("Roster Move Stats")]
     public int playersCut { get; set; }
-    public int playersTraded { get; set; }
+    public int tradesCompleted { get; set; }
 
     [Header("Draft Stats")]
     public int totalDraftPicks { get; set; }

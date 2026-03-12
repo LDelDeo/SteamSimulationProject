@@ -66,7 +66,12 @@ public class UIManager : MonoBehaviour
     [Header("Trading Screen UI")]
     public GameObject tradingScreen;
     public Transform tradeBlockContent;
-    public Transform assetsToTradeContent;
+    public Transform userAssetsContent;
+    public Transform currentTradePackageContent;
+    public Transform selectedAcquisitionContent;
+    public GameObject tradeAssetCardPrefab;
+    public GameObject tradeBlockCardPrefab;
+    public GameObject draftPickCardPrefab;
 
     [Header("Layout Array")]
     public GameObject[] screens;
@@ -112,6 +117,7 @@ public class UIManager : MonoBehaviour
         RefreshDisgruntledEmployeesUI();
         RefreshTradeBlockUI();
         RefreshUserAssetsUI();
+        RefreshCurrentTradePackageUI();
 
         UpdateCapSpace();
         UpdateDraftPicks();
@@ -248,6 +254,30 @@ public class UIManager : MonoBehaviour
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = $"(Insert other franchise here) is offering {tradePackage} in the upcoming draft for {employee.firstName} {employee.lastName}";
+    }
+
+    public void TradePackageIsFull()
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = "Your trade package is full! Remove an asset before adding this one";
+    }
+
+    public void EmployeeToAcquireIsSelected()
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = "You can only trade for one employee at a time! Remove the current selected employee before adding this one";
+    }
+
+    public void TradeAccepted()
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = "TEST ACCEPTED";
+    }
+
+    public void TradeDeclined()
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = "TEST Declined";
     }
     #endregion
 
@@ -408,12 +438,81 @@ public class UIManager : MonoBehaviour
 
     private void RefreshTradeBlockUI()
     {
+        ClearContent(tradeBlockContent);
 
+        foreach (var employeeOnTradeBlock in employeeLists.tradeBlock)
+        {
+            GameObject cardObject = Instantiate(tradeBlockCardPrefab, tradeBlockContent);
+            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.GetEmployeeStats(employeeOnTradeBlock);
+            cardInstance.SetEmployeeCardBackground(employeeOnTradeBlock);
+        }
     }
 
     private void RefreshUserAssetsUI()
     {
+        ClearContent(userAssetsContent);
 
+        for (int i = 0; i < generalManager.firstRoundPicks; i++) { CreateDraftPickCard(1, generalManager.currentYear, userAssetsContent); }
+        for (int j = 0; j < generalManager.secondRoundPicks; j++) { CreateDraftPickCard(2, generalManager.currentYear, userAssetsContent); }
+        for (int k = 0; k < generalManager.thirdRoundPicks; k++) { CreateDraftPickCard(3, generalManager.currentYear, userAssetsContent); }
+
+        foreach (var employee in employeeLists.currentRoster)
+        {
+            GameObject cardObject = Instantiate(tradeAssetCardPrefab.gameObject, userAssetsContent);
+            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.GetEmployeeStats(employee);
+            cardInstance.SetEmployeeCardBackground(employee);
+        }
+    }
+
+    public void RefreshCurrentTradePackageUI()
+    {
+        ClearContent(currentTradePackageContent);
+
+        foreach (var draftPick in tradeManager.outgoingDraftPicks)
+        {
+            switch (draftPick)
+            {
+                case 1: CreateDraftPickCard(1, generalManager.currentYear, currentTradePackageContent); break;
+                case 2: CreateDraftPickCard(2, generalManager.currentYear, currentTradePackageContent); break;
+                case 3: CreateDraftPickCard(3, generalManager.currentYear, currentTradePackageContent); break;
+            }
+        }
+
+        foreach (var employeeToAcquire in tradeManager.outgoingEmployees)
+        {
+            GameObject cardObject = Instantiate(tradeAssetCardPrefab, currentTradePackageContent);
+            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.GetEmployeeStats(employeeToAcquire);
+            cardInstance.SetEmployeeCardBackground(employeeToAcquire);
+        }
+
+        if (tradeManager.employeeToBeAcquired != null)
+        {
+            ClearContent(selectedAcquisitionContent);
+
+            GameObject cardObject = Instantiate(tradeAssetCardPrefab, selectedAcquisitionContent);
+            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.GetEmployeeStats(tradeManager.employeeToBeAcquired);
+            cardInstance.SetEmployeeCardBackground(tradeManager.employeeToBeAcquired);
+        }
+        else
+        {
+            ClearContent(selectedAcquisitionContent);
+        }
+        
+    }
+
+    private void CreateDraftPickCard(int roundOfPick, int yearOfPick, Transform contentToAddTo)
+    {
+        GameObject cardObject = Instantiate(uiManager.draftPickCardPrefab, contentToAddTo);
+        DraftPickCard cardInstance = cardObject.GetComponent<DraftPickCard>();
+        cardInstance.SetValuesOfPick(roundOfPick, yearOfPick);
     }
 
     #region HUD

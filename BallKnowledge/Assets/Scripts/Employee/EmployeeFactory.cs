@@ -29,21 +29,37 @@ public class EmployeeFactory
             employee.hourlyWage = 21;
             employee.yearsUnderContract = 3;
         }
-        else 
+        else if (!employee.isRookie && listToAddTo != employeeLists.tradeBlock)
         { 
             employee.age = employeeRNG.GetRandomAge(25, 34);
             employee.yearsUnderContract = 0;
+        }
+        else if (!employee.isRookie && listToAddTo == employeeLists.tradeBlock)
+        {
+            employee.age = employeeRNG.GetRandomAge(25, 34);
+            employee.yearsUnderContract = employeeRNG.GetRandomAge(1, 6);
         }
 
         employee.jobPosition = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.JobType>();
         employee.workEthic = EmployeeRNG.GetWorkEthic();
         employee.personalityTrait = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.PersonalityTrait>();
 
-        employee.efficiency = employeeRNG.GetRandomStat();
-        employee.customerService = employeeRNG.GetRandomStat();
-        employee.communication = employeeRNG.GetRandomStat();
-        employee.teamwork = employeeRNG.GetRandomStat();
-        employee.iq = employeeRNG.GetRandomStat();
+        if (listToAddTo == employeeLists.tradeBlock)
+        {
+            employee.efficiency = employeeRNG.GetJuicedStat();
+            employee.customerService = employeeRNG.GetJuicedStat();
+            employee.communication = employeeRNG.GetJuicedStat();
+            employee.teamwork = employeeRNG.GetJuicedStat();
+            employee.iq = employeeRNG.GetJuicedStat();
+        }
+        else
+        {
+            employee.efficiency = employeeRNG.GetRandomStat();
+            employee.customerService = employeeRNG.GetRandomStat();
+            employee.communication = employeeRNG.GetRandomStat();
+            employee.teamwork = employeeRNG.GetRandomStat();
+            employee.iq = employeeRNG.GetRandomStat();
+        }
 
         employee.overall = (employee.efficiency + employee.customerService + employee.communication + employee.teamwork + employee.iq) / 5;
 
@@ -187,6 +203,15 @@ public class EmployeeRNG
     public int GetRandomStat()
     {
         int minStat = 0;
+        int maxStat = 101;
+
+        int randomStatValue = UnityEngine.Random.Range(minStat, maxStat);
+        return randomStatValue;
+    }
+
+    public int GetJuicedStat()
+    {
+        int minStat = 50;
         int maxStat = 101;
 
         int randomStatValue = UnityEngine.Random.Range(minStat, maxStat);
