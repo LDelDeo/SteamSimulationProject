@@ -41,6 +41,7 @@ public class PeriodManager : MonoBehaviour
     private EmployeeFactory employeeFactory;
     private DraftManager draftManager;
     private TradeManager tradeManager;
+    private FaceManager faceManager;
 
     EmployeeRNG employeeRNG = new EmployeeRNG();
     EmployeeArrays employeeArrays = new EmployeeArrays();
@@ -52,6 +53,7 @@ public class PeriodManager : MonoBehaviour
         generalManager = GetComponent<GeneralManager>();
         draftManager = GetComponent<DraftManager>();
         tradeManager = GetComponent<TradeManager>();
+        faceManager = GetComponent<FaceManager>();
 
         employeeFactory = new EmployeeFactory();
 
@@ -61,7 +63,7 @@ public class PeriodManager : MonoBehaviour
         prospectCardObject = uiManager.prospectCardPrefab.GetComponent<ProspectCard>();
         freeAgentCardObject = uiManager.freeAgentCardPrefab.GetComponent<FreeAgentCard>();
         retirementCardObject = uiManager.retiringEmployeeCardPrefab.GetComponent<RetirementCard>();
-        tradeAssetCardObject = uiManager.tradeAssetCardPrefab.GetComponent<TradeAssetCard>();
+        tradeAssetCardObject = uiManager.tradeAssetForEmployeeCardPrefab.GetComponent<TradeAssetCard>();
 
         CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeArrays, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage.transform);
         uiManager.RefreshUI();
@@ -101,38 +103,49 @@ public class PeriodManager : MonoBehaviour
         switch (currentPeriod)
         {
             case Period.StartOfYear:
+
                 uiManager.ChangeUI(uiManager.rosterScreen);
                 break;
 
             case Period.Retirements:
                 CheckforRetirement();
                 CheckforEmptyList(employeeLists.retiringEmployees, $"No Retirements in {generalManager.currentYear}");
+
                 uiManager.ChangeUI(uiManager.retirementScreen);
                 break;
 
             case Period.ExpiringContracts:
                 employeeLists.ClearList(employeeLists.retiringEmployees);
+
                 CheckExpiringContracts();
                 CheckforEmptyList(employeeLists.pendingFreeAgents, $"No Expiring Contracts in {generalManager.currentYear}");
+
                 uiManager.ChangeUI(uiManager.expiringContractsScreen);
                 break; 
 
             case Period.FreeAgency:
                 CreateAnEmployee(freeAgencyClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.freeAgentClass, freeAgentCardObject, uiManager.freeAgencyContent);
+                
                 LetExpiringContractsWalk();
+
                 uiManager.ChangeUI(uiManager.freeAgencyScreen);
                 break;
 
             case Period.Trading:
                 employeeLists.ClearList(employeeLists.freeAgentClass);
+                
                 CreateAnEmployee(tradeManager.tradeBlockSize, employeeFactory, employeeLists, employeeArrays, employeeLists.tradeBlock, tradeAssetCardObject, uiManager.tradeBlockContent);
+
+                uiManager.RefreshUserAssetsUI();
                 uiManager.ChangeUI(uiManager.tradingScreen);
                 break;
 
             case Period.EmployeeEvents:
-                tradeManager.employeeToBeAcquired = null;
+                ReturnTradeAssets();
+                
                 CheckForEmployeeEvent();
                 CheckforEmptyList(employeeLists.disgruntledEmployees, $"No Disgruntled Employees in {generalManager.currentYear}");
+                
                 uiManager.ChangeUI(uiManager.disgruntlementsScreen);
                 break;
 
@@ -142,18 +155,23 @@ public class PeriodManager : MonoBehaviour
                 draftManager.currentRound = 1;
                 uiManager.nextPeriodButton.SetActive(false);
                 CreateAnEmployee(draftManager.draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectContent);
+                //uiManager.RefreshProspectStatus();
+
                 uiManager.ChangeUI(uiManager.draftScreen);
                 break;
 
             case Period.SeasonSimulation:
+
                 employeeLists.ClearList(employeeLists.draftClass);
                 break;
 
             case Period.Awards:
+
                 employeeLists.ClearList(employeeLists.tradeBlock);
                 break;
 
             case Period.SeasonReflection:
+
                 NewLeagueYear();
                 break;
         }
@@ -164,7 +182,7 @@ public class PeriodManager : MonoBehaviour
     {
         for (int i = 0; i < employeeCount; i++)
         {
-            employeeFactory.CreateEmployee(employeeLists, employeeArrays, listToAddTo);
+            employeeFactory.CreateEmployee(employeeLists, employeeArrays, faceManager, listToAddTo);
         }
 
         foreach (var employee in listToAddTo)
@@ -375,6 +393,21 @@ public class PeriodManager : MonoBehaviour
         }
     }
 
+    private void ReturnTradeAssets()
+    {
+        // If you advance a period and there is employees left in the transaction screen, they will be returned to the user's current roster
+        foreach (var Employee in tradeManager.outgoingEmployees.ToList())
+        {
+            employeeLists.AddEmployee(Employee, employeeLists.currentRoster);
+            employeeLists.RemoveEmployee(Employee, tradeManager.outgoingEmployees);
+        }
+
+        employeeLists.tradeBlock.Clear();
+        tradeManager.outgoingDraftPicks.Clear();
+        tradeManager.outgoingTradePackageValue.Clear();
+        tradeManager.employeeToBeAcquired = null;
+    }
+
     private void CheckForEmployeeEvent()
     {
         foreach (var employee in employeeLists.currentRoster.ToList())
@@ -387,7 +420,7 @@ public class PeriodManager : MonoBehaviour
                     if (randomNumber < 76) { EmployeeIsDisgruntled(employee); } // 75% Chance
                     break;
 
-                case EmployeeEnumerators.PersonalityTrait.Selfish:
+                case EmployeeEnumerators.PersonalityTrait.Diva:
                     if (randomNumber < 41) { EmployeeIsDisgruntled(employee); } // 40% Chance
                     break;
 

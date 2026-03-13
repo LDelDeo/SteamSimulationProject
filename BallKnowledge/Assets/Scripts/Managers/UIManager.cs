@@ -69,14 +69,17 @@ public class UIManager : MonoBehaviour
     public Transform userAssetsContent;
     public Transform currentTradePackageContent;
     public Transform selectedAcquisitionContent;
-    public GameObject tradeAssetCardPrefab;
+    public Transform employeeForPicksContent;
+    public GameObject tradeAssetForEmployeeCardPrefab;
+    public GameObject tradeAssetForPicksCardPrefab;
     public GameObject tradeBlockCardPrefab;
     public GameObject draftPickCardPrefab;
+    public Image tradeInterestBar;
 
     [Header("Layout Array")]
     public GameObject[] screens;
 
-    [Header("General HUD")]
+    [Header("General HUD")] // We must make an overall TEXT for team overall and create a function to update it and then we must refresh it
     [SerializeField] TMP_Text capSpaceText;
     [SerializeField] TMP_Text draftPicksText;
     [SerializeField] TMP_Text leagueYearText;
@@ -116,8 +119,9 @@ public class UIManager : MonoBehaviour
         RefreshRetirementsUI();
         RefreshDisgruntledEmployeesUI();
         RefreshTradeBlockUI();
-        RefreshUserAssetsUI();
+        //RefreshUserAssetsUI();
         RefreshCurrentTradePackageUI();
+        RefreshEmployeesForPicksUI();
 
         UpdateCapSpace();
         UpdateDraftPicks();
@@ -148,6 +152,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Action Canvas Messages
+    // We should make a generic canvas of just text and then make specific ones with employee inputs
     public void InsufficientCapRoom(Employee employee)
     {
         OpenActionCanvas();
@@ -262,22 +267,28 @@ public class UIManager : MonoBehaviour
         actionCanvasText.GetComponent<TMP_Text>().text = "Your trade package is full! Remove an asset before adding this one";
     }
 
-    public void EmployeeToAcquireIsSelected()
+    public void EmployeeToAcquireIsAlreadySelected()
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = "You can only trade for one employee at a time! Remove the current selected employee before adding this one";
     }
 
+    public void NoEmployeeToAcquireSelected()
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = "You must selected an employee to acquire before submitting an offer";
+    }
+
     public void TradeAccepted()
     {
         OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "TEST ACCEPTED";
+        actionCanvasText.GetComponent<TMP_Text>().text = "Trade has been ACCEPTED";
     }
 
     public void TradeDeclined()
     {
         OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "TEST Declined";
+        actionCanvasText.GetComponent<TMP_Text>().text = "Trade has been declined";
     }
     #endregion
 
@@ -384,6 +395,15 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Fix for changing prospect question marks
+    //public void RefreshProspectStatus()
+    //{
+    //    foreach (GameObject prospectCard in prospectContent.transform)
+    //    {
+    //        prospectCard.GetComponent<ProspectCard>().RefreshProspectStatus(prospectCard.GetComponent<ProspectCard>());
+    //    }
+    //}
+
     private void RefreshFreeAgentUI()
     {
         ClearContent(freeAgencyContent);
@@ -450,7 +470,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void RefreshUserAssetsUI()
+    public void RefreshUserAssetsUI()
     {
         ClearContent(userAssetsContent);
 
@@ -460,7 +480,7 @@ public class UIManager : MonoBehaviour
 
         foreach (var employee in employeeLists.currentRoster)
         {
-            GameObject cardObject = Instantiate(tradeAssetCardPrefab.gameObject, userAssetsContent);
+            GameObject cardObject = Instantiate(tradeAssetForEmployeeCardPrefab.gameObject, userAssetsContent);
             TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
 
             cardInstance.GetEmployeeStats(employee);
@@ -484,8 +504,11 @@ public class UIManager : MonoBehaviour
 
         foreach (var employeeToAcquire in tradeManager.outgoingEmployees)
         {
-            GameObject cardObject = Instantiate(tradeAssetCardPrefab, currentTradePackageContent);
+            GameObject cardObject = Instantiate(tradeAssetForEmployeeCardPrefab, currentTradePackageContent);
             TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.addButton.SetActive(false);
+            cardInstance.removeButton.SetActive(false);
 
             cardInstance.GetEmployeeStats(employeeToAcquire);
             cardInstance.SetEmployeeCardBackground(employeeToAcquire);
@@ -495,7 +518,7 @@ public class UIManager : MonoBehaviour
         {
             ClearContent(selectedAcquisitionContent);
 
-            GameObject cardObject = Instantiate(tradeAssetCardPrefab, selectedAcquisitionContent);
+            GameObject cardObject = Instantiate(tradeAssetForEmployeeCardPrefab, selectedAcquisitionContent);
             TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
 
             cardInstance.GetEmployeeStats(tradeManager.employeeToBeAcquired);
@@ -506,6 +529,37 @@ public class UIManager : MonoBehaviour
             ClearContent(selectedAcquisitionContent);
         }
         
+    }
+
+    public void RefreshTradeInterestBar(float totalTradePackageValue, float employeeToBeAcquiredValue)
+    {
+        float tradeAcceptanceLevel = totalTradePackageValue / employeeToBeAcquiredValue;
+
+        tradeInterestBar.fillAmount = tradeAcceptanceLevel;
+
+        switch (tradeAcceptanceLevel)
+        {
+            case <= 0.25f: tradeInterestBar.color = new Color32(217, 26, 0, 255); break; // Red
+            case <= 0.5f: tradeInterestBar.color = new Color32(217, 130, 0, 255); break; // Orange
+            case <= 0.75f: tradeInterestBar.color = new Color32(217, 213, 0, 255); break; // Yellow
+            case <= 0.85f: tradeInterestBar.color = new Color32(166, 217, 0, 255); break; // Lime Green
+            case < 1: tradeInterestBar.color = new Color32(137, 217, 0, 255); break; // Light Green
+            case >= 1: tradeInterestBar.color = new Color32(4, 217, 0, 255); break; // Green
+        }
+    }
+
+    public void RefreshEmployeesForPicksUI()
+    {
+        ClearContent(employeeForPicksContent);
+
+        foreach (var employee in employeeLists.currentRoster)
+        {
+            GameObject cardObject = Instantiate(tradeAssetForPicksCardPrefab, employeeForPicksContent);
+            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.GetEmployeeStats(employee);
+            cardInstance.SetEmployeeCardBackground(employee);
+        }
     }
 
     private void CreateDraftPickCard(int roundOfPick, int yearOfPick, Transform contentToAddTo)

@@ -9,8 +9,8 @@ public class DraftPickCard : MonoBehaviour
     [SerializeField] TMP_Text roundOfPickText;
     [SerializeField] TMP_Text yearOfPickText;
     [SerializeField] Image cardBackground;
-    [SerializeField] GameObject addButton;
-    [SerializeField] GameObject removeButton;
+    public GameObject addButton;
+    public GameObject removeButton;
 
     public int thisPicksRound;
     public int thisPicksYear;

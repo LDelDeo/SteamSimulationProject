@@ -7,16 +7,25 @@ using UnityEngine;
 
 public class EmployeeFactory
 {
-    public void CreateEmployee(EmployeeLists employeeLists, EmployeeArrays employeeArrays, List<Employee> listToAddTo)
+    public void CreateEmployee(EmployeeLists employeeLists, EmployeeArrays employeeArrays, FaceManager faceManager, List<Employee> listToAddTo)
     {
         Employee employee = new Employee();
-
         EmployeeRNG employeeRNG = new EmployeeRNG();
 
         employee.gender = employeeRNG.GetGender();
 
-        if (employee.gender == EmployeeEnumerators.EmployeeGender.Male) { employee.firstName = employeeRNG.GetRandomStringFromList(employeeArrays.maleNamesList); }
-        else if (employee.gender == EmployeeEnumerators.EmployeeGender.Female) { employee.firstName = employeeRNG.GetRandomStringFromList(employeeArrays.femaleNamesList); }
+        if (employee.gender == EmployeeEnumerators.EmployeeGender.Male) 
+        { 
+            employee.firstName = employeeRNG.GetRandomStringFromList(employeeArrays.maleNamesList);
+            // Uncomment when the Face Manager Lists have been populated
+            //employeeRNG.GetMaleApperance(employee, faceManager); 
+        }
+        else if (employee.gender == EmployeeEnumerators.EmployeeGender.Female) 
+        { 
+            employee.firstName = employeeRNG.GetRandomStringFromList(employeeArrays.femaleNamesList);
+            // Uncomment when the Face Manager Lists have been populated
+            //employeeRNG.GetFemaleApperance(employee, faceManager);
+        }
 
         employee.lastName = employeeRNG.GetRandomStringFromList(employeeArrays.lastNamesList);
 
@@ -37,7 +46,7 @@ public class EmployeeFactory
         else if (!employee.isRookie && listToAddTo == employeeLists.tradeBlock)
         {
             employee.age = employeeRNG.GetRandomAge(25, 34);
-            employee.yearsUnderContract = employeeRNG.GetRandomAge(1, 6);
+            employee.yearsUnderContract = employeeRNG.GetRandomContractLength(1, 6);
         }
 
         employee.jobPosition = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.JobType>();
@@ -70,46 +79,26 @@ public class EmployeeFactory
             { employeeLists.AddEmployee(employee, listToAddTo); }
         else if ( listToAddTo != employeeLists.currentRoster )
         { employeeLists.AddEmployee(employee, listToAddTo); }
-        
     }
 
     public int EmployeeValueCalucator(Employee employee)
     {
         var employeeValue = 0;
-        // Max Value = 31, Min Value = 4
-        // Max Contract = 124/hr, Min Contract = $8/hr
+        // Max Value = 30, Min Value = 3
+        // Max Contract = 120/hr, Min Contract = $6/hr
+
         // These values have an affect on the amout of requested wage they'd like in negotiations
         // Combination of age, work ethic, individual awards, championships and overall
 
         switch (employee.workEthic)
         {
-            case EmployeeEnumerators.WorkEthic.Bum:
-                employeeValue += 1;
-            break;
-
-            case EmployeeEnumerators.WorkEthic.Lazy:
-                employeeValue += 2;
-            break;
-
-            case EmployeeEnumerators.WorkEthic.Paycheck_Collector:
-                employeeValue += 3;
-            break;
-
-            case EmployeeEnumerators.WorkEthic.Gets_The_Job_Done:
-                employeeValue += 4;
-            break;
-
-            case EmployeeEnumerators.WorkEthic.Motivated:
-                employeeValue += 5;
-            break;
-
-            case EmployeeEnumerators.WorkEthic.Grinder:
-                employeeValue += 6;
-            break;
-
-            case EmployeeEnumerators.WorkEthic.X_Factor:
-                employeeValue += 7;
-            break;
+            case EmployeeEnumerators.WorkEthic.Bum: employeeValue += 1; break;
+            case EmployeeEnumerators.WorkEthic.Lazy: employeeValue += 2; break;
+            case EmployeeEnumerators.WorkEthic.Paycheck_Collector: employeeValue += 3; break;
+            case EmployeeEnumerators.WorkEthic.Gets_The_Job_Done: employeeValue += 4; break;
+            case EmployeeEnumerators.WorkEthic.Motivated: employeeValue += 5; break;
+            case EmployeeEnumerators.WorkEthic.Grinder: employeeValue += 6; break;
+            case EmployeeEnumerators.WorkEthic.X_Factor: employeeValue += 7; break;
         }
 
         if (employee.overall <= 25) { employeeValue += 1; }
@@ -134,13 +123,13 @@ public class EmployeeFactory
         int accolades = employee.rookieOfTheYear + employee.employeeOfTheYear + employee.mostValuableEmployee + employee.championships;
         switch (accolades)
         {
-            case 0: employeeValue += 1; break;
-            case 1: employeeValue += 2; break;
-            case 2: employeeValue += 3; break;
-            case 3: employeeValue += 4; break;
-            case 4: employeeValue += 5; break;
-            case 5: employeeValue += 6; break;
-            default: employeeValue += 7; break;
+            case 0: employeeValue += 0; break;
+            case 1: employeeValue += 1; break;
+            case 2: employeeValue += 2; break;
+            case 3: employeeValue += 3; break;
+            case 4: employeeValue += 4; break;
+            case 5: employeeValue += 5; break;
+            default: employeeValue += 6; break;
         }
 
         return employeeValue;
@@ -156,11 +145,8 @@ public class EmployeeRNG
 
         switch (randomNumber)
         {
-            case 0:
-                return EmployeeEnumerators.EmployeeGender.Male;
-
-            case 1:
-                return EmployeeEnumerators.EmployeeGender.Female;
+            case 0: return EmployeeEnumerators.EmployeeGender.Male;
+            case 1: return EmployeeEnumerators.EmployeeGender.Female;
         }
 
         return EmployeeEnumerators.EmployeeGender.None;
@@ -170,6 +156,12 @@ public class EmployeeRNG
     {
         var ageOutput = UnityEngine.Random.Range(minAge, maxAge);
         return ageOutput;
+    }
+
+    public int GetRandomContractLength(int minLength, int maxLength)
+    {
+        var lengthOutput = UnityEngine.Random.Range(minLength, maxLength);
+        return lengthOutput;
     }
 
     public string GetRandomStringFromList(List<string> list)
@@ -226,6 +218,48 @@ public class EmployeeRNG
         int randomWageValue = UnityEngine.Random.Range(minWage, maxWage);
         return randomWageValue;
     }
+
+    public void GetMaleApperance(Employee employee, FaceManager faceManager)
+    {
+        employee.head = faceManager.heads[GetFacialFeature(faceManager.heads)];
+        employee.eyes = faceManager.eyes[GetFacialFeature(faceManager.eyes)];
+        employee.mouth = faceManager.mouths[GetFacialFeature(faceManager.mouths)];
+        employee.ears = faceManager.ears[GetFacialFeature(faceManager.ears)];
+        employee.nose = faceManager.noses[GetFacialFeature(faceManager.noses)];
+        employee.glasses = faceManager.noses[GetFacialFeature(faceManager.glasses)];
+        employee.hair = faceManager.maleHair[GetFacialFeature(faceManager.maleHair)];
+        employee.facialHair = faceManager.facialHair[GetFacialFeature(faceManager.facialHair)];
+
+        employee.skinTone = faceManager.skinTones[GetColor(faceManager.skinTones)]; // This gets applied to head, ears, nose
+        employee.hairColor = faceManager.hairColor[GetColor(faceManager.hairColor)]; // This gets applied to hair, facial hair, eyebrows
+    }
+
+    public void GetFemaleApperance(Employee employee, FaceManager faceManager)
+    {
+        employee.head = faceManager.heads[GetFacialFeature(faceManager.heads)];
+        employee.eyes = faceManager.eyes[GetFacialFeature(faceManager.eyes)];
+        employee.mouth = faceManager.mouths[GetFacialFeature(faceManager.mouths)];
+        employee.ears = faceManager.ears[GetFacialFeature(faceManager.ears)];
+        employee.nose = faceManager.noses[GetFacialFeature(faceManager.noses)];
+        employee.glasses = faceManager.noses[GetFacialFeature(faceManager.glasses)];
+        employee.hair = faceManager.femaleHair[GetFacialFeature(faceManager.femaleHair)];
+        employee.facialHair = faceManager.facialHair[0]; // 0 is none
+
+        employee.skinTone = faceManager.skinTones[GetColor(faceManager.skinTones)]; // This gets applied to head, ears, nose
+        employee.hairColor = faceManager.hairColor[GetColor(faceManager.hairColor)]; // This gets applied to hair, eyebrows
+    }
+
+    public int GetFacialFeature(Sprite[] facialFeature)
+    {
+        int facialFeatureIndex = UnityEngine.Random.Range(0, facialFeature.Length);
+        return facialFeatureIndex;
+    }
+
+    public int GetColor(Color32[] color)
+    {
+        int colorIndex = UnityEngine.Random.Range(0, color.Length);
+        return colorIndex;
+    }
 }
 
 public class EmployeeEnumerators
@@ -265,9 +299,8 @@ public class EmployeeEnumerators
 
     public enum PersonalityTrait
     {
-        // Add or change to Diva
         Toxic,
-        Selfish,
+        Diva,
         Difficult,
         Team_Player,
         Saint,

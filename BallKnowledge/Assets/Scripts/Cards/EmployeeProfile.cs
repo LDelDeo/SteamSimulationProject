@@ -9,8 +9,8 @@ public class EmployeeProfile : EmployeeCard
     {
         base.GetEmployeeStats(employee);
 
-        SetStats();
         GrabEmployee(employee);
+        SetStats();
     }
 
     private void SetStats()
@@ -32,7 +32,7 @@ public class EmployeeProfile : EmployeeCard
         iqText.text = $"IQ: {employeeIq}";
         overallText.text = $"Overall: {employeeOverall}";
         mvpsText.text = $"MVEs: {employeeMVPs}";
-        employeeOfTheYearsText.text = $"front/back of house eoty's: {employeeEmployeeOfTheYears}"; // Fix this here, we must make a function to get back of house/front of house positon
+        employeeOfTheYearsText.text = $"{employeeLists.FrontOrBackOfHouse(thisEmployee)} of house eoty's: {employeeEmployeeOfTheYears}";
         rookieOfTheYearsText.text = $"Rookie of the Years: {employeeRookieOfTheYears}";
         championshipsText.text = $"Championships: {employeeChampionships}";
     }

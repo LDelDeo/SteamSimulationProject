@@ -56,21 +56,10 @@ public class DisgruntledCard : EmployeeCard
     {
         switch (scenarioSelected)
         {
-            case 0:
-                ScenarioOne();
-                break;
-
-            case 1:
-                ScenarioTwo();
-                break;
-
-            case 2:
-                ScenarioThree();
-                break;
-
-            case 3:
-                ScenarioFour();
-                break;
+            case 0: ScenarioOne(); break;
+            case 1: ScenarioTwo(); break;
+            case 2: ScenarioThree(); break;
+            case 3: ScenarioFour(); break;
         }
     }
 
@@ -112,21 +101,10 @@ public class DisgruntledCard : EmployeeCard
 
         switch (randomNumber)
         {
-            case 0:
-                reasonOfArrest = "speeding";
-                break;
-
-            case 1:
-                reasonOfArrest = "performance enchaning drugs";
-                break;
-
-            case 2:
-                reasonOfArrest = "shop lifting";
-                break;
-
-            case 3:
-                reasonOfArrest = "assault";
-                break;
+            case 0: reasonOfArrest = "speeding"; break;
+            case 1: reasonOfArrest = "performance enchaning substances"; break;
+            case 2: reasonOfArrest = "shop lifting"; break;
+            case 3: reasonOfArrest = "assault"; break;
         }
 
         scenarioText.text = $"{employeeFirstName} has been arrested for {reasonOfArrest}. Your customers are demanding an immediate release from the franchise (cancel culture)";
@@ -169,15 +147,18 @@ public class DisgruntledCard : EmployeeCard
     {
         Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
 
-        if (manager.currentUsedCapSpace + disgruntledEmployee.hourlyWage + raiseAmount <= manager.maxCapSpace && employeeLists.HasRosterSpace(disgruntledEmployee))
+        if (manager.currentUsedCapSpace + disgruntledEmployee.hourlyWage + raiseAmount <= manager.maxCapSpace)
         {
-            disgruntledEmployee.hourlyWage += raiseAmount;
+            if (employeeLists.HasRosterSpace(disgruntledEmployee))
+            {
+                disgruntledEmployee.hourlyWage += raiseAmount;
 
-            employeeLists.AddEmployee(disgruntledEmployee, employeeLists.currentRoster);
-            employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
+                employeeLists.AddEmployee(disgruntledEmployee, employeeLists.currentRoster);
+                employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
 
-            uiManager.EmployeeRaise(disgruntledEmployee, raiseAmount, true);
-            SettlementClosed();
+                uiManager.EmployeeRaise(disgruntledEmployee, raiseAmount, true);
+                SettlementClosed();
+            }
         }
         else
         {
@@ -211,28 +192,20 @@ public class DisgruntledCard : EmployeeCard
         switch (disgruntledEmployee.personalityTrait)
         {
             case EmployeeEnumerators.PersonalityTrait.Toxic:
-                if (randomNumber < 81) // 80% chance they will not change their mind
-                    EmployeeReconsideration(false, disgruntledEmployee);
-                else
-                    EmployeeReconsideration(true, disgruntledEmployee);
+                if (randomNumber < 81)  EmployeeReconsideration(false, disgruntledEmployee); // 80% chance they will not change their mind
+                else EmployeeReconsideration(true, disgruntledEmployee);
                 break;
-            case EmployeeEnumerators.PersonalityTrait.Selfish:
-                if (randomNumber < 61) // 60% chance they will not change their mind
-                    EmployeeReconsideration(false, disgruntledEmployee);
-                else
-                    EmployeeReconsideration(true, disgruntledEmployee);
+            case EmployeeEnumerators.PersonalityTrait.Diva:
+                if (randomNumber < 61) EmployeeReconsideration(false, disgruntledEmployee); // 60% chance they will not change their mind
+                else EmployeeReconsideration(true, disgruntledEmployee);
                 break;
             case EmployeeEnumerators.PersonalityTrait.Difficult:
-                if (randomNumber < 41) // 40% chance they will not change their mind
-                    EmployeeReconsideration(false, disgruntledEmployee);
-                else
-                    EmployeeReconsideration(true, disgruntledEmployee);
+                if (randomNumber < 41) EmployeeReconsideration(false, disgruntledEmployee); // 40% chance they will not change their mind
+                else EmployeeReconsideration(true, disgruntledEmployee);
                 break;
             case EmployeeEnumerators.PersonalityTrait.Team_Player:
-                if (randomNumber < 21) // 20% chance they will not change their mind
-                    EmployeeReconsideration(false, disgruntledEmployee);
-                else
-                    EmployeeReconsideration(true, disgruntledEmployee);
+                if (randomNumber < 21) EmployeeReconsideration(false, disgruntledEmployee); // 20% chance they will not change their mind
+                else EmployeeReconsideration(true, disgruntledEmployee);
                 break;
             case EmployeeEnumerators.PersonalityTrait.Saint:
                     EmployeeReconsideration(false, disgruntledEmployee); // 100% chance of changing their mind

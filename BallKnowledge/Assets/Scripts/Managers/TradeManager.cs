@@ -34,36 +34,55 @@ public class TradeManager : MonoBehaviour
     }
 
     #region Trading Assets for an Employee
-    public bool TradePackageIsFull() // Trade Package Can Have a Max of Three Assets
+    public bool TradePackageIsFull() // Trade package can have a max of three assets
     {
         if (outgoingTradePackageValue.Count == 3) return true;
         else return false;
     }
 
+    public bool TradePutsUserOverTheCap()
+    {
+        int outgoingCapSpace = 0;
+        int incomingCapSpace = 0;
+
+        foreach (var employee in outgoingEmployees)
+            outgoingCapSpace += employee.hourlyWage; 
+
+        incomingCapSpace = employeeToBeAcquired.hourlyWage;
+
+        if (generalManager.currentUsedCapSpace + incomingCapSpace - outgoingCapSpace <= generalManager.maxCapSpace)
+            return false;
+        else
+            return true;
+    }
+
     public void SubmitTradePackage()
     {
-        totalTradePackageValue = 0;
-
-        for (int i = 0; i < outgoingTradePackageValue.Count; i++)
-             totalTradePackageValue += outgoingTradePackageValue[i];
-
-        if (totalTradePackageValue >= employeeToBeAcquired.value)
+        if (employeeToBeAcquired == null)
         {
-            TradeAccepted();
-        }
-        else
-        {
-            TradeDeclined();
+            uiManager.NoEmployeeToAcquireSelected();
+            return;
         }
 
-        // We can also us UIManager to create a trade bar which is the tradepackagevalue / employee value(clamped) and then also color the bar based on how close/full the bar is
+        if (!TradePutsUserOverTheCap())
+        {
+            totalTradePackageValue = 0;
+
+            for (int i = 0; i < outgoingTradePackageValue.Count; i++)
+                totalTradePackageValue += outgoingTradePackageValue[i];
+
+            if (totalTradePackageValue >= employeeToBeAcquired.value)
+                TradeAccepted();
+            else
+                TradeDeclined();
+        }
+        else if (TradePutsUserOverTheCap())
+            uiManager.InsufficientCapRoom(employeeToBeAcquired);
     }
 
     private void TradeAccepted()
     {
-        // Check if cap space works out as well! We need to create a formula of all -outgoing employees, +incoming employee, +current cap compared to <= max cap 
-        // Return assets if user advances period with assets within the transaction screen!!
-        if (employeeLists.HasRosterSpace(employeeToBeAcquired)) 
+        if (employeeLists.HasRosterSpace(employeeToBeAcquired))
         {
             uiManager.TradeAccepted();
 
@@ -74,6 +93,8 @@ public class TradeManager : MonoBehaviour
                 else if (outgoingDraftPicks[i] == 3) { generalManager.thirdRoundPicks--; }
             }
 
+            uiManager.RefreshTradeInterestBar((float)totalTradePackageValue, (float)employeeToBeAcquired.value);
+
             outgoingEmployees.Clear();
             outgoingDraftPicks.Clear();
             outgoingTradePackageValue.Clear();
@@ -83,18 +104,16 @@ public class TradeManager : MonoBehaviour
             employeeToBeAcquired = null;
 
             uiManager.RefreshUI();
-
-            generalManager.tradesCompleted++;
+            uiManager.RefreshUserAssetsUI();
         }
         else if (!employeeLists.HasRosterSpace(employeeToBeAcquired))
-        {
-            // Doesnt have space
-        }
+            uiManager.InsufficientRosterSpace(employeeToBeAcquired);
     }
 
     private void TradeDeclined()
     {
         uiManager.TradeDeclined();
+        uiManager.RefreshTradeInterestBar((float)totalTradePackageValue, (float)employeeToBeAcquired.value);
     }
     #endregion
 
@@ -131,6 +150,13 @@ public class TradeManager : MonoBehaviour
                 generalManager.firstRoundPicks += 2;
                 break;
         }
+
+        if (employeeLists.currentRoster.Contains(employee) && EmployeeValueInPicks(employee) != TradePackages.NoTradeInterest)
+        {
+            employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
+            uiManager.RefreshUI();
+            uiManager.RefreshUserAssetsUI();
+        }  
 
         generalManager.tradesCompleted++;
     }
@@ -169,6 +195,7 @@ public class TradeManager : MonoBehaviour
         displayToShow.SetActive(true);
 
         uiManager.RefreshCurrentTradePackageUI();
+        uiManager.RefreshEmployeesForPicksUI();
         uiManager.tradingScreen.GetComponent<ScrollRect>().content = displayToShow.GetComponent<RectTransform>();
     }
     #endregion

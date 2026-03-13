@@ -17,7 +17,7 @@ public class EmployeeCard : MonoBehaviour
     private Employee thisEmployee;
 
     #region Visuals
-    [Header("Generic Card Visuals")]
+    [Header("Generic Card Text")]
     [SerializeField] protected TMP_Text firstNameText;
     [SerializeField] protected TMP_Text lastNameText;
     [SerializeField] protected TMP_Text isRookieText;
@@ -39,6 +39,19 @@ public class EmployeeCard : MonoBehaviour
     [SerializeField] protected TMP_Text employeeOfTheYearsText;
     [SerializeField] protected TMP_Text rookieOfTheYearsText;
     [SerializeField] protected TMP_Text championshipsText;
+
+    [Header("Generic Card Face")]
+    [SerializeField] protected SpriteRenderer headRenderer;
+    [SerializeField] protected SpriteRenderer eyesRenderer;
+    [SerializeField] protected SpriteRenderer mouthRenderer;
+    [SerializeField] protected SpriteRenderer earsRenderer;
+    [SerializeField] protected SpriteRenderer eyebrowsRenderer;
+    [SerializeField] protected SpriteRenderer noseRenderer;
+    [SerializeField] protected SpriteRenderer glassesRenderer;
+    [SerializeField] protected SpriteRenderer hairRenderer;
+    [SerializeField] protected SpriteRenderer facialHairRenderer;
+
+    [Header("Generic Card Background")]
     [SerializeField] protected Image employeeCardBackground;
     #endregion
 
@@ -67,6 +80,19 @@ public class EmployeeCard : MonoBehaviour
     protected int employeeEmployeeOfTheYears;
     protected int employeeRookieOfTheYears;
     protected int employeeChampionships;
+
+    protected Sprite employeeHead;
+    protected Sprite employeeEyes;
+    protected Sprite employeeMouth;
+    protected Sprite employeeEars;
+    protected Sprite employeeEyebrows;
+    protected Sprite employeeNose;
+    protected Sprite employeeGlasses;
+    protected Sprite employeeHair;
+    protected Sprite employeeFacialHair;
+
+    protected Color32 employeeSkinTone;
+    protected Color32 employeeHairColor;
     #endregion
 
     private void Awake()
@@ -106,6 +132,19 @@ public class EmployeeCard : MonoBehaviour
         employeeRookieOfTheYears = employee.rookieOfTheYear;
         employeeChampionships = employee.championships;
 
+        employeeHead = employee.head;
+        employeeEyes = employee.eyes;
+        employeeMouth = employee.mouth;
+        employeeEars = employee.ears;
+        employeeEyebrows = employee.eyebrows;
+        employeeNose = employee.nose;
+        employeeGlasses = employee.glasses;
+        employeeHair = employee.hair;
+        employeeFacialHair = employee.facialHair;
+
+        employeeSkinTone = employee.skinTone;
+        employeeHairColor = employee.hairColor;
+
         SetStats();
         GrabEmployee(employee);
     }
@@ -117,38 +156,43 @@ public class EmployeeCard : MonoBehaviour
         lastNameText.text = employeeLastName;
         jobPositionText.text = employeeJobPosition.ToString();
         overallText.text = employeeOverall.ToString();
+
+        headRenderer.sprite = employeeHead;
+        eyesRenderer.sprite = employeeEyes;
+        mouthRenderer.sprite = employeeMouth;
+        earsRenderer.sprite = employeeEars;
+        eyebrowsRenderer.sprite = employeeEyebrows;
+        noseRenderer.sprite = employeeNose;
+        glassesRenderer.sprite = employeeGlasses;
+        hairRenderer.sprite = employeeHair;
+        facialHairRenderer.sprite = employeeFacialHair;
+
+        headRenderer.color = employeeSkinTone;
+        earsRenderer.color = employeeSkinTone;
+        noseRenderer.color = employeeSkinTone;
+
+        hairRenderer.color = employeeHairColor;
+        facialHairRenderer.color = employeeHairColor;
+        eyebrowsRenderer.color = employeeHairColor;
     }
 
     public void SetEmployeeCardBackground(Employee employee)
     {
         switch (employee.workEthic)
         {
-            case EmployeeEnumerators.WorkEthic.Bum:
-                employeeCardBackground.color = new Color32(115, 59, 3, 255); // Brown
+            case EmployeeEnumerators.WorkEthic.Bum: employeeCardBackground.color = new Color32(115, 59, 3, 255); // Brown
                 break;
-
-            case EmployeeEnumerators.WorkEthic.Lazy:
-                employeeCardBackground.color = new Color32(115, 114, 112, 255); // Light Grey
+            case EmployeeEnumerators.WorkEthic.Lazy:employeeCardBackground.color = new Color32(115, 114, 112, 255); // Light Grey
                 break;
-
-            case EmployeeEnumerators.WorkEthic.Paycheck_Collector:
-                employeeCardBackground.color = new Color32(11, 189, 103, 255); // Green
+            case EmployeeEnumerators.WorkEthic.Paycheck_Collector: employeeCardBackground.color = new Color32(11, 189, 103, 255); // Green
                 break;
-
-            case EmployeeEnumerators.WorkEthic.Gets_The_Job_Done:
-                employeeCardBackground.color = new Color32(11, 150, 189, 255); // Sky Blue
+            case EmployeeEnumerators.WorkEthic.Gets_The_Job_Done: employeeCardBackground.color = new Color32(11, 150, 189, 255); // Sky Blue
                 break;
-
-            case EmployeeEnumerators.WorkEthic.Motivated:
-                employeeCardBackground.color = new Color32(189, 11, 183, 255); // Magenta
+            case EmployeeEnumerators.WorkEthic.Motivated: employeeCardBackground.color = new Color32(189, 11, 183, 255); // Magenta
                 break;
-
-            case EmployeeEnumerators.WorkEthic.Grinder:
-                employeeCardBackground.color = new Color32(196, 167, 47, 255); // Gold
+            case EmployeeEnumerators.WorkEthic.Grinder: employeeCardBackground.color = new Color32(196, 167, 47, 255); // Gold
                 break;
-
-            case EmployeeEnumerators.WorkEthic.X_Factor:
-                employeeCardBackground.color = new Color32(189, 23, 11, 255); // Red
+            case EmployeeEnumerators.WorkEthic.X_Factor: employeeCardBackground.color = new Color32(189, 23, 11, 255); // Red
                 break;
         }
     }

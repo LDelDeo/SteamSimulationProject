@@ -42,53 +42,18 @@ public class EmployeeLists : MonoBehaviour
         {
             switch (employee.jobPosition)
             {
-                case EmployeeEnumerators.JobType.Busser:
-                        rosterConstruction.currentBusser--;
-                break;
-
-                case EmployeeEnumerators.JobType.Janitor:
-                        rosterConstruction.currentJanitor--;
-                break;
-
-                case EmployeeEnumerators.JobType.Drive_Thru_Attendee:
-                        rosterConstruction.currentDriveThruAttendee--;
-                break;
-
-                case EmployeeEnumerators.JobType.Cashier:
-                        rosterConstruction.currentCashier--;
-                break;
-
-                case EmployeeEnumerators.JobType.Media_Manager:
-                        rosterConstruction.currentMediaManager--;
-                break;
-
-                case EmployeeEnumerators.JobType.Prep_Cook:
-                        rosterConstruction.currentPrepCook--;
-                break;
-
-                case EmployeeEnumerators.JobType.Line_Cook:
-                        rosterConstruction.currentLineCook--;
-                break;
-
-                case EmployeeEnumerators.JobType.Fry_Cook:
-                        rosterConstruction.currentFryCook--;
-                break;
-
-                case EmployeeEnumerators.JobType.Patty_Flipper:
-                        rosterConstruction.currentPattyFlipper--;
-                break;
-
-                case EmployeeEnumerators.JobType.Expediter:
-                        rosterConstruction.currentExpediter--;
-                break;
-
-                case EmployeeEnumerators.JobType.Shift_Manager:
-                        rosterConstruction.currentShiftManager--;
-                break;
-
-                case EmployeeEnumerators.JobType.Manager:
-                        rosterConstruction.currentManager--;
-                break;
+                case EmployeeEnumerators.JobType.Busser: rosterConstruction.currentBusser--; break;
+                case EmployeeEnumerators.JobType.Janitor: rosterConstruction.currentJanitor--; break;
+                case EmployeeEnumerators.JobType.Drive_Thru_Attendee: rosterConstruction.currentDriveThruAttendee--; break;
+                case EmployeeEnumerators.JobType.Cashier: rosterConstruction.currentCashier--; break;
+                case EmployeeEnumerators.JobType.Media_Manager: rosterConstruction.currentMediaManager--; break;
+                case EmployeeEnumerators.JobType.Prep_Cook: rosterConstruction.currentPrepCook--; break;
+                case EmployeeEnumerators.JobType.Line_Cook: rosterConstruction.currentLineCook--; break;
+                case EmployeeEnumerators.JobType.Fry_Cook: rosterConstruction.currentFryCook--; break;
+                case EmployeeEnumerators.JobType.Patty_Flipper: rosterConstruction.currentPattyFlipper--; break;
+                case EmployeeEnumerators.JobType.Expediter: rosterConstruction.currentExpediter--; break;
+                case EmployeeEnumerators.JobType.Shift_Manager: rosterConstruction.currentShiftManager--; break;
+                case EmployeeEnumerators.JobType.Manager: rosterConstruction.currentManager--; break;
             }
         }
 
@@ -213,6 +178,30 @@ public class EmployeeLists : MonoBehaviour
             return true;
         else
             return false;
+    }
+
+    public string FrontOrBackOfHouse(Employee employee)
+    {
+        bool isFrontOfHouse = false;
+
+        switch (employee.jobPosition)
+        {
+            case EmployeeEnumerators.JobType.Busser: isFrontOfHouse = true; break;
+            case EmployeeEnumerators.JobType.Janitor: isFrontOfHouse = true; break;
+            case EmployeeEnumerators.JobType.Drive_Thru_Attendee: isFrontOfHouse = false; break;
+            case EmployeeEnumerators.JobType.Cashier: isFrontOfHouse = true; break;
+            case EmployeeEnumerators.JobType.Media_Manager: isFrontOfHouse = true; break;
+            case EmployeeEnumerators.JobType.Prep_Cook: isFrontOfHouse = false; break;
+            case EmployeeEnumerators.JobType.Line_Cook: isFrontOfHouse = false; break;
+            case EmployeeEnumerators.JobType.Fry_Cook: isFrontOfHouse = false; break;
+            case EmployeeEnumerators.JobType.Patty_Flipper: isFrontOfHouse = false; break;
+            case EmployeeEnumerators.JobType.Expediter: isFrontOfHouse = true; break;
+            case EmployeeEnumerators.JobType.Shift_Manager: isFrontOfHouse = false; break;
+            case EmployeeEnumerators.JobType.Manager: isFrontOfHouse = false; break;
+        }
+
+        if (isFrontOfHouse) return "Front";
+        else return "Back";
     }
     #endregion
 }

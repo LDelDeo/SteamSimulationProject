@@ -741,6 +741,10 @@ MonoBehaviour:
   cardBackground: {fileID: 5135445610804419322}
   addButton: {fileID: 4762288194281384944}
   removeButton: {fileID: 8036532284380041021}
+  thisPicksRound: 0
+  thisPicksYear: 0
+  tradeManager: {fileID: 0}
+  uiManager: {fileID: 0}
 --- !u!1 &8036532284380041021
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class ProspectCard : EmployeeCard
 {
+    [Header("Prospect Card Visuals")]
+    public TMP_Text prospectStatus;
+
     private int amountOfVisibleStats;
 
     private Employee prospect;
@@ -51,14 +54,8 @@ public class ProspectCard : EmployeeCard
 
     private void RevealDevelopmentTrait()
     {
-        if (amountOfVisibleStats == 0)
-        {
-            workEthicText.text = $"Work Ethic: {employeeWorkEthic}";
-        }
-        else
-        {
-            workEthicText.text = "Work Ethic: ?";
-        }
+        if (amountOfVisibleStats == 0) { workEthicText.text = $"Work Ethic: {employeeWorkEthic}"; }
+        else { workEthicText.text = "Work Ethic: ?"; }
     }
 
     private void RevealOverall()
@@ -100,8 +97,6 @@ public class ProspectCard : EmployeeCard
 
                     manager.firstRoundPicks--;
                     manager.playersDrafted++;
-
-                    uiManager.RefreshUI();
                 }
                 else if (manager.firstRoundPicks < 1) { uiManager.InsufficientDraftPicks("first"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
@@ -118,8 +113,6 @@ public class ProspectCard : EmployeeCard
 
                     manager.secondRoundPicks--;
                     manager.playersDrafted++;
-
-                    uiManager.RefreshUI();
                 }
                 else if (manager.secondRoundPicks < 1) { uiManager.InsufficientDraftPicks("second"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
@@ -136,15 +129,30 @@ public class ProspectCard : EmployeeCard
 
                     manager.thirdRoundPicks--;
                     manager.playersDrafted++;
-
-                    uiManager.RefreshUI();
                 }
                 else if (manager.thirdRoundPicks < 1) { uiManager.InsufficientDraftPicks("third"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
                 else if (!employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft)) { uiManager.InsufficientCapRoom(prospectToDraft); }
                 break;
         }
-        
+
+        //RefreshProspectStatus(prospectCard);
+        uiManager.UpdateDraftPicks();
+        uiManager.UpdateCapSpace();
     }
+
+    //public void RefreshProspectStatus(ProspectCard prospectCard)
+    //{
+    //    if (!employeeLists.draftClass.Contains(prospectCard.prospect)) 
+    //    {
+    //        prospectStatus.text = "Drafted";
+    //        prospectStatus.color = Color.red;
+    //    }
+    //    else
+    //    {
+    //        prospectStatus.text = "Available";
+    //        prospectStatus.color = Color.green;
+    //    }
+    //}
     #endregion
 }

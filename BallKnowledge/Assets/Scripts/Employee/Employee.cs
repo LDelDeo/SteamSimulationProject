@@ -33,5 +33,15 @@ public class Employee
 
     public int championships = 0;
 
-    // Sprites for each facial feature below
+    public Sprite head;
+    public Sprite eyes;
+    public Sprite mouth;
+    public Sprite ears;
+    public Sprite eyebrows;
+    public Sprite nose;
+    public Sprite glasses;
+    public Sprite hair;
+    public Sprite facialHair;
+    public Color32 skinTone;
+    public Color32 hairColor;
 }

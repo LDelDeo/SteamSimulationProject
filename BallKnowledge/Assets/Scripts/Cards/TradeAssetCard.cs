@@ -4,8 +4,10 @@ using UnityEngine;
 public class TradeAssetCard : EmployeeCard
 {
     [Header("Trade Asset/Block Card Visuals")]
-    [SerializeField] GameObject addButton;
-    [SerializeField] GameObject removeButton;
+    public GameObject addButton;
+    public GameObject removeButton;
+
+    [SerializeField] bool tradingForPicks;
 
     private Employee employeeToBeOffered;
 
@@ -16,9 +18,11 @@ public class TradeAssetCard : EmployeeCard
         SetStats();
         GrabEmployee(employee);
 
-
-        addButton.SetActive(true);
-        removeButton.SetActive(false);
+        if (!tradingForPicks)
+        {
+            addButton.SetActive(true);
+            removeButton.SetActive(false);
+        }
     }
 
     private void SetStats()
@@ -39,11 +43,18 @@ public class TradeAssetCard : EmployeeCard
         employeeToBeOffered = employee;
     }
 
+    public void GetOffersForEmployee(TradeAssetCard tradeAssetCard)
+    {
+        Employee employeeToTradeAway = tradeAssetCard.employeeToBeOffered;
+
+        tradeManager.TradeEmployeeForPicks(employeeToTradeAway);
+    }
+
     public void SelectEmployeeToTradeFor(TradeAssetCard tradeBlockCard)
     {
         if (tradeManager.employeeToBeAcquired != null)
         {
-            uiManager.EmployeeToAcquireIsSelected();
+            uiManager.EmployeeToAcquireIsAlreadySelected();
             return;
         }
 
