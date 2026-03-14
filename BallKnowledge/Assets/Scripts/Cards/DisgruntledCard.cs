@@ -79,6 +79,7 @@ public class DisgruntledCard : EmployeeCard
     {
         scenarioText.text = $"{employeeFirstName} has become increasinly unhappy with their role, they're demanding a trade from the franchise";
 
+        buttons[0].SetActive(true); // Cut
         buttons[1].SetActive(true); // Trade
         buttons[4].SetActive(true); // Convince to Stay
     }

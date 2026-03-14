@@ -4,8 +4,10 @@ using UnityEngine.UI;
 
 public class ProspectCard : EmployeeCard
 {
-    [Header("Prospect Card Visuals")]
-    public TMP_Text prospectStatus;
+    [Header("Prospect Stats")]
+    public bool developmentTraitRevealed;
+    public bool overallRevealed;
+    public EmployeeEnumerators.PersonalityTrait personalityTrait;
 
     private int amountOfVisibleStats;
 
@@ -37,6 +39,8 @@ public class ProspectCard : EmployeeCard
 
         RevealDevelopmentTrait();
         RevealOverall();     
+
+        personalityTrait = employeePersonalityTrait;
     }
 
     #region Draft Stats
@@ -54,7 +58,11 @@ public class ProspectCard : EmployeeCard
 
     private void RevealDevelopmentTrait()
     {
-        if (amountOfVisibleStats == 0) { workEthicText.text = $"Work Ethic: {employeeWorkEthic}"; }
+        if (amountOfVisibleStats == 0) 
+        { 
+            workEthicText.text = $"Work Ethic: {employeeWorkEthic}";
+            developmentTraitRevealed = true;
+        }
         else { workEthicText.text = "Work Ethic: ?"; }
     }
 
@@ -63,6 +71,7 @@ public class ProspectCard : EmployeeCard
         if (amountOfVisibleStats == 5)
         {
             overallText.text = $"Overall: {employeeOverall}";
+            overallRevealed = true;
             amountOfVisibleStats = 0;
         }
         else
@@ -136,23 +145,15 @@ public class ProspectCard : EmployeeCard
                 break;
         }
 
-        //RefreshProspectStatus(prospectCard);
+        RefreshProspectStatus(prospectCard);
         uiManager.UpdateDraftPicks();
         uiManager.UpdateCapSpace();
     }
 
-    //public void RefreshProspectStatus(ProspectCard prospectCard)
-    //{
-    //    if (!employeeLists.draftClass.Contains(prospectCard.prospect)) 
-    //    {
-    //        prospectStatus.text = "Drafted";
-    //        prospectStatus.color = Color.red;
-    //    }
-    //    else
-    //    {
-    //        prospectStatus.text = "Available";
-    //        prospectStatus.color = Color.green;
-    //    }
-    //}
+    public void RefreshProspectStatus(ProspectCard prospectCard)
+    {
+        if (!employeeLists.draftClass.Contains(prospectCard.prospect))
+            Destroy(prospectCard.gameObject);
+    }
     #endregion
 }

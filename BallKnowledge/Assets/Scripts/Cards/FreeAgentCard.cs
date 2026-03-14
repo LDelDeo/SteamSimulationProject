@@ -35,7 +35,7 @@ public class FreeAgentCard : EmployeeCard
         freeAgent = employee;
     }
 
-    public void SignPlayer(FreeAgentCard freeAgentCard) // Maybe make it so not every free agent is interested in signing?
+    public void SignPlayer(FreeAgentCard freeAgentCard) // Maybe make it so not every free agent is interested in signing? We could base it off of team overall
     {
         Employee freeAgentToSign = freeAgentCard.freeAgent;
 

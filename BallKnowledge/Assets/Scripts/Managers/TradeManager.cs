@@ -154,6 +154,11 @@ public class TradeManager : MonoBehaviour
         if (employeeLists.currentRoster.Contains(employee) && EmployeeValueInPicks(employee) != TradePackages.NoTradeInterest)
         {
             employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
+
+            outgoingDraftPicks.Clear();
+            outgoingEmployees.Clear();
+            outgoingTradePackageValue.Clear();
+
             uiManager.RefreshUI();
             uiManager.RefreshUserAssetsUI();
         }  

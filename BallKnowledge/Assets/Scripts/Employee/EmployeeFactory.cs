@@ -34,7 +34,7 @@ public class EmployeeFactory
 
         if (employee.isRookie) 
         { 
-            employee.age = employeeRNG.GetRandomAge(20, 25);
+            employee.age = employeeRNG.GetRandomAge(21, 25);
             employee.hourlyWage = 21;
             employee.yearsUnderContract = 3;
         }

@@ -18,6 +18,7 @@ public class DraftManager : MonoBehaviour
     // At the end of the draft we must display each employee that was drafted in each round and their stats
     // We can add them to this list as well as current roster and when the user advances to the next period we just clear this list
     public List<Employee> latestDraftClass = new List<Employee>();
+    public List<GameObject> prospectCardsSortingList = new List<GameObject>();
 
     private EmployeeLists employeeLists;
     private UIManager uiManager;
@@ -59,7 +60,7 @@ public class DraftManager : MonoBehaviour
         }
         else { uiManager.nextPeriodButton.SetActive(true); }
 
-        //uiManager.RefreshProspectStatus();
+        uiManager.RefreshProspectStatus();
         uiManager.UpdateDraftPicks();
         uiManager.UpdateCapSpace();
     }
@@ -117,30 +118,59 @@ public class DraftManager : MonoBehaviour
     #endregion
 
     #region List Sorting
-    // We must make a sorting button to be able to sort by: Position, Revealed Dev Trait, Revealed Overall, Drafted, Not Drafted etc.
+    // We should use a dropdown or a check box for ascending/descending order when sorting
+    // Maybe sorting mutliple items at once as well (this would require checkboxes and not buttons)
+    private void AddProspectCardsToSortingList()
+    {
+        foreach (Transform prospectCard in uiManager.prospectContent)
+        {
+            var cardObject = prospectCard.gameObject;
+            prospectCardsSortingList.Add(cardObject);
+        }
+    }
+
     public void SortByPosition()
     {
+        // Drop down to select position, then sort with that position being the highest
+    }
 
+    public void SortByPersonalityTrait()
+    {
+        AddProspectCardsToSortingList();
+
+        var sorted = prospectCardsSortingList.OrderByDescending
+            (prospectCard => prospectCard.GetComponent<ProspectCard>().personalityTrait).ToList();
+
+        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+            sorted[i].transform.SetSiblingIndex(i);
+
+        prospectCardsSortingList.Clear();
     }
 
     public void SortByRevealedDevelopmentTrait()
     {
+        AddProspectCardsToSortingList();
 
+        var sorted = prospectCardsSortingList.OrderByDescending
+            (prospectCard => !prospectCard.GetComponent<ProspectCard>().developmentTraitRevealed).ToList();
+        
+        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+            sorted[i].transform.SetSiblingIndex(i);
+
+        prospectCardsSortingList.Clear();
     }
 
     public void SortByRevealedOverall()
     {
+        AddProspectCardsToSortingList();
 
-    }
+        var sorted = prospectCardsSortingList.OrderByDescending
+            (prospectCard => prospectCard.GetComponent<ProspectCard>().overallRevealed).ToList();
 
-    public void SortByDrafted()
-    {
+        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+            sorted[i].transform.SetSiblingIndex(i);
 
-    }
-
-    public void SortByAvailable()
-    {
-
+        prospectCardsSortingList.Clear();
     }
     #endregion
 }

@@ -79,10 +79,11 @@ public class UIManager : MonoBehaviour
     [Header("Layout Array")]
     public GameObject[] screens;
 
-    [Header("General HUD")] // We must make an overall TEXT for team overall and create a function to update it and then we must refresh it
+    [Header("General HUD")]
     [SerializeField] TMP_Text capSpaceText;
     [SerializeField] TMP_Text draftPicksText;
     [SerializeField] TMP_Text leagueYearText;
+    [SerializeField] TMP_Text rosterOverallText;
     public TMP_Text emptyListText;
     public GameObject nextPeriodButton;
     #endregion
@@ -110,22 +111,22 @@ public class UIManager : MonoBehaviour
         DefenseScreen.SetActive(false);
     }
 
-    public void RefreshUI()
+    public void RefreshUI() // We shoud make regions to divide the generic Refreshing UI and the specific UI refreshes (private and public functions) 
     {
         RefreshRosterUI();
-        RefreshDraftUI();
         RefreshFreeAgentUI();
         RefreshExpiringContractsUI();
         RefreshRetirementsUI();
         RefreshDisgruntledEmployeesUI();
         RefreshTradeBlockUI();
-        //RefreshUserAssetsUI();
         RefreshCurrentTradePackageUI();
         RefreshEmployeesForPicksUI();
+        RefreshProspectStatus();
 
         UpdateCapSpace();
         UpdateDraftPicks();
         UpdateLeagueYear();
+        UpdateTeamOverall();
     }
 
     #region Action Canvas Functionality
@@ -383,7 +384,7 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
-    private void RefreshDraftUI()
+    public void RefreshDraftUI()
     {
         ClearContent(prospectContent);
 
@@ -395,14 +396,15 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Fix for changing prospect question marks
-    //public void RefreshProspectStatus()
-    //{
-    //    foreach (GameObject prospectCard in prospectContent.transform)
-    //    {
-    //        prospectCard.GetComponent<ProspectCard>().RefreshProspectStatus(prospectCard.GetComponent<ProspectCard>());
-    //    }
-    //}
+    public void RefreshProspectStatus()
+    {
+        foreach (Transform prospectCard in prospectContent.transform)
+        {
+            var cardObject = prospectCard.gameObject;
+            var scriptObject = cardObject.GetComponent<ProspectCard>();
+            scriptObject.RefreshProspectStatus(cardObject.GetComponent<ProspectCard>());
+        }
+    }
 
     private void RefreshFreeAgentUI()
     {
@@ -592,6 +594,16 @@ public class UIManager : MonoBehaviour
     public void UpdateLeagueYear()
     {
         leagueYearText.text = generalManager.currentYear.ToString();
+    }
+
+    public void UpdateTeamOverall()
+    {
+        var rosterOverall = 0;
+
+        foreach (Employee employee in employeeLists.currentRoster)
+            rosterOverall += (employee.overall / employeeLists.rosterConstruction.GetMaxEmployees());
+
+        rosterOverallText.text = $"Overall {rosterOverall}";
     }
     #endregion
 

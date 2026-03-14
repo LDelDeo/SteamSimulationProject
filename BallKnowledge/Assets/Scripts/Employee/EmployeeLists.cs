@@ -208,6 +208,25 @@ public class EmployeeLists : MonoBehaviour
 
 public class RosterConstruction
 {
+    public int maxEmployees;
+    public int GetMaxEmployees()
+    {
+        maxEmployees = 
+            maxbusser +
+            maxJanitor +
+            maxCashier +
+            maxMediaManager +
+            maxPrepCook +
+            maxLineCook +
+            maxFryCook +
+            maxPattyFlipper +
+            maxExpediter +
+            maxShiftManager +
+            maxManager;
+
+        return maxEmployees;
+    }
+
     public int maxbusser { get; private set; } = 3;
     public int currentBusser = 0;
     public int maxJanitor { get; private set; } = 2;

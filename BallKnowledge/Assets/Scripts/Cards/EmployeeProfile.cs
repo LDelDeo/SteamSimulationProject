@@ -65,6 +65,7 @@ public class EmployeeProfile : EmployeeCard
             thisEmployee.hourlyWage = employeeRNG.GetRandomWage(thisEmployee);
 
         uiManager.RefreshUI();
+        uiManager.RefreshEmployeesForPicksUI();
     }
     #endregion
 }

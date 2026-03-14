@@ -37,7 +37,7 @@ public class TradeAssetCard : EmployeeCard
         yearsUnderContractText.text = $"{employeeYearsUnderContract} years remaining";
     }
 
-    #region Adding to Trade Package Functionality
+    #region Adding to Trade Package & Getting Offers Functionality
     private void GrabEmployee(Employee employee)
     {
         employeeToBeOffered = employee;

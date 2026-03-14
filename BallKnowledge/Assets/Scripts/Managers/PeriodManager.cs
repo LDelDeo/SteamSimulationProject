@@ -155,7 +155,7 @@ public class PeriodManager : MonoBehaviour
                 draftManager.currentRound = 1;
                 uiManager.nextPeriodButton.SetActive(false);
                 CreateAnEmployee(draftManager.draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectContent);
-                //uiManager.RefreshProspectStatus();
+                uiManager.RefreshDraftUI();
 
                 uiManager.ChangeUI(uiManager.draftScreen);
                 break;
@@ -217,7 +217,7 @@ public class PeriodManager : MonoBehaviour
         }
     }
 
-    private void UpdateEmployeeOverall(Employee employee)
+    private void UpdateEmployeeOverall(Employee employee) // We could make this stat increases serialized fields if needed
     {
         List<int> statIncreases = new List<int>();
         int minStatsIncrease = 0;
@@ -269,21 +269,21 @@ public class PeriodManager : MonoBehaviour
                 int randomStatIncrease = Random.Range(minStatsIncrease, maxStatsIncrease);
                 statIncreases.Add(randomStatIncrease);
             }
-            
-            if (employee.efficiency > 100)
-                employee.efficiency = 100;
 
-            if (employee.customerService > 100)
-                employee.customerService = 100;
+            if (employee.efficiency + statIncreases[0] > 100) employee.efficiency = 100;
+            else employee.efficiency += statIncreases[0];
 
-            if (employee.communication > 100)
-                employee.communication = 100;
+            if (employee.customerService + statIncreases[1] > 100) employee.customerService = 100;
+            else employee.customerService += statIncreases[1];
 
-            if (employee.teamwork > 100)
-                employee.teamwork = 100;
+            if (employee.communication + statIncreases[2] > 100) employee.communication = 100;
+            else employee.communication += statIncreases[2];
 
-            if (employee.iq > 100)
-                employee.iq = 100;
+            if (employee.teamwork + statIncreases[3] > 100) employee.teamwork = 100;
+            else employee.teamwork += statIncreases[3];
+
+            if (employee.iq + statIncreases[4] > 100) employee.iq = 100;
+            else employee.iq += statIncreases[4];
 
             statIncreases.Clear();
         }
