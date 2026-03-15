@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using TMPro;
 using Unity.VisualScripting;
@@ -8,6 +9,10 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+
+    // We have a lot to change in here regarding the UI, we shouldnt clear entire contents and rebuild
+    // Not only does this lag tasks, but also it resets data pertaining to each employee card
+    // We should only destroy the cards that are not needed
     #region UI Elements
     [Header("Action Canvas")]
     public GameObject actionCanvasPrefab;
@@ -291,6 +296,12 @@ public class UIManager : MonoBehaviour
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = "Trade has been declined";
     }
+
+    public void NotInteretedInSigning(Employee employee)
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is not interested in signing with your franchise";
+    }
     #endregion
 
     #region Roster UI
@@ -416,6 +427,34 @@ public class UIManager : MonoBehaviour
             FreeAgentCard card = cardObject.GetComponent<FreeAgentCard>();
             card.GetEmployeeStats(freeAgent);
             card.SetEmployeeCardBackground(freeAgent);
+        }
+    }
+
+    public void RefreshFreeAgentsUI()
+    {
+        foreach (Employee employee in employeeLists.freeAgentClass)
+        {
+            if (!employeeLists.freeAgentClass.Contains(employee))
+            {
+                //Destroy the employee's card object
+            }
+        }
+        
+    }
+
+    public void LoadFreeAgentInterestBar(Image interestBar, float fillAmount)
+    {
+        var barAmount = fillAmount / 100;
+        interestBar.fillAmount = barAmount;
+
+        switch (barAmount)
+        {
+            case <= 0.25f: interestBar.color = new Color32(217, 26, 0, 255); break; // Red
+            case <= 0.5f: interestBar.color = new Color32(217, 130, 0, 255); break; // Orange
+            case <= 0.75f: interestBar.color = new Color32(217, 213, 0, 255); break; // Yellow
+            case <= 0.85f: interestBar.color = new Color32(166, 217, 0, 255); break; // Lime Green
+            case < 1: interestBar.color = new Color32(137, 217, 0, 255); break; // Light Green
+            case >= 1: interestBar.color = new Color32(4, 217, 0, 255); break; // Green
         }
     }
 
@@ -598,12 +637,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateTeamOverall()
     {
-        var rosterOverall = 0;
-
-        foreach (Employee employee in employeeLists.currentRoster)
-            rosterOverall += (employee.overall / employeeLists.rosterConstruction.GetMaxEmployees());
-
-        rosterOverallText.text = $"Overall {rosterOverall}";
+        rosterOverallText.text = $"Overall: {employeeLists.GetRosterOverall()}";
     }
     #endregion
 

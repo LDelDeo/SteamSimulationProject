@@ -8,6 +8,7 @@ public class ProspectCard : EmployeeCard
     public bool developmentTraitRevealed;
     public bool overallRevealed;
     public EmployeeEnumerators.PersonalityTrait personalityTrait;
+    public EmployeeEnumerators.JobType jobType;
 
     private int amountOfVisibleStats;
 
@@ -41,6 +42,7 @@ public class ProspectCard : EmployeeCard
         RevealOverall();     
 
         personalityTrait = employeePersonalityTrait;
+        jobType = employeeJobPosition;
     }
 
     #region Draft Stats

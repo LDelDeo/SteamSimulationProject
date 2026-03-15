@@ -84,6 +84,7 @@ public class DraftManager : MonoBehaviour
                     manager.firstRoundPicks = 0;
                 }
                 break;
+
             case 2:
                 if (manager.secondRoundPicks > 0)
                 {
@@ -120,6 +121,7 @@ public class DraftManager : MonoBehaviour
     #region List Sorting
     // We should use a dropdown or a check box for ascending/descending order when sorting
     // Maybe sorting mutliple items at once as well (this would require checkboxes and not buttons)
+    // We should also look into favoriting prospects
     private void AddProspectCardsToSortingList()
     {
         foreach (Transform prospectCard in uiManager.prospectContent)
@@ -131,7 +133,15 @@ public class DraftManager : MonoBehaviour
 
     public void SortByPosition()
     {
-        // Drop down to select position, then sort with that position being the highest
+        AddProspectCardsToSortingList();
+
+        var sorted = prospectCardsSortingList.OrderByDescending
+            (prospectCard => prospectCard.GetComponent<ProspectCard>().jobType).ToList();
+
+        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+            sorted[i].transform.SetSiblingIndex(i);
+
+        prospectCardsSortingList.Clear();
     }
 
     public void SortByPersonalityTrait()

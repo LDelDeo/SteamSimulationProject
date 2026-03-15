@@ -203,6 +203,16 @@ public class EmployeeLists : MonoBehaviour
         if (isFrontOfHouse) return "Front";
         else return "Back";
     }
+
+    public int GetRosterOverall()
+    {
+        var rosterOverall = 0;
+
+        foreach (Employee employee in currentRoster)
+            rosterOverall += (employee.overall / rosterConstruction.GetMaxEmployees());
+
+        return rosterOverall;
+    }
     #endregion
 }
 
