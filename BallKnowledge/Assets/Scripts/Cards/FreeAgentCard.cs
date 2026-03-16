@@ -9,10 +9,13 @@ public class FreeAgentCard : EmployeeCard
     [SerializeField] Image interestBar;
     [SerializeField] Button signButton;
 
+    [Header("Free Agent Configuration")]
+    [SerializeField] bool isRestrictedFreeAgent;
+    [SerializeField] float maxInterestMultiplier;
+    [SerializeField] float minInterestMultiplier;
+
     private int contractYears = 1;
-    // For interest in signing, we must destroy the object of the employees we resgined and not clear the entire list and reinstantiate
-    // We also must keep in mind, for restricted free agents, we should probably take the overall BEFORE they removed from the current roster
-    private int interestInSigning;
+    private float interestInSigning;
     private bool willSign;
 
     private Employee freeAgent;
@@ -49,12 +52,40 @@ public class FreeAgentCard : EmployeeCard
 
     public void SetInterestInSigning()
     {
-        // The employee's interest in signing is based off the current roster's overall, the higher the overall, the higher their interest can be
-        var maxInterestInSigning = employeeLists.GetRosterOverall();
+        // The employee's interest in signing is based off the current roster's overall. The higher the overall, the higher their interest can be
+        var maxInterestInSigning = 0f;
+        var minInterestInSigning = 0f;
 
-        interestInSigning = Random.Range(20, maxInterestInSigning);
+        // If the employee is an expiring contract, it will grab the overall before all the contracts expired
+        // This prevents employees not wanting to resign if the free agent class gets very large
+        if (isRestrictedFreeAgent) 
+        {
+            var preExpiringContractOverall = 0;
 
-        uiManager.LoadFreeAgentInterestBar(interestBar, (float)interestInSigning);
+            foreach (Employee employee in employeeLists.pendingFreeAgents)
+                preExpiringContractOverall += employee.overall;
+
+            maxInterestInSigning = ((preExpiringContractOverall + employeeLists.GetRosterOverall()) * maxInterestMultiplier) / employeeLists.rosterConstruction.GetMaxEmployees();
+            minInterestInSigning = ((preExpiringContractOverall + employeeLists.GetRosterOverall()) * minInterestMultiplier) / employeeLists.rosterConstruction.GetMaxEmployees();
+        }
+        else
+        {
+            maxInterestInSigning = employeeLists.GetRosterOverall() * maxInterestMultiplier;
+            minInterestInSigning = employeeLists.GetRosterOverall() * minInterestMultiplier;
+        }
+
+        if (maxInterestInSigning > 100)
+            maxInterestInSigning = 100;
+
+        if (minInterestInSigning > 100)
+            minInterestInSigning = 100;
+
+        if (maxInterestInSigning <= minInterestInSigning)
+            maxInterestInSigning = minInterestInSigning + 20;
+
+        interestInSigning = Random.Range(minInterestInSigning, maxInterestInSigning);
+
+        uiManager.LoadFreeAgentInterestBar(interestBar, interestInSigning);
 
         var randomNumber = Random.Range(1, 101);
         if (randomNumber > interestInSigning)  
@@ -75,35 +106,54 @@ public class FreeAgentCard : EmployeeCard
         }    
         else
         {
-            if (employeeLists.HasCapSpaceToCompleteTransaction(freeAgentToSign) && employeeLists.HasRosterSpace(freeAgentToSign))
+            if (employeeLists.HasCapSpaceToCompleteTransaction(freeAgentToSign))
             {
-                freeAgentToSign.yearsUnderContract = contractYears;
+                if (employeeLists.HasRosterSpace(freeAgentToSign))
+                {
+                    freeAgentToSign.yearsUnderContract = contractYears;
 
-                employeeLists.AddEmployee(freeAgentToSign, employeeLists.currentRoster);
-                employeeLists.RemoveEmployee(freeAgentToSign, employeeLists.freeAgentClass);
+                    employeeLists.AddEmployee(freeAgentToSign, employeeLists.currentRoster);
+                    employeeLists.RemoveEmployee(freeAgentToSign, employeeLists.freeAgentClass);
 
-                uiManager.RefreshUI();
+                    uiManager.EmployeeSigningContract(freeAgentToSign);
+
+                    uiManager.RefreshUI();
+                }
+                else if (!employeeLists.HasRosterSpace(freeAgentToSign)) { uiManager.InsufficientRosterSpace(freeAgentToSign); }
             }
             else if (!employeeLists.HasCapSpaceToCompleteTransaction(freeAgentToSign)) { uiManager.InsufficientCapRoom(freeAgentToSign); }
-            else if (!employeeLists.HasRosterSpace(freeAgentToSign)) { uiManager.InsufficientRosterSpace(freeAgentToSign); }
         }    
     }
 
-    public void ResignPlayer(FreeAgentCard expiringContractCard) // Maybe make it so not every free agent is interested in returning?
+    public void ResignPlayer(FreeAgentCard expiringContractCard)
     {
         Employee employeeToResign = expiringContractCard.freeAgent;
 
-        if (employeeLists.HasCapSpaceToCompleteTransaction(employeeToResign) && employeeLists.HasRosterSpace(employeeToResign))
+        if (!willSign)
         {
-            employeeToResign.yearsUnderContract = contractYears;
-
-            employeeLists.AddEmployee(employeeToResign, employeeLists.currentRoster);
-            employeeLists.RemoveEmployee(employeeToResign, employeeLists.pendingFreeAgents);
-
-            uiManager.RefreshUI();
+            uiManager.NotInteretedInSigning(employeeToResign);
+            signButton.interactable = false;
+            return;
         }
-        else if (!employeeLists.HasCapSpaceToCompleteTransaction(employeeToResign)) { uiManager.InsufficientCapRoom(employeeToResign); }
-        else if (!employeeLists.HasRosterSpace(employeeToResign)) { uiManager.InsufficientRosterSpace(employeeToResign); }
+        else
+        {
+            if (employeeLists.HasCapSpaceToCompleteTransaction(employeeToResign))
+            {
+                if (employeeLists.HasRosterSpace(employeeToResign))
+                {
+                    employeeToResign.yearsUnderContract = contractYears;
+
+                    employeeLists.AddEmployee(employeeToResign, employeeLists.currentRoster);
+                    employeeLists.RemoveEmployee(employeeToResign, employeeLists.pendingFreeAgents);
+
+                    uiManager.EmployeeSigningContract(employeeToResign);
+
+                    uiManager.RefreshUI();
+                }
+                else if (!employeeLists.HasRosterSpace(employeeToResign)) { uiManager.InsufficientRosterSpace(employeeToResign); }
+            }
+            else if (!employeeLists.HasCapSpaceToCompleteTransaction(employeeToResign)) { uiManager.InsufficientCapRoom(employeeToResign); }
+        } 
     }
 
     public void AdjustContractYears(bool increase)
@@ -120,6 +170,18 @@ public class FreeAgentCard : EmployeeCard
         }
 
         contractYearsText.text = contractYears.ToString();
+    }
+
+    public void RemoveFreeAgent(FreeAgentCard freeAgentCard)
+    {
+        if (!employeeLists.freeAgentClass.Contains(freeAgentCard.freeAgent))
+            Destroy(freeAgentCard.gameObject);
+    }
+
+    public void RemoveUnrestrictedFreeAgent(FreeAgentCard freeAgentCard)
+    {
+        if (!employeeLists.pendingFreeAgents.Contains(freeAgentCard.freeAgent))
+            Destroy(freeAgentCard.gameObject);
     }
     #endregion
 }

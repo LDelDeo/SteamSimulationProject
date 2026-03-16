@@ -2522,6 +2522,9 @@ MonoBehaviour:
   contractYearsText: {fileID: 1101287261233488558}
   interestBar: {fileID: 5121057593892940075}
   signButton: {fileID: 8109175411632031941}
+  isRestrictedFreeAgent: 0
+  maxInterestMultiplier: 1.8
+  minInterestMultiplier: 1.1
 --- !u!1 &7223461384523827437
 GameObject:
   m_ObjectHideFlags: 0

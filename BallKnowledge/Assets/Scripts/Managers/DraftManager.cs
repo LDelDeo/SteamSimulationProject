@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class DraftManager : MonoBehaviour
 {
@@ -13,11 +14,11 @@ public class DraftManager : MonoBehaviour
     [SerializeField] int maxOverallInRoundThree;
     [SerializeField] int additionalCapSpacePerFirstRoundPick; 
     [SerializeField] int additionalCapSpacePerSecondRoundPick; 
-    [SerializeField] int additionalCapSpacePerThirdRoundPick; 
+    [SerializeField] int additionalCapSpacePerThirdRoundPick;
 
-    // At the end of the draft we must display each employee that was drafted in each round and their stats
-    // We can add them to this list as well as current roster and when the user advances to the next period we just clear this list
     public List<Employee> latestDraftClass = new List<Employee>();
+    public List<int> latestDraftClassRoundSelected = new List<int>();
+
     public List<GameObject> prospectCardsSortingList = new List<GameObject>();
 
     private EmployeeLists employeeLists;
@@ -58,11 +59,23 @@ public class DraftManager : MonoBehaviour
                     employeeLists.RemoveEmployee(prospect, employeeLists.draftClass);
             }
         }
-        else { uiManager.nextPeriodButton.SetActive(true); }
+        else 
+        { 
+            DisplayFinalDraftClass();
+        }
 
-        uiManager.RefreshProspectStatus();
+        uiManager.RefreshUI();
         uiManager.UpdateDraftPicks();
         uiManager.UpdateCapSpace();
+    }
+
+    private void DisplayFinalDraftClass()
+    {
+        uiManager.nextPeriodButton.SetActive(true);
+
+        employeeLists.draftClass.Clear();
+        uiManager.BuildUI();
+        uiManager.draftScreen.GetComponent<ScrollRect>().content = uiManager.finalDraftClassContent.GetComponent<RectTransform>();
     }
 
     private void TradingLeftOverPicks()
@@ -162,7 +175,7 @@ public class DraftManager : MonoBehaviour
         AddProspectCardsToSortingList();
 
         var sorted = prospectCardsSortingList.OrderByDescending
-            (prospectCard => !prospectCard.GetComponent<ProspectCard>().developmentTraitRevealed).ToList();
+            (prospectCard => prospectCard.GetComponent<ProspectCard>().developmentTraitRevealed).ToList();
         
         for (int i = 0; i < prospectCardsSortingList.Count; i++)
             sorted[i].transform.SetSiblingIndex(i);

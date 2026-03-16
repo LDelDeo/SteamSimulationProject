@@ -48,7 +48,7 @@ public class EmployeeProfile : EmployeeCard
         // Contracts with more than 4 years remaining cannot be cut
         if (thisEmployee.yearsUnderContract > 4)
         {
-            uiManager.UncuttableContract();
+            uiManager.GenericText("Employees with a contract length of over 4 years cannot be cut");
             return;
         }
 
@@ -65,7 +65,6 @@ public class EmployeeProfile : EmployeeCard
             thisEmployee.hourlyWage = employeeRNG.GetRandomWage(thisEmployee);
 
         uiManager.RefreshUI();
-        uiManager.RefreshEmployeesForPicksUI();
     }
     #endregion
 }

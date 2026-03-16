@@ -4,15 +4,12 @@ using System.Linq;
 using NUnit.Framework;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-
-    // We have a lot to change in here regarding the UI, we shouldnt clear entire contents and rebuild
-    // Not only does this lag tasks, but also it resets data pertaining to each employee card
-    // We should only destroy the cards that are not needed
     #region UI Elements
     [Header("Action Canvas")]
     public GameObject actionCanvasPrefab;
@@ -40,6 +37,7 @@ public class UIManager : MonoBehaviour
     [Header("Draft Screen UI")]
     public GameObject draftScreen;
     public Transform prospectContent;
+    public Transform finalDraftClassContent;
 
     public GameObject prospectCardPrefab;
 
@@ -116,22 +114,79 @@ public class UIManager : MonoBehaviour
         DefenseScreen.SetActive(false);
     }
 
-    public void RefreshUI() // We shoud make regions to divide the generic Refreshing UI and the specific UI refreshes (private and public functions) 
+    public void RefreshUI()
     {
-        RefreshRosterUI();
-        RefreshFreeAgentUI();
-        RefreshExpiringContractsUI();
-        RefreshRetirementsUI();
-        RefreshDisgruntledEmployeesUI();
-        RefreshTradeBlockUI();
-        RefreshCurrentTradePackageUI();
-        RefreshEmployeesForPicksUI();
-        RefreshProspectStatus();
+        switch (periodManager.currentPeriod)
+        {
+            case PeriodManager.Period.StartOfYear:
+                break;
+            case PeriodManager.Period.Retirements:
+                
+                break;
+            case PeriodManager.Period.ExpiringContracts:
+                RefreshExpiringContracts();
+                break;
+            case PeriodManager.Period.FreeAgency:
+                RefreshFreeAgents();
+                break;
+            case PeriodManager.Period.Trading:
+                RefreshCurrentTradePackageUI();
+                break;
+            case PeriodManager.Period.EmployeeEvents:
+                // We currently have the card display settled, we can keep this or change to destroying the cards that are no longer needed
+                break;
+            case PeriodManager.Period.Draft:
+                RefreshProspects();
+                break;
+            case PeriodManager.Period.SeasonSimulation:
+                break;
+            case PeriodManager.Period.Awards:
+                break;
+            case PeriodManager.Period.SeasonReflection:
+                break;
+        }
 
-        UpdateCapSpace();
-        UpdateDraftPicks();
-        UpdateLeagueYear();
-        UpdateTeamOverall();
+        RefreshRosterUI();
+        UpdateHUD();
+    }
+
+    public void BuildUI()
+    {
+        switch (periodManager.currentPeriod)
+        {
+            case PeriodManager.Period.StartOfYear:
+                break;
+            case PeriodManager.Period.Retirements:
+                BuildRetirementsUI();
+                break;
+            case PeriodManager.Period.ExpiringContracts:
+                RebuildExpiringContractsUI();
+                break;
+            case PeriodManager.Period.FreeAgency:
+                BuildFreeAgentUI();
+                break;
+            case PeriodManager.Period.Trading:
+                BuildTradeBlockUI();
+                BuildUserAssetsUI();
+                BuildEmployeesForPicksUI();
+                break;
+            case PeriodManager.Period.EmployeeEvents:
+                BuildDisgruntledEmployeesUI();
+                break;
+            case PeriodManager.Period.Draft:
+                BuildDraftUI();
+                BuildFinalDraftClassUI();
+                break;
+            case PeriodManager.Period.SeasonSimulation:
+                break;
+            case PeriodManager.Period.Awards:
+                break;
+            case PeriodManager.Period.SeasonReflection:
+                break;
+        }
+
+        RefreshRosterUI();
+        UpdateHUD();
     }
 
     #region Action Canvas Functionality
@@ -158,7 +213,6 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Action Canvas Messages
-    // We should make a generic canvas of just text and then make specific ones with employee inputs
     public void InsufficientCapRoom(Employee employee)
     {
         OpenActionCanvas();
@@ -177,12 +231,6 @@ public class UIManager : MonoBehaviour
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = $"Not enough {currentRound} round picks to make selection";
-    }
-
-    public void UncuttableContract()
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "Employees with a contract length of over 4 years cannot be cut";
     }
 
     public void EmployeeCut(Employee employee)
@@ -267,40 +315,22 @@ public class UIManager : MonoBehaviour
         actionCanvasText.GetComponent<TMP_Text>().text = $"(Insert other franchise here) is offering {tradePackage} in the upcoming draft for {employee.firstName} {employee.lastName}";
     }
 
-    public void TradePackageIsFull()
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "Your trade package is full! Remove an asset before adding this one";
-    }
-
-    public void EmployeeToAcquireIsAlreadySelected()
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "You can only trade for one employee at a time! Remove the current selected employee before adding this one";
-    }
-
-    public void NoEmployeeToAcquireSelected()
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "You must selected an employee to acquire before submitting an offer";
-    }
-
-    public void TradeAccepted()
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "Trade has been ACCEPTED";
-    }
-
-    public void TradeDeclined()
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = "Trade has been declined";
-    }
-
     public void NotInteretedInSigning(Employee employee)
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is not interested in signing with your franchise";
+    }
+
+    public void EmployeeSigningContract(Employee employee)
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is signing a {employee.yearsUnderContract} year deal worth {employee.hourlyWage}/hr with your franchise!";
+    }
+
+    public void GenericText(string textToDisplay)
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = textToDisplay;
     }
     #endregion
 
@@ -395,7 +425,8 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
-    public void RefreshDraftUI()
+    #region Draft UI
+    private void BuildDraftUI()
     {
         ClearContent(prospectContent);
 
@@ -407,17 +438,37 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void RefreshProspectStatus()
+    private void BuildFinalDraftClassUI() // We need to display the round they were selected in as well
+    {
+        ClearContent(finalDraftClassContent);
+
+        foreach (var draftedProspect in draftManager.latestDraftClass)
+        {
+            GameObject cardObject = Instantiate(employeeCardPrefab, finalDraftClassContent);
+            EmployeeCard card = cardObject.GetComponent<EmployeeCard>();
+            card.GetEmployeeStats(draftedProspect);
+            card.SetEmployeeCardBackground(draftedProspect);
+        }
+
+        foreach (var roundSelected in draftManager.latestDraftClassRoundSelected)
+        {
+            // Add the round next to the employee selected
+        }
+    }
+
+    private void RefreshProspects()
     {
         foreach (Transform prospectCard in prospectContent.transform)
         {
             var cardObject = prospectCard.gameObject;
             var scriptObject = cardObject.GetComponent<ProspectCard>();
-            scriptObject.RefreshProspectStatus(cardObject.GetComponent<ProspectCard>());
+            scriptObject.RemoveProspect(cardObject.GetComponent<ProspectCard>());
         }
     }
+    #endregion
 
-    private void RefreshFreeAgentUI()
+    #region Free Agency UI
+    private void BuildFreeAgentUI()
     {
         ClearContent(freeAgencyContent);
 
@@ -430,16 +481,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void RefreshFreeAgentsUI()
+    private void RefreshFreeAgents()
     {
-        foreach (Employee employee in employeeLists.freeAgentClass)
+        foreach (Transform freeAgentCard in freeAgencyContent.transform)
         {
-            if (!employeeLists.freeAgentClass.Contains(employee))
-            {
-                //Destroy the employee's card object
-            }
+            var cardObject = freeAgentCard.gameObject;
+            var scriptObject = cardObject.GetComponent<FreeAgentCard>();
+            scriptObject.RemoveFreeAgent(cardObject.GetComponent<FreeAgentCard>());
         }
-        
     }
 
     public void LoadFreeAgentInterestBar(Image interestBar, float fillAmount)
@@ -457,8 +506,10 @@ public class UIManager : MonoBehaviour
             case >= 1: interestBar.color = new Color32(4, 217, 0, 255); break; // Green
         }
     }
+    #endregion
 
-    private void RefreshExpiringContractsUI()
+    #region Expiring Contracts UI
+    private void RebuildExpiringContractsUI()
     {
         ClearContent(expiringContractsContent);
 
@@ -471,7 +522,19 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void RefreshRetirementsUI()
+    private void RefreshExpiringContracts()
+    {
+        foreach (Transform freeAgentCard in expiringContractsContent.transform)
+        {
+            var cardObject = freeAgentCard.gameObject;
+            var scriptObject = cardObject.GetComponent<FreeAgentCard>();
+            scriptObject.RemoveUnrestrictedFreeAgent(cardObject.GetComponent<FreeAgentCard>());
+        }
+    }
+    #endregion
+
+    #region Retirements UI
+    private void BuildRetirementsUI()
     {
         ClearContent(retiringEmployeeContent);
 
@@ -483,8 +546,10 @@ public class UIManager : MonoBehaviour
             card.SetEmployeeCardBackground(retirement);
         }
     }
+    #endregion
 
-    private void RefreshDisgruntledEmployeesUI()
+    #region Employee Events UI
+    private void BuildDisgruntledEmployeesUI()
     {
         ClearContent(disgruntledEmployeeContent);
 
@@ -496,8 +561,10 @@ public class UIManager : MonoBehaviour
             card.SetEmployeeCardBackground(disgruntledEmployee);
         }
     }
+    #endregion
 
-    private void RefreshTradeBlockUI()
+    #region Trading UI
+    private void BuildTradeBlockUI()
     {
         ClearContent(tradeBlockContent);
 
@@ -511,7 +578,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void RefreshUserAssetsUI()
+    private void BuildUserAssetsUI()
     {
         ClearContent(userAssetsContent);
 
@@ -522,6 +589,22 @@ public class UIManager : MonoBehaviour
         foreach (var employee in employeeLists.currentRoster)
         {
             GameObject cardObject = Instantiate(tradeAssetForEmployeeCardPrefab.gameObject, userAssetsContent);
+            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.GetEmployeeStats(employee);
+            cardInstance.SetEmployeeCardBackground(employee);
+        }
+
+        periodManager.CheckforEmptyList(employeeLists.currentRoster, $"No Employees to Trade in {generalManager.currentYear}");
+    }
+
+    public void BuildEmployeesForPicksUI()
+    {
+        ClearContent(employeeForPicksContent);
+
+        foreach (var employee in employeeLists.currentRoster)
+        {
+            GameObject cardObject = Instantiate(tradeAssetForPicksCardPrefab, employeeForPicksContent);
             TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
 
             cardInstance.GetEmployeeStats(employee);
@@ -566,10 +649,7 @@ public class UIManager : MonoBehaviour
             cardInstance.SetEmployeeCardBackground(tradeManager.employeeToBeAcquired);
         }
         else
-        {
-            ClearContent(selectedAcquisitionContent);
-        }
-        
+            ClearContent(selectedAcquisitionContent); 
     }
 
     public void RefreshTradeInterestBar(float totalTradePackageValue, float employeeToBeAcquiredValue)
@@ -589,28 +669,23 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void RefreshEmployeesForPicksUI()
-    {
-        ClearContent(employeeForPicksContent);
-
-        foreach (var employee in employeeLists.currentRoster)
-        {
-            GameObject cardObject = Instantiate(tradeAssetForPicksCardPrefab, employeeForPicksContent);
-            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
-
-            cardInstance.GetEmployeeStats(employee);
-            cardInstance.SetEmployeeCardBackground(employee);
-        }
-    }
-
     private void CreateDraftPickCard(int roundOfPick, int yearOfPick, Transform contentToAddTo)
     {
         GameObject cardObject = Instantiate(uiManager.draftPickCardPrefab, contentToAddTo);
         DraftPickCard cardInstance = cardObject.GetComponent<DraftPickCard>();
         cardInstance.SetValuesOfPick(roundOfPick, yearOfPick);
     }
+    #endregion
 
     #region HUD
+    public void UpdateHUD()
+    {
+        UpdateCapSpace();
+        UpdateDraftPicks();
+        UpdateLeagueYear();
+        UpdateTeamOverall();
+    }
+
     public void UpdateCapSpace()
     {
         generalManager.currentUsedCapSpace = 0;
@@ -642,7 +717,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Clearing and Changing UI
-    private void ClearContent(Transform content)
+    public void ClearContent(Transform content)
     {
         foreach (Transform child in content)
         {
@@ -658,6 +733,8 @@ public class UIManager : MonoBehaviour
         }
 
         screenToShow.SetActive(true);
+
+        BuildUI();
         RefreshUI();
     }
 
@@ -669,6 +746,13 @@ public class UIManager : MonoBehaviour
         else if (!isRosterShowing && periodManager.currentPeriod != PeriodManager.Period.StartOfYear) { rosterScreen.SetActive(false); }
 
         RefreshRosterUI();
+    }
+
+    // Maybe make a generic function to set bars (Fill Amount as well as Color)
+    // These can be used for Free Agents & Trade Bar
+    public void GetBarColor() 
+    {
+
     }
     #endregion
 }

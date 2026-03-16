@@ -54,7 +54,7 @@ public class TradeAssetCard : EmployeeCard
     {
         if (tradeManager.employeeToBeAcquired != null)
         {
-            uiManager.EmployeeToAcquireIsAlreadySelected();
+            uiManager.GenericText("You can only trade for one employee at a time! Remove the current selected employee before adding this one");
             return;
         }
 
@@ -63,6 +63,8 @@ public class TradeAssetCard : EmployeeCard
 
         addButton.SetActive(false);
         removeButton.SetActive(true);
+
+        uiManager.RefreshUI();
     }
 
     public void DeselectEmployeeToTradeFor()
@@ -71,13 +73,15 @@ public class TradeAssetCard : EmployeeCard
 
         addButton.SetActive(true);
         removeButton.SetActive(false);
+
+        uiManager.RefreshUI();
     }
 
     public void AddEmployeeToTradePackage(TradeAssetCard tradeAssetCard)
     {
         if (tradeManager.TradePackageIsFull())
         {
-            uiManager.TradePackageIsFull();
+            uiManager.GenericText("Your trade package is full! Remove an asset before adding this one");
             return;
         }
 
@@ -90,6 +94,8 @@ public class TradeAssetCard : EmployeeCard
 
         addButton.SetActive(false);
         removeButton.SetActive(true);
+
+        uiManager.RefreshUI();
     }
 
     public void RemoveEmployeeFromTradePackage(TradeAssetCard tradeAssetCard)
@@ -103,6 +109,8 @@ public class TradeAssetCard : EmployeeCard
 
         addButton.SetActive(true);
         removeButton.SetActive(false);
+
+        uiManager.RefreshUI();
     }
     #endregion
 }

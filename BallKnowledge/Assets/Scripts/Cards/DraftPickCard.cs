@@ -9,6 +9,7 @@ public class DraftPickCard : MonoBehaviour
     [SerializeField] TMP_Text roundOfPickText;
     [SerializeField] TMP_Text yearOfPickText;
     [SerializeField] Image cardBackground;
+
     public GameObject addButton;
     public GameObject removeButton;
 
@@ -57,7 +58,7 @@ public class DraftPickCard : MonoBehaviour
     {
         if (tradeManager.TradePackageIsFull())
         {
-            uiManager.TradePackageIsFull();
+            uiManager.GenericText("Your trade package is full! Remove an asset before adding this one");
             return;
         }
 

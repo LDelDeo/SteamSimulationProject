@@ -27,14 +27,17 @@ public class PeriodManager : MonoBehaviour
 
     [Header("Annual Configuration")]
     [SerializeField] int ageOfRegression;
-    [SerializeField] int amountOfRegressionPerStat; 
+    [SerializeField] int amountOfRegressionPerStat;
 
+    #region Card Scripts
     private EmployeeCard employeeCardObject;
     private ProspectCard prospectCardObject;
     private FreeAgentCard freeAgentCardObject;
     private RetirementCard retirementCardObject;
     private TradeAssetCard tradeAssetCardObject;
+    #endregion
 
+    #region Required Scripts/Classes
     private EmployeeLists employeeLists;
     private UIManager uiManager;
     private GeneralManager generalManager;
@@ -45,6 +48,7 @@ public class PeriodManager : MonoBehaviour
 
     EmployeeRNG employeeRNG = new EmployeeRNG();
     EmployeeArrays employeeArrays = new EmployeeArrays();
+    #endregion
 
     private void Start()
     {
@@ -66,7 +70,6 @@ public class PeriodManager : MonoBehaviour
         tradeAssetCardObject = uiManager.tradeAssetForEmployeeCardPrefab.GetComponent<TradeAssetCard>();
 
         CreateAnEmployee(rosterCount, employeeFactory, employeeLists, employeeArrays, employeeLists.currentRoster, employeeCardObject, uiManager.rosterGridStorage.transform);
-        uiManager.RefreshUI();
 
         UpdatePeriod();
     }
@@ -115,7 +118,7 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.ExpiringContracts:
-                employeeLists.ClearList(employeeLists.retiringEmployees);
+                employeeLists.retiringEmployees.Clear();
 
                 CheckExpiringContracts();
                 CheckforEmptyList(employeeLists.pendingFreeAgents, $"No Expiring Contracts in {generalManager.currentYear}");
@@ -132,16 +135,16 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Trading:
-                employeeLists.ClearList(employeeLists.freeAgentClass);
-                
-                CreateAnEmployee(tradeManager.tradeBlockSize, employeeFactory, employeeLists, employeeArrays, employeeLists.tradeBlock, tradeAssetCardObject, uiManager.tradeBlockContent);
+                employeeLists.freeAgentClass.Clear();
 
-                uiManager.RefreshUserAssetsUI();
+                CreateAnEmployee(tradeManager.tradeBlockSize, employeeFactory, employeeLists, employeeArrays, employeeLists.tradeBlock, tradeAssetCardObject, uiManager.tradeBlockContent);
+                
                 uiManager.ChangeUI(uiManager.tradingScreen);
                 break;
 
             case Period.EmployeeEvents:
-                ReturnTradeAssets();
+                employeeLists.tradeBlock.Clear();
+                ReturnTradeAssets();                
                 
                 CheckForEmployeeEvent();
                 CheckforEmptyList(employeeLists.disgruntledEmployees, $"No Disgruntled Employees in {generalManager.currentYear}");
@@ -150,24 +153,23 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Draft:
-                employeeLists.ClearList(employeeLists.disgruntledEmployees);
+                employeeLists.disgruntledEmployees.Clear();
 
                 draftManager.currentRound = 1;
                 uiManager.nextPeriodButton.SetActive(false);
                 CreateAnEmployee(draftManager.draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectContent);
-                uiManager.RefreshDraftUI();
 
                 uiManager.ChangeUI(uiManager.draftScreen);
                 break;
 
             case Period.SeasonSimulation:
+                draftManager.latestDraftClass.Clear();
+                draftManager.latestDraftClassRoundSelected.Clear();
 
-                employeeLists.ClearList(employeeLists.draftClass);
                 break;
 
             case Period.Awards:
 
-                employeeLists.ClearList(employeeLists.tradeBlock);
                 break;
 
             case Period.SeasonReflection:
@@ -217,7 +219,9 @@ public class PeriodManager : MonoBehaviour
         }
     }
 
-    private void UpdateEmployeeOverall(Employee employee) // We could make this stat increases serialized fields if needed
+    // We could make this stat increases serialized fields if needed
+    // Possibly with a Season Reflection Manager?
+    private void UpdateEmployeeOverall(Employee employee) 
     {
         List<int> statIncreases = new List<int>();
         int minStatsIncrease = 0;
@@ -261,7 +265,6 @@ public class PeriodManager : MonoBehaviour
                 break;
         }
 
-        
         if (employee.age <= ageOfRegression)
         {
             for (int i = 0; i < 5; i++)
@@ -319,7 +322,7 @@ public class PeriodManager : MonoBehaviour
                             / 5;
     }
 
-    private void CheckforEmptyList(List<Employee> listToCheck, string emptyAction)
+    public void CheckforEmptyList(List<Employee> listToCheck, string emptyAction)
     {
         if (listToCheck.Count == 0)
             uiManager.emptyListText.text = emptyAction;
@@ -327,43 +330,28 @@ public class PeriodManager : MonoBehaviour
 
     private void CheckforRetirement()
     {
-        int randomNumber = Random.Range(1, 101); 
+        int percentChanceOfRetirement = 0;
 
         foreach (var employee in employeeLists.currentRoster.ToList())
         {
+            int randomNumber = Random.Range(1, 101);
+
             switch (employee.age)
             {
-                case 35:
-                    if (randomNumber > 0 && randomNumber < 21) { AddToRetirement(employee); } // 20% Chance
-                    break;
+                case 35: percentChanceOfRetirement = 21; break; // 20% Chance
+                case 36: percentChanceOfRetirement = 31; break; // 30% Chance
+                case 37: percentChanceOfRetirement = 41; break; // 40% Chance
+                case 38: percentChanceOfRetirement = 61; break; // 60% Chance
+                case 39: percentChanceOfRetirement = 81; break; // 80% Chance
+                case 40: percentChanceOfRetirement = 101; break; // 100% Chance
+            }
 
-                case 36:
-                    if (randomNumber > 0 && randomNumber < 31) { AddToRetirement(employee); } // 30% Chance
-                    break;
-
-                case 37:
-                    if (randomNumber > 0 && randomNumber < 41) { AddToRetirement(employee); } // 40% Chance
-                    break;
-
-                case 38:
-                    if (randomNumber > 0 && randomNumber < 61) { AddToRetirement(employee); } // 60% Chance
-                    break;
-
-                case 39:
-                    if (randomNumber > 0 && randomNumber < 81) { AddToRetirement(employee); } // 80% Chance
-                    break;
-
-                case 40:
-                    AddToRetirement(employee); // 100% Chance
-                    break;
+            if (randomNumber < percentChanceOfRetirement)
+            {
+                employeeLists.AddEmployee(employee, employeeLists.retiringEmployees);
+                employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
             }
         }
-    }
-
-    private void AddToRetirement(Employee employee)
-    {
-        employeeLists.AddEmployee(employee, employeeLists.retiringEmployees);
-        employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
     }
 
     private void CheckExpiringContracts()
@@ -410,43 +398,28 @@ public class PeriodManager : MonoBehaviour
 
     private void CheckForEmployeeEvent()
     {
+        int percentChanceOfDisgruntlement = 0;
+
         foreach (var employee in employeeLists.currentRoster.ToList())
         {
             int randomNumber = Random.Range(1, 101);
 
             switch (employee.personalityTrait)
             {
-                case EmployeeEnumerators.PersonalityTrait.Toxic:
-                    if (randomNumber < 76) { EmployeeIsDisgruntled(employee); } // 75% Chance
-                    break;
+                case EmployeeEnumerators.PersonalityTrait.Toxic: percentChanceOfDisgruntlement = 76; break; // 75% Chance
+                case EmployeeEnumerators.PersonalityTrait.Diva: percentChanceOfDisgruntlement = 41; break; // 40% Chance
+                case EmployeeEnumerators.PersonalityTrait.Difficult: percentChanceOfDisgruntlement = 26; break; // 25% Chance
+                case EmployeeEnumerators.PersonalityTrait.Team_Player: percentChanceOfDisgruntlement = 16; break; // 15% Chance
+                case EmployeeEnumerators.PersonalityTrait.Saint: percentChanceOfDisgruntlement = 6; break; // 5% Chance
+                case EmployeeEnumerators.PersonalityTrait.Perfectionist: percentChanceOfDisgruntlement = 1; break; // 0% Chance 
+            }
 
-                case EmployeeEnumerators.PersonalityTrait.Diva:
-                    if (randomNumber < 41) { EmployeeIsDisgruntled(employee); } // 40% Chance
-                    break;
-
-                case EmployeeEnumerators.PersonalityTrait.Difficult:
-                    if (randomNumber < 26) { EmployeeIsDisgruntled(employee); } // 25% Chance
-                    break;
-
-                case EmployeeEnumerators.PersonalityTrait.Team_Player:
-                    if (randomNumber < 16) { EmployeeIsDisgruntled(employee); } // 15% Chance
-                    break;
-
-                case EmployeeEnumerators.PersonalityTrait.Saint:
-                    if (randomNumber < 6) { EmployeeIsDisgruntled(employee); } // 5% Chance
-                    break;
-
-                case EmployeeEnumerators.PersonalityTrait.Perfectionist:
-                    // 0% Chance
-                    break;
+            if (randomNumber < percentChanceOfDisgruntlement)
+            {
+                employeeLists.AddEmployee(employee, employeeLists.disgruntledEmployees);
+                employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
             }
         } 
-    }
-
-    private void EmployeeIsDisgruntled(Employee employee)
-    {
-        employeeLists.AddEmployee(employee, employeeLists.disgruntledEmployees);
-        employeeLists.RemoveEmployee(employee, employeeLists.currentRoster);
     }
     #endregion
 }

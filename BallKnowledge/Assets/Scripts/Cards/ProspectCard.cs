@@ -90,8 +90,6 @@ public class ProspectCard : EmployeeCard
         prospect = employee;
     }
 
-    // We shouldn't refresh the UI here as it updates all the prospects question marks, instead, we should replace the draft button with a DRAFTED tag
-    // Remember that cutting a player on the roster will update the UI as well
     public void DraftPlayer(ProspectCard prospectCard)
     {
         Employee prospectToDraft = prospectCard.prospect;
@@ -101,13 +99,13 @@ public class ProspectCard : EmployeeCard
             case 1:
                 if (manager.firstRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft) && employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft))
                 {
-                    manager.playersDrafted++;
+                    employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
+                    draftManager.latestDraftClassRoundSelected.Add(1);
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 
                     manager.firstRoundPicks--;
-                    manager.playersDrafted++;
                 }
                 else if (manager.firstRoundPicks < 1) { uiManager.InsufficientDraftPicks("first"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
@@ -117,13 +115,13 @@ public class ProspectCard : EmployeeCard
             case 2:
                 if (manager.secondRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
                 {
-                    manager.playersDrafted++;
+                    employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
+                    draftManager.latestDraftClassRoundSelected.Add(2);
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 
                     manager.secondRoundPicks--;
-                    manager.playersDrafted++;
                 }
                 else if (manager.secondRoundPicks < 1) { uiManager.InsufficientDraftPicks("second"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
@@ -133,13 +131,13 @@ public class ProspectCard : EmployeeCard
             case 3:
                 if (manager.thirdRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
                 {
-                    manager.playersDrafted++;
+                    employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
+                    draftManager.latestDraftClassRoundSelected.Add(3);
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 
                     manager.thirdRoundPicks--;
-                    manager.playersDrafted++;
                 }
                 else if (manager.thirdRoundPicks < 1) { uiManager.InsufficientDraftPicks("third"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
@@ -147,12 +145,12 @@ public class ProspectCard : EmployeeCard
                 break;
         }
 
-        RefreshProspectStatus(prospectCard);
-        uiManager.UpdateDraftPicks();
-        uiManager.UpdateCapSpace();
+        manager.playersDrafted++;
+
+        uiManager.RefreshUI();
     }
 
-    public void RefreshProspectStatus(ProspectCard prospectCard)
+    public void RemoveProspect(ProspectCard prospectCard)
     {
         if (!employeeLists.draftClass.Contains(prospectCard.prospect))
             Destroy(prospectCard.gameObject);

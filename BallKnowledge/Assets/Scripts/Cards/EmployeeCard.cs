@@ -6,6 +6,7 @@ using System;
 
 public class EmployeeCard : MonoBehaviour
 {
+    #region Required Classes
     protected GeneralManager manager;
     protected EmployeeLists employeeLists;
     protected UIManager uiManager;
@@ -13,6 +14,7 @@ public class EmployeeCard : MonoBehaviour
     protected DraftManager draftManager;
     protected TradeManager tradeManager;
     protected EmployeeRNG employeeRNG = new EmployeeRNG();
+    #endregion
 
     private Employee thisEmployee;
 

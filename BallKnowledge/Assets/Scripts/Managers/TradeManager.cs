@@ -14,13 +14,13 @@ public class TradeManager : MonoBehaviour
     [Header("Trading Layout")]
     [SerializeField] GameObject[] displays;
 
-    public Employee employeeToBeAcquired;
-
     public List<int> outgoingTradePackageValue = new List<int>();
     private int totalTradePackageValue;
 
     public List<Employee> outgoingEmployees = new List<Employee>();
     public List<int> outgoingDraftPicks = new List<int>();
+
+    public Employee employeeToBeAcquired;
 
     private UIManager uiManager;
     private GeneralManager generalManager;
@@ -60,7 +60,7 @@ public class TradeManager : MonoBehaviour
     {
         if (employeeToBeAcquired == null)
         {
-            uiManager.NoEmployeeToAcquireSelected();
+            uiManager.GenericText("You must selected an employee to acquire before submitting an offer");
             return;
         }
 
@@ -84,7 +84,7 @@ public class TradeManager : MonoBehaviour
     {
         if (employeeLists.HasRosterSpace(employeeToBeAcquired))
         {
-            uiManager.TradeAccepted();
+            uiManager.GenericText("Trade has been ACCEPTED");
 
             for (int i = 0; i < outgoingDraftPicks.Count; i++)
             {
@@ -103,8 +103,8 @@ public class TradeManager : MonoBehaviour
             employeeLists.RemoveEmployee(employeeToBeAcquired, employeeLists.tradeBlock);
             employeeToBeAcquired = null;
 
+            uiManager.BuildUI();
             uiManager.RefreshUI();
-            uiManager.RefreshUserAssetsUI();
         }
         else if (!employeeLists.HasRosterSpace(employeeToBeAcquired))
             uiManager.InsufficientRosterSpace(employeeToBeAcquired);
@@ -112,7 +112,7 @@ public class TradeManager : MonoBehaviour
 
     private void TradeDeclined()
     {
-        uiManager.TradeDeclined();
+        uiManager.GenericText("Trade has been declined");
         uiManager.RefreshTradeInterestBar((float)totalTradePackageValue, (float)employeeToBeAcquired.value);
     }
     #endregion
@@ -159,8 +159,8 @@ public class TradeManager : MonoBehaviour
             outgoingEmployees.Clear();
             outgoingTradePackageValue.Clear();
 
+            uiManager.BuildUI();
             uiManager.RefreshUI();
-            uiManager.RefreshUserAssetsUI();
         }  
 
         generalManager.tradesCompleted++;
@@ -199,8 +199,7 @@ public class TradeManager : MonoBehaviour
 
         displayToShow.SetActive(true);
 
-        uiManager.RefreshCurrentTradePackageUI();
-        uiManager.RefreshEmployeesForPicksUI();
+        uiManager.RefreshUI();
         uiManager.tradingScreen.GetComponent<ScrollRect>().content = displayToShow.GetComponent<RectTransform>();
     }
     #endregion

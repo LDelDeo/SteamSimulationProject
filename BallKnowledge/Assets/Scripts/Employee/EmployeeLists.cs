@@ -59,15 +59,9 @@ public class EmployeeLists : MonoBehaviour
 
         list.Remove(employee);
     }
+    #endregion
 
-    public void ClearList(List<Employee> list)
-    {
-        foreach (Employee employee in list.ToList())
-        {
-            list.Remove(employee);
-        }
-    }
-
+    #region Pre Roster Addition Checks
     public bool HasRosterSpace(Employee employee)
     {
         switch (employee.jobPosition)
@@ -218,10 +212,9 @@ public class EmployeeLists : MonoBehaviour
 
 public class RosterConstruction
 {
-    public int maxEmployees;
     public int GetMaxEmployees()
     {
-        maxEmployees = 
+        var maxEmployees = 
             maxbusser +
             maxJanitor +
             maxCashier +

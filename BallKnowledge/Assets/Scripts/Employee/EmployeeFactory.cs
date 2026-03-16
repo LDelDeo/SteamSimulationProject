@@ -89,7 +89,6 @@ public class EmployeeFactory
 
         // These values have an affect on the amout of requested wage they'd like in negotiations
         // Combination of age, work ethic, individual awards, championships and overall
-
         switch (employee.workEthic)
         {
             case EmployeeEnumerators.WorkEthic.Bum: employeeValue += 1; break;
