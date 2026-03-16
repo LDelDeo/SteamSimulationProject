@@ -87,7 +87,7 @@ public class EmployeeFactory
     {
         var employeeValue = 0;
         // Max Value = 30, Min Value = 3
-        // Max Contract = 120/hr, Min Contract = $6/hr
+        // Max Defualt Contract = 120/hr, Min Default Contract = $6/hr
 
         // These values have an affect on the amout of requested wage they'd like in negotiations
         // Combination of age, work ethic, individual awards, championships and overall
@@ -289,23 +289,23 @@ public class EmployeeEnumerators
 
     public enum WorkEthic
     {
-        Bum,
-        Lazy,
-        Paycheck_Collector,
-        Gets_The_Job_Done,
-        Motivated,
-        Grinder,
-        X_Factor
+        Bum = 0,
+        Lazy = 1,
+        Paycheck_Collector = 2,
+        Gets_The_Job_Done = 3,
+        Motivated = 4,
+        Grinder = 5,
+        X_Factor = 6
     }
 
     public enum PersonalityTrait
     {
-        Toxic,
-        Diva,
-        Difficult,
-        Team_Player,
-        Saint,
-        Perfectionist
+        Toxic = 0,
+        Diva = 1,
+        Difficult = 2,
+        Team_Player = 3,
+        Saint = 4,
+        Perfectionist = 5
     }
 }
 

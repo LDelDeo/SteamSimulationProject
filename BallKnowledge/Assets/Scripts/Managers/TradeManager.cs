@@ -125,7 +125,7 @@ public class TradeManager : MonoBehaviour
         switch(EmployeeValueInPicks(employee))
         {
             case TradePackages.NoTradeInterest:
-                uiManager.NoTradeInterest(employee);
+                uiManager.NameGenericText(employee, "has generated no trade interest from other fast food franchises");
                 break;
             case TradePackages.ThirdRoundPick:
                 uiManager.TradeEmployeeForPicks(employee, "a third round pick");

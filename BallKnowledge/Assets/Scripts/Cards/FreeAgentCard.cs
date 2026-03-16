@@ -114,7 +114,7 @@ public class FreeAgentCard : EmployeeCard
 
         if (!willSign)
         {
-            uiManager.NotInteretedInSigning(freeAgentToSign);
+            uiManager.NameGenericText(freeAgentToSign, "is not interested in signing with your franchise");
             signButton.interactable = false;
             return;
         }    
@@ -146,7 +146,7 @@ public class FreeAgentCard : EmployeeCard
 
         if (!willSign)
         {
-            uiManager.NotInteretedInSigning(employeeToResign);
+            uiManager.NameGenericText(employeeToResign, "is not interested in signing with your franchise");
             signButton.interactable = false;
             return;
         }

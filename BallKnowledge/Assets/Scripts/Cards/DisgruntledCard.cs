@@ -1,6 +1,9 @@
-using UnityEngine;
+using NUnit.Framework;
+using System.Security.Policy;
+using System.Text;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class DisgruntledCard : EmployeeCard
@@ -134,7 +137,7 @@ public class DisgruntledCard : EmployeeCard
 
         if (tradeManager.EmployeeValueInPicks(disgruntledEmployee) == TradeManager.TradePackages.NoTradeInterest)
         {
-            uiManager.NoTradeInterest(disgruntledEmployee);
+            uiManager.NameGenericText(disgruntledEmployee, "has generated no trade interest from other fast food franchises");
             buttons[1].SetActive(false);
         }
         else
@@ -218,7 +221,7 @@ public class DisgruntledCard : EmployeeCard
     {
         if (changedMind)
         {
-            uiManager.EmployeeStaying(disgruntledEmployee);
+            uiManager.NameGenericText(disgruntledEmployee, "has had a change of heart and has decided to stay");
             SettlementClosed();
 
             if (employeeLists.HasRosterSpace(disgruntledEmployee))
@@ -229,7 +232,7 @@ public class DisgruntledCard : EmployeeCard
         }
         else
         {
-            uiManager.EmployeeWantsOut(disgruntledEmployee);
+            uiManager.NameGenericText(disgruntledEmployee, "still wants out of your franchise");
             buttons[4].SetActive(false);
         }
     }

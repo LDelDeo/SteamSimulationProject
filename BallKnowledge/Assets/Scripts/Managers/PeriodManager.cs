@@ -45,6 +45,7 @@ public class PeriodManager : MonoBehaviour
     private DraftManager draftManager;
     private TradeManager tradeManager;
     private FaceManager faceManager;
+    private AwardManager awardManager;
 
     EmployeeRNG employeeRNG = new EmployeeRNG();
     EmployeeArrays employeeArrays = new EmployeeArrays();
@@ -58,6 +59,7 @@ public class PeriodManager : MonoBehaviour
         draftManager = GetComponent<DraftManager>();
         tradeManager = GetComponent<TradeManager>();
         faceManager = GetComponent<FaceManager>();
+        awardManager = GetComponent<AwardManager>();
 
         employeeFactory = new EmployeeFactory();
 
@@ -152,7 +154,7 @@ public class PeriodManager : MonoBehaviour
                 uiManager.ChangeUI(uiManager.disgruntlementsScreen);
                 break;
 
-            case Period.Draft:
+            case Period.Draft: // Reset the content to be able to scroll here, it'll be set at the 2nd season to be the content of final draft class
                 employeeLists.disgruntledEmployees.Clear();
 
                 draftManager.currentRound = 1;
@@ -168,7 +170,10 @@ public class PeriodManager : MonoBehaviour
                 break;
 
             case Period.Awards:
+                awardManager.GetAwardWinners();
+                awardManager.ShowAwardWinnersList();
 
+                uiManager.ChangeUI(uiManager.awardsScreen);
                 break;
 
             case Period.SeasonReflection:

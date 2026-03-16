@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class GeneralManager : MonoBehaviour
 {
+    // A lot of the references in the code for this script are just manager, for consistency we should rename it generalManager
+    [Header("General Manager Stats")]
+    public int perkTokens { get; set; } = 0;
+
     [Header("League Stats")]
     public int currentYear { get; set; } = 2025;
 

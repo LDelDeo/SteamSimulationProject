@@ -81,6 +81,11 @@ public class UIManager : MonoBehaviour
     public GameObject draftPickCardPrefab;
     public Image tradeInterestBar;
 
+    [Header("Awards Screen UI")]
+    public GameObject awardsScreen;
+    public Transform awardWinnersContent;
+    public GameObject awardWinnerCardPrefab;
+
     [Header("Layout Array")]
     public GameObject[] screens;
 
@@ -101,6 +106,7 @@ public class UIManager : MonoBehaviour
     private DraftManager draftManager;
     private TradeManager tradeManager;
     private GeneralManager manager;
+    private AwardManager awardManager;
 
     private void Start()
     {
@@ -111,6 +117,7 @@ public class UIManager : MonoBehaviour
         draftManager = GetComponent<DraftManager>();
         tradeManager = GetComponent<TradeManager>();
         manager = GetComponent<GeneralManager>();
+        awardManager = GetComponent<AwardManager>();
 
         OffenseScreen.SetActive(true);
         DefenseScreen.SetActive(false);
@@ -182,6 +189,7 @@ public class UIManager : MonoBehaviour
             case PeriodManager.Period.SeasonSimulation:
                 break;
             case PeriodManager.Period.Awards:
+                BuildAwardUI();
                 break;
             case PeriodManager.Period.SeasonReflection:
                 break;
@@ -241,18 +249,6 @@ public class UIManager : MonoBehaviour
         actionCanvasText.GetComponent<TMP_Text>().text = $"Employee Cut. Cap Space Savings: ${employee.hourlyWage}/hr";
     }
 
-    public void EmployeeStaying(Employee employee)
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} has had a change of heart and has decided to stay";
-    }
-
-    public void EmployeeWantsOut(Employee employee)
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} still wants out of your franchise";
-    }
-
     public void EmployeeExtention(Employee employee, int yearExtensionAmount)
     {
         OpenActionCanvas();
@@ -281,22 +277,12 @@ public class UIManager : MonoBehaviour
 
     public void EmployeeRetiring(Employee employee, bool isRetiringForGood)
     {
-        if (isRetiringForGood)
-        {
-            OpenActionCanvas();
-            actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is retiring for good, but appreciates the offer to come back";
-        }
-        else
-        {
-            OpenActionCanvas();
-            actionCanvasText.GetComponent<TMP_Text>().text = $"Welcome {employee.firstName} {employee.lastName} back for at least another year!";
-        }
-    }
-
-    public void EmployeeIsJoiningHallOfFame(Employee employee)
-    {
         OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is honored to be added to the {manager.franchiseName} hall of fame";
+
+        if (isRetiringForGood)
+            actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is retiring for good, but appreciates the offer to come back";
+        else
+            actionCanvasText.GetComponent<TMP_Text>().text = $"Welcome {employee.firstName} {employee.lastName} back for at least another year!";
     }
 
     public void DraftPicksForCapSpace(int amountOfPicks, string pickType, int additionalCapSpace)
@@ -305,28 +291,22 @@ public class UIManager : MonoBehaviour
         actionCanvasText.GetComponent<TMP_Text>().text = $"You will be trading {amountOfPicks} {pickType} round pick(s) for an increase of ${additionalCapSpace} of cap space";
     }
 
-    public void NoTradeInterest(Employee employee)
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} has generated no trade interest from other fast food franchises";
-    }
-
     public void TradeEmployeeForPicks(Employee employee, string tradePackage)
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = $"(Insert other franchise here) is offering {tradePackage} in the upcoming draft for {employee.firstName} {employee.lastName}";
     }
 
-    public void NotInteretedInSigning(Employee employee)
-    {
-        OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is not interested in signing with your franchise";
-    }
-
     public void EmployeeSigningContract(Employee employee)
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} is signing a {employee.yearsUnderContract} year deal worth {employee.hourlyWage}/hr with your franchise!";
+    }
+
+    public void NameGenericText(Employee employee, string textToDisplay)
+    {
+        OpenActionCanvas();
+        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} " + textToDisplay;
     }
 
     public void GenericText(string textToDisplay)
@@ -671,6 +651,23 @@ public class UIManager : MonoBehaviour
         GameObject cardObject = Instantiate(uiManager.draftPickCardPrefab, contentToAddTo);
         DraftPickCard cardInstance = cardObject.GetComponent<DraftPickCard>();
         cardInstance.SetValuesOfPick(roundOfPick, yearOfPick);
+    }
+    #endregion
+
+    #region Awards UI
+    private void BuildAwardUI()
+    {
+        ClearContent(awardWinnersContent);
+
+        foreach (var awardWinner in awardManager.awardWinners)
+        {
+            // Change the script here when we create a new card for this object
+            GameObject cardObject = Instantiate(awardWinnerCardPrefab, awardWinnersContent);
+            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+
+            cardInstance.GetEmployeeStats(awardWinner);
+            cardInstance.SetEmployeeCardBackground(awardWinner);
+        }
     }
     #endregion
 

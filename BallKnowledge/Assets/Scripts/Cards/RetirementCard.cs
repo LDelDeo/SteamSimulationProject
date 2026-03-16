@@ -78,7 +78,7 @@ public class RetirementCard : EmployeeCard
     {
         Employee employeeRetiring = retirementCard.retiredEmployee;
 
-        uiManager.EmployeeIsJoiningHallOfFame(employeeRetiring);
+        uiManager.NameGenericText(employeeRetiring, $"is honored to be added to the {manager.franchiseName} hall of fame");
 
         employeeLists.AddEmployee(employeeRetiring, employeeLists.employeeHallOfFame);
 
