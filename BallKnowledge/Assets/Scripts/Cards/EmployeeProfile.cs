@@ -23,6 +23,7 @@ public class EmployeeProfile : EmployeeCard
         jobPositionText.text = employeeJobPosition.ToString();
         workEthicText.text = $"Work Ethics: {employeeWorkEthic}";
         personalityText.text = $"Personality: {employeePersonalityTrait}";
+        methodOfAcquirementText.text = $"{employeeMethodOfAcquirement}";
         hourlyWageText.text = $"{employeeHourlyWage}/hr";
         yearsUnderContractText.text = $"{employeeYearsUnderContract} year(s) remaining";
         efficiencyText.text = $"Efficiency: {employeeEfficiency}";

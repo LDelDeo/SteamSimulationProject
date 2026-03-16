@@ -86,6 +86,8 @@ public class TradeManager : MonoBehaviour
         {
             uiManager.GenericText("Trade has been ACCEPTED");
 
+            employeeToBeAcquired.methodOfAcquirement = $"{generalManager.currentYear} via Trade";
+
             for (int i = 0; i < outgoingDraftPicks.Count; i++)
             {
                 if (outgoingDraftPicks[i] == 1) { generalManager.firstRoundPicks--; }

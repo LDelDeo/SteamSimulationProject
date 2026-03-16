@@ -100,7 +100,7 @@ public class ProspectCard : EmployeeCard
                 if (manager.firstRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft) && employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft))
                 {
                     employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
-                    draftManager.latestDraftClassRoundSelected.Add(1);
+                    prospectToDraft.methodOfAcquirement = $"{manager.currentYear} first round pick";
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
@@ -116,7 +116,7 @@ public class ProspectCard : EmployeeCard
                 if (manager.secondRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
                 {
                     employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
-                    draftManager.latestDraftClassRoundSelected.Add(2);
+                    prospectToDraft.methodOfAcquirement = $"{manager.currentYear} second round pick";
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
@@ -132,7 +132,7 @@ public class ProspectCard : EmployeeCard
                 if (manager.thirdRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
                 {
                     employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
-                    draftManager.latestDraftClassRoundSelected.Add(3);
+                    prospectToDraft.methodOfAcquirement = $"{manager.currentYear} third round pick";
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);

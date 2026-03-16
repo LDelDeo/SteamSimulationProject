@@ -17,6 +17,8 @@ public class Employee
     public EmployeeEnumerators.WorkEthic workEthic;
     public EmployeeEnumerators.PersonalityTrait personalityTrait;
 
+    public string methodOfAcquirement;
+
     public int efficiency;
     public int customerService;
     public int communication;

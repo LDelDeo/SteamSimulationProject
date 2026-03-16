@@ -4,6 +4,10 @@ using TMPro;
 
 public class FreeAgentCard : EmployeeCard
 {
+    /// <summary>
+    /// Something to think about is the amount of attempts you get at offering a contract,
+    /// Maybe it's an upgrade in the manager store, where you get 2 or 3 attempts
+    /// </summary>
     [Header("Contract Negotiation's Visuals")]
     [SerializeField] TMP_Text contractYearsText;
     [SerializeField] Image interestBar;
@@ -16,6 +20,7 @@ public class FreeAgentCard : EmployeeCard
 
     private int contractYears = 1;
     private float interestInSigning;
+    private int interestStandard;
     private bool willSign;
 
     private Employee freeAgent;
@@ -41,7 +46,7 @@ public class FreeAgentCard : EmployeeCard
 
     private void Start()
     {
-        SetInterestInSigning();
+        SetInitialInterestInSigning();
     }
 
     #region Signing Functionality
@@ -50,9 +55,9 @@ public class FreeAgentCard : EmployeeCard
         freeAgent = employee;
     }
 
-    public void SetInterestInSigning()
+    public void SetInitialInterestInSigning()
     {
-        // The employee's interest in signing is based off the current roster's overall. The higher the overall, the higher their interest can be
+        // The employee's initial interest in signing is based off the current roster's overall. The higher the overall, the higher their interest can be
         var maxInterestInSigning = 0f;
         var minInterestInSigning = 0f;
 
@@ -79,6 +84,8 @@ public class FreeAgentCard : EmployeeCard
 
         if (minInterestInSigning > 100)
             minInterestInSigning = 100;
+        else if (minInterestInSigning < 0)
+            minInterestInSigning = 0;
 
         if (maxInterestInSigning <= minInterestInSigning)
             maxInterestInSigning = minInterestInSigning + 20;
@@ -87,8 +94,15 @@ public class FreeAgentCard : EmployeeCard
 
         uiManager.LoadFreeAgentInterestBar(interestBar, interestInSigning);
 
-        var randomNumber = Random.Range(1, 101);
-        if (randomNumber > interestInSigning)  
+        // The free agent's interest must be higher than this standard for them to accept the contract
+        interestStandard = Random.Range(1, 101);
+
+        UpdateInterestDecsion();
+    }
+
+    private void UpdateInterestDecsion()
+    {
+        if (interestStandard > interestInSigning)
             willSign = false;
         else
             willSign = true;
@@ -111,6 +125,7 @@ public class FreeAgentCard : EmployeeCard
                 if (employeeLists.HasRosterSpace(freeAgentToSign))
                 {
                     freeAgentToSign.yearsUnderContract = contractYears;
+                    freeAgentToSign.methodOfAcquirement = $"{manager.currentYear} Free Agency Class";
 
                     employeeLists.AddEmployee(freeAgentToSign, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(freeAgentToSign, employeeLists.freeAgentClass);
@@ -154,6 +169,24 @@ public class FreeAgentCard : EmployeeCard
             }
             else if (!employeeLists.HasCapSpaceToCompleteTransaction(employeeToResign)) { uiManager.InsufficientCapRoom(employeeToResign); }
         } 
+    }
+
+    public void AdjustContractWage(bool increase)
+    {
+        if (increase) // Increasing the money offered to a free agent will make them more interested in signing and more likely they will sign
+        {
+            freeAgent.hourlyWage++;
+            interestInSigning++;
+        }
+        else if (!increase && freeAgent.hourlyWage > 1) // Decreasing the money offered to a free agent will make them less interested in signing and less likely they will sign
+        {
+            freeAgent.hourlyWage--;
+            interestInSigning--;
+        }
+
+        uiManager.LoadFreeAgentInterestBar(interestBar, interestInSigning);
+        hourlyWageText.text = $"{freeAgent.hourlyWage}/hr";
+        UpdateInterestDecsion();
     }
 
     public void AdjustContractYears(bool increase)

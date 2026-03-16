@@ -17,7 +17,6 @@ public class DraftManager : MonoBehaviour
     [SerializeField] int additionalCapSpacePerThirdRoundPick;
 
     public List<Employee> latestDraftClass = new List<Employee>();
-    public List<int> latestDraftClassRoundSelected = new List<int>();
 
     public List<GameObject> prospectCardsSortingList = new List<GameObject>();
 

@@ -53,6 +53,8 @@ public class EmployeeFactory
         employee.workEthic = EmployeeRNG.GetWorkEthic();
         employee.personalityTrait = EmployeeRNG.GetRandomEnumValue<EmployeeEnumerators.PersonalityTrait>();
 
+        employee.methodOfAcquirement = "Previous regime";
+
         if (listToAddTo == employeeLists.tradeBlock)
         {
             employee.efficiency = employeeRNG.GetJuicedStat();

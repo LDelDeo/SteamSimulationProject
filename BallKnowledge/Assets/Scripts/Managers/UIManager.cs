@@ -37,12 +37,14 @@ public class UIManager : MonoBehaviour
     [Header("Draft Screen UI")]
     public GameObject draftScreen;
     public Transform prospectContent;
+
     public Transform finalDraftClassContent;
+    public TMP_Text draftPicksByRoundText;
 
     public GameObject prospectCardPrefab;
+    public GameObject selectedProspectCardPrefab;
 
     public TMP_Text currentRoundText;
-    public TMP_Text draftPicksByRoundText;
 
     [Header("Free Agency Screen UI")]
     public GameObject freeAgencyScreen;
@@ -438,21 +440,16 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void BuildFinalDraftClassUI() // We need to display the round they were selected in as well
+    private void BuildFinalDraftClassUI()
     {
         ClearContent(finalDraftClassContent);
 
         foreach (var draftedProspect in draftManager.latestDraftClass)
         {
-            GameObject cardObject = Instantiate(employeeCardPrefab, finalDraftClassContent);
-            EmployeeCard card = cardObject.GetComponent<EmployeeCard>();
+            GameObject cardObject = Instantiate(selectedProspectCardPrefab, finalDraftClassContent);
+            SelectedProspectCard card = cardObject.GetComponent<SelectedProspectCard>();
             card.GetEmployeeStats(draftedProspect);
             card.SetEmployeeCardBackground(draftedProspect);
-        }
-
-        foreach (var roundSelected in draftManager.latestDraftClassRoundSelected)
-        {
-            // Add the round next to the employee selected
         }
     }
 

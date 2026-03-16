@@ -164,7 +164,6 @@ public class PeriodManager : MonoBehaviour
 
             case Period.SeasonSimulation:
                 draftManager.latestDraftClass.Clear();
-                draftManager.latestDraftClassRoundSelected.Clear();
 
                 break;
 
