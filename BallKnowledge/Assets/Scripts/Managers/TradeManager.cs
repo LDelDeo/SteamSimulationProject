@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TradeManager : MonoBehaviour
 {
+    // We need to nerf the value of outgoing employees
     [Header("Trading Configuration")]
     [SerializeField] public int tradeBlockSize;
     [SerializeField] public int firstRoundPickValue;
@@ -202,7 +203,7 @@ public class TradeManager : MonoBehaviour
         displayToShow.SetActive(true);
 
         uiManager.RefreshUI();
-        uiManager.tradingScreen.GetComponent<ScrollRect>().content = displayToShow.GetComponent<RectTransform>();
+        uiManager.SetScrollContent(uiManager.tradingScreen, displayToShow.GetComponent<Transform>());
     }
     #endregion
 }

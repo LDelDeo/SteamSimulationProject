@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AwardManager : MonoBehaviour
 {
@@ -142,30 +143,30 @@ public class AwardManager : MonoBehaviour
 
     private void SelectREOTY()
     {
-        var rookieWinner = Random.Range(0, rookieEOTYNominations.Count);
-        if (rookieWinner < rookieEOTYNominations.Count) REOTY = rookieEOTYNominations[rookieWinner];
-        else REOTY = null;
+        var rookieWinner = Random.Range(0, rookieEOTYNominations.Count + 1);
+        if (rookieWinner == rookieEOTYNominations.Count) REOTY = null;
+        else REOTY = rookieEOTYNominations[rookieWinner];
     }
 
     private void SelectFOHEOTY()
     {
-        var frontWinner = Random.Range(0, frontOfHouseEOTYNominations.Count);
-        if (frontWinner < frontOfHouseEOTYNominations.Count) FOHEOTY = frontOfHouseEOTYNominations[frontWinner];
-        else FOHEOTY = null;
+        var frontWinner = Random.Range(0, frontOfHouseEOTYNominations.Count + 1);
+        if (frontWinner == frontOfHouseEOTYNominations.Count) FOHEOTY = null; 
+        else FOHEOTY = frontOfHouseEOTYNominations[frontWinner];
     }
 
     private void SelectBOHEOTY()
     {
-        var backWinner = Random.Range(0, backOfHouseEOTYNominations.Count);
-        if (backWinner < backOfHouseEOTYNominations.Count) BOHEOTY = backOfHouseEOTYNominations[backWinner];
-        else BOHEOTY = null;
+        var backWinner = Random.Range(0, backOfHouseEOTYNominations.Count + 1);
+        if (backWinner == backOfHouseEOTYNominations.Count) BOHEOTY = null;
+        else BOHEOTY = backOfHouseEOTYNominations[backWinner];
     }
 
     private void SelectMVE()
     {
-        var mostValuableWinner = Random.Range(0, mostValuableEmployeeNominations.Count);
-        if (mostValuableWinner < mostValuableEmployeeNominations.Count) MVE = mostValuableEmployeeNominations[mostValuableWinner];
-        else MVE = null;
+        var mostValuableWinner = Random.Range(0, mostValuableEmployeeNominations.Count + 1);
+        if (mostValuableWinner == mostValuableEmployeeNominations.Count) MVE = null;
+        else MVE = mostValuableEmployeeNominations[mostValuableWinner];
     }
 
     private void OneAwardPerEmployee()
@@ -247,7 +248,7 @@ public class AwardManager : MonoBehaviour
         {
             case 0: selectedPrize = PrizeTypes.workEthicUpgrade; break;
             case 1: selectedPrize = PrizeTypes.overallUpgrade; break;
-            case 3: selectedPrize = PrizeTypes.personalityTraitUpgrade; break;
+            case 2: selectedPrize = PrizeTypes.personalityTraitUpgrade; break;
         }
 
         // If the employee doesn't benefit from any of these prizes, the user will gain a compensatory 1st round pick in the upcoming draft
@@ -339,11 +340,7 @@ public class AwardManager : MonoBehaviour
                             break;
                     }
 
-                    awardWinner.efficiency += amountToUpgrade;
-                    awardWinner.customerService += amountToUpgrade;
-                    awardWinner.communication += amountToUpgrade;
-                    awardWinner.teamwork += amountToUpgrade;
-                    awardWinner.iq += amountToUpgrade;
+                    employeeLists.UpgradeEmployeeOverall(awardWinner, amountToUpgrade);
                 }
                 break;
 
@@ -400,7 +397,10 @@ public class AwardManager : MonoBehaviour
 
     public void ShowEmployeesToNominate()
     {
+        uiManager.SetScrollContent(uiManager.awardsScreen, uiManager.employeesToNominateContent);
+
         uiManager.employeesToNominateContent.gameObject.SetActive(true);
+        uiManager.awardWinnersContent.gameObject.SetActive(false);
     }
     #endregion
 }

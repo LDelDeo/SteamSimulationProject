@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PeriodManager : MonoBehaviour
 {
@@ -154,8 +155,9 @@ public class PeriodManager : MonoBehaviour
                 uiManager.ChangeUI(uiManager.disgruntlementsScreen);
                 break;
 
-            case Period.Draft: // Reset the content to be able to scroll here, it'll be set at the 2nd season to be the content of final draft class
+            case Period.Draft:
                 employeeLists.disgruntledEmployees.Clear();
+                uiManager.SetScrollContent(uiManager.draftScreen, uiManager.prospectContent);
 
                 draftManager.currentRound = 1;
                 uiManager.nextPeriodButton.SetActive(false);

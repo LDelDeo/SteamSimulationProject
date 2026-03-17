@@ -52,32 +52,28 @@ public class AwardWinnerCard : EmployeeCard
         awardWinner = employee;
     }
 
-    public void NominateEmployeeForTeamAward()
+    public void NominateEmployeeForTeamAward(AwardWinnerCard awardWinnerCard)
     {
-        if (awardWinner.efficiency < 100) awardWinner.efficiency += awardManager.ovrUpgradeAmountTeamAward;
-        if (awardWinner.efficiency > 100) awardWinner.efficiency = 100;
+        Employee awardWinner = awardWinnerCard.awardWinner;
 
-        if (awardWinner.customerService < 100) awardWinner.customerService += awardManager.ovrUpgradeAmountTeamAward;
-        if (awardWinner.customerService > 100) awardWinner.customerService = 100;
+        employeeLists.UpgradeEmployeeOverall(awardWinner, awardManager.ovrUpgradeAmountTeamAward);
 
-        if (awardWinner.communication < 100) awardWinner.communication += awardManager.ovrUpgradeAmountTeamAward;
-        if (awardWinner.communication > 100) awardWinner.communication = 100;
-        
-        if (awardWinner.teamwork < 100) awardWinner.teamwork += awardManager.ovrUpgradeAmountTeamAward;
-        if (awardWinner.teamwork > 100) awardWinner.teamwork = 100;
+        // Maybe make a function in UI manager to create a singluar card
+        GameObject cardObject = Instantiate(uiManager.awardWinnerCardPrefab, uiManager.awardWinnersContent);
+        AwardWinnerCard card = cardObject.GetComponent<AwardWinnerCard>();
 
-        if (awardWinner.iq < 100) awardWinner.iq += awardManager.ovrUpgradeAmountTeamAward;
-        if (awardWinner.iq > 100) awardWinner.iq = 100;
-
-        awardWonText.text = $"{manager.currentYear} Management Thank You Award";
-        prizeWonText.text = $"+{awardManager.ovrUpgradeAmountTeamAward} Overall";
+        card.GetEmployeeStats(awardWinner);
+        card.SetEmployeeCardBackground(awardWinner);
+        card.awardWonText.text = $"{manager.currentYear} Management Thank You Award";
+        card.prizeWonText.text = $"+{awardManager.ovrUpgradeAmountTeamAward} Overall & a box of pens"; // maybe add corny gifts here
 
         uiManager.showEmployeesToNominateButton.interactable = false;
-        Instantiate(this.gameObject, uiManager.awardWinnersContent);
+
+        uiManager.SetScrollContent(uiManager.awardsScreen, uiManager.awardWinnersContent);
+        uiManager.ClearContent(uiManager.employeesToNominateContent);
 
         uiManager.employeesToNominateContent.gameObject.SetActive(false);
-
-        uiManager.ClearContent(uiManager.employeesToNominateContent);
+        uiManager.awardWinnersContent.gameObject.SetActive(true);
     }
     #endregion
 }

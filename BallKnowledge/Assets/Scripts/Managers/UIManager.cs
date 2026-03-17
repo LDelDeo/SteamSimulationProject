@@ -683,8 +683,7 @@ public class UIManager : MonoBehaviour
                     case AwardManager.PrizeTypes.personalityTraitUpgrade: cardInstance.prizeWonText.text = $"+ Personality Trait"; break;
                 }
             }
-
-            if (awardWinner == awardManager.FOHEOTY)
+            else if (awardWinner == awardManager.FOHEOTY)
             {
                 cardInstance.awardWonText.text = $"{manager.currentYear} Front of House Employee of the Year";
 
@@ -696,8 +695,7 @@ public class UIManager : MonoBehaviour
                     case AwardManager.PrizeTypes.personalityTraitUpgrade: cardInstance.prizeWonText.text = $"+ Personality Trait"; break;
                 }
             }
-            
-            if (awardWinner == awardManager.BOHEOTY)
+            else if (awardWinner == awardManager.BOHEOTY)
             {
                 cardInstance.awardWonText.text = $"{manager.currentYear} Back of House Employee of the Year";
 
@@ -709,8 +707,7 @@ public class UIManager : MonoBehaviour
                     case AwardManager.PrizeTypes.personalityTraitUpgrade: cardInstance.prizeWonText.text = $"+ Personality Trait"; break;
                 }
             }
-            
-            if (awardWinner == awardManager.MVE)
+            else if (awardWinner == awardManager.MVE)
             {
                 cardInstance.awardWonText.text = $"{manager.currentYear} Most Valuable Employee";
 
@@ -726,11 +723,15 @@ public class UIManager : MonoBehaviour
 
         foreach (var employee in employeeLists.currentRoster)
         {
-            GameObject cardObject = Instantiate(nominationCardPrefab, employeesToNominateContent);
-            AwardWinnerCard cardInstance = cardObject.GetComponent<AwardWinnerCard>();
+            // If an employee has won a league award, you cannot nominate them for a team award
+            if (employee != awardManager.REOTY && employee != awardManager.FOHEOTY && employee != awardManager.BOHEOTY && employee != awardManager.MVE)
+            {
+                GameObject cardObject = Instantiate(nominationCardPrefab, employeesToNominateContent);
+                AwardWinnerCard cardInstance = cardObject.GetComponent<AwardWinnerCard>();
 
-            cardInstance.GetEmployeeStats(employee);
-            cardInstance.SetEmployeeCardBackground(employee);
+                cardInstance.GetEmployeeStats(employee);
+                cardInstance.SetEmployeeCardBackground(employee);
+            }
         }
     }
     #endregion
@@ -804,6 +805,11 @@ public class UIManager : MonoBehaviour
         else if (!isRosterShowing && periodManager.currentPeriod != PeriodManager.Period.StartOfYear) { rosterScreen.SetActive(false); }
 
         RefreshRosterUI();
+    }
+
+    public void SetScrollContent(GameObject screen, Transform scrollContent)
+    {
+        screen.GetComponent<ScrollRect>().content = scrollContent.GetComponent<RectTransform>();
     }
 
     // Maybe make a generic function to set bars (Fill Amount as well as Color)

@@ -208,6 +208,35 @@ public class EmployeeLists : MonoBehaviour
         return rosterOverall;
     }
     #endregion
+
+    #region Update Functions
+
+    // We should make a max stat field instead of hardcoding 100 in all places this happens
+    public void UpgradeEmployeeOverall(Employee employee, int overallToUpgrade)
+    {
+        if (employee.efficiency < 100) employee.efficiency += overallToUpgrade;
+        if (employee.efficiency > 100) employee.efficiency = 100;
+
+        if (employee.customerService < 100) employee.customerService += overallToUpgrade;
+        if (employee.customerService > 100) employee.customerService = 100;
+
+        if (employee.communication < 100) employee.communication += overallToUpgrade;
+        if (employee.communication > 100) employee.communication = 100;
+
+        if (employee.teamwork < 100) employee.teamwork += overallToUpgrade;
+        if (employee.teamwork > 100) employee.teamwork = 100;
+
+        if (employee.iq < 100) employee.iq += overallToUpgrade;
+        if (employee.iq > 100) employee.iq = 100;
+
+        employee.overall = (employee.efficiency +
+                            employee.customerService +
+                            employee.communication +
+                            employee.teamwork +
+                            employee.iq)
+                            / 5;
+    }
+    #endregion
 }
 
 public class RosterConstruction
