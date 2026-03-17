@@ -171,12 +171,12 @@ public class PeriodManager : MonoBehaviour
 
             case Period.Awards:
                 awardManager.GetAwardWinners();
-                awardManager.ShowAwardWinnersList();
 
                 uiManager.ChangeUI(uiManager.awardsScreen);
                 break;
 
             case Period.SeasonReflection:
+                awardManager.ResetAwards();
 
                 NewLeagueYear();
                 break;

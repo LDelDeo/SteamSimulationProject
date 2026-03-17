@@ -13,6 +13,7 @@ public class EmployeeCard : MonoBehaviour
     protected PeriodManager periodManager;
     protected DraftManager draftManager;
     protected TradeManager tradeManager;
+    protected AwardManager awardManager;
     protected EmployeeRNG employeeRNG = new EmployeeRNG();
     #endregion
 
@@ -108,6 +109,7 @@ public class EmployeeCard : MonoBehaviour
         periodManager = FindFirstObjectByType<PeriodManager>();
         draftManager = FindFirstObjectByType<DraftManager>();
         tradeManager = FindFirstObjectByType<TradeManager>();
+        awardManager = FindFirstObjectByType<AwardManager>();
     }
 
     public virtual void GetEmployeeStats(Employee employee)

@@ -4,10 +4,6 @@ using TMPro;
 
 public class FreeAgentCard : EmployeeCard
 {
-    /// <summary>
-    /// Something to think about is the amount of attempts you get at offering a contract,
-    /// Maybe it's an upgrade in the manager store, where you get 2 or 3 attempts
-    /// </summary>
     [Header("Contract Negotiation's Visuals")]
     [SerializeField] TMP_Text contractYearsText;
     [SerializeField] Image interestBar;

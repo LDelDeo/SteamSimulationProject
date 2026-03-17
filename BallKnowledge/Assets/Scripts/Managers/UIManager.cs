@@ -84,7 +84,10 @@ public class UIManager : MonoBehaviour
     [Header("Awards Screen UI")]
     public GameObject awardsScreen;
     public Transform awardWinnersContent;
+    public Transform employeesToNominateContent;
     public GameObject awardWinnerCardPrefab;
+    public GameObject nominationCardPrefab;
+    public Button showEmployeesToNominateButton;
 
     [Header("Layout Array")]
     public GameObject[] screens;
@@ -658,15 +661,76 @@ public class UIManager : MonoBehaviour
     private void BuildAwardUI()
     {
         ClearContent(awardWinnersContent);
+        ClearContent(employeesToNominateContent);
 
         foreach (var awardWinner in awardManager.awardWinners)
         {
-            // Change the script here when we create a new card for this object
             GameObject cardObject = Instantiate(awardWinnerCardPrefab, awardWinnersContent);
-            TradeAssetCard cardInstance = cardObject.GetComponent<TradeAssetCard>();
+            AwardWinnerCard cardInstance = cardObject.GetComponent<AwardWinnerCard>();
 
             cardInstance.GetEmployeeStats(awardWinner);
             cardInstance.SetEmployeeCardBackground(awardWinner);
+
+            if (awardWinner == awardManager.REOTY)
+            {
+                cardInstance.awardWonText.text = $"{manager.currentYear} Rookie Employee of the Year";
+
+                switch (awardManager.rookiePrize)
+                {
+                    case AwardManager.PrizeTypes.compensatoryFirstRoundPick: cardInstance.prizeWonText.text = $"Compensatory 1st Round Pick";  break;
+                    case AwardManager.PrizeTypes.workEthicUpgrade: cardInstance.prizeWonText.text = $"+ Work Ethic"; break;
+                    case AwardManager.PrizeTypes.overallUpgrade: cardInstance.prizeWonText.text = $"+{awardManager.ovrUpgradeAmountREOTY} Overall"; break;
+                    case AwardManager.PrizeTypes.personalityTraitUpgrade: cardInstance.prizeWonText.text = $"+ Personality Trait"; break;
+                }
+            }
+
+            if (awardWinner == awardManager.FOHEOTY)
+            {
+                cardInstance.awardWonText.text = $"{manager.currentYear} Front of House Employee of the Year";
+
+                switch (awardManager.frontPrize)
+                {
+                    case AwardManager.PrizeTypes.compensatoryFirstRoundPick: cardInstance.prizeWonText.text = $"Compensatory 1st Round Pick"; break;
+                    case AwardManager.PrizeTypes.workEthicUpgrade: cardInstance.prizeWonText.text = $"+ Work Ethic"; break;
+                    case AwardManager.PrizeTypes.overallUpgrade: cardInstance.prizeWonText.text = $"+{awardManager.ovrUpgradeAmountFOHEOTY} Overall"; break;
+                    case AwardManager.PrizeTypes.personalityTraitUpgrade: cardInstance.prizeWonText.text = $"+ Personality Trait"; break;
+                }
+            }
+            
+            if (awardWinner == awardManager.BOHEOTY)
+            {
+                cardInstance.awardWonText.text = $"{manager.currentYear} Back of House Employee of the Year";
+
+                switch (awardManager.backPrize)
+                {
+                    case AwardManager.PrizeTypes.compensatoryFirstRoundPick: cardInstance.prizeWonText.text = $"Compensatory 1st Round Pick"; break;
+                    case AwardManager.PrizeTypes.workEthicUpgrade: cardInstance.prizeWonText.text = $"+ Work Ethic"; break;
+                    case AwardManager.PrizeTypes.overallUpgrade: cardInstance.prizeWonText.text = $"+{awardManager.ovrUpgradeAmountBOHEOTY} Overall"; break;
+                    case AwardManager.PrizeTypes.personalityTraitUpgrade: cardInstance.prizeWonText.text = $"+ Personality Trait"; break;
+                }
+            }
+            
+            if (awardWinner == awardManager.MVE)
+            {
+                cardInstance.awardWonText.text = $"{manager.currentYear} Most Valuable Employee";
+
+                switch (awardManager.mostValuablePrize)
+                {
+                    case AwardManager.PrizeTypes.compensatoryFirstRoundPick: cardInstance.prizeWonText.text = $"Compensatory 1st Round Pick"; break;
+                    case AwardManager.PrizeTypes.workEthicUpgrade: cardInstance.prizeWonText.text = $"+MAX Work Ethic"; break;
+                    case AwardManager.PrizeTypes.overallUpgrade: cardInstance.prizeWonText.text = $"+{awardManager.ovrUpgradeAmountMVE} Overall"; break;
+                    case AwardManager.PrizeTypes.personalityTraitUpgrade: cardInstance.prizeWonText.text = $"+MAX Personality Trait"; break;
+                }
+            }
+        }
+
+        foreach (var employee in employeeLists.currentRoster)
+        {
+            GameObject cardObject = Instantiate(nominationCardPrefab, employeesToNominateContent);
+            AwardWinnerCard cardInstance = cardObject.GetComponent<AwardWinnerCard>();
+
+            cardInstance.GetEmployeeStats(employee);
+            cardInstance.SetEmployeeCardBackground(employee);
         }
     }
     #endregion

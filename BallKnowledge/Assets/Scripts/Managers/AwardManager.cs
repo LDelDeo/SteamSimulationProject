@@ -1,15 +1,23 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AwardManager : MonoBehaviour
 {
-    [Header("Award Configuration")]
+    // We should probably make the prizes different for each level, MVP is + 10, Player of Year is +7, rookie is +5, team player is +3
+    [Header("Award Nomination Configuration")]
     [SerializeField] int ovrRequiredToBeNominatedForREOTY;
     [SerializeField] int ovrRequiredToBeNominatedForEOTY;
     [SerializeField] int ovrRequiredToBeNominatedForMVE;
-    [SerializeField] int ovrUpgradeAmount;
+
+    [Header("Award Prize Configuration")]
+    public int ovrUpgradeAmountTeamAward;
+    public int ovrUpgradeAmountREOTY;
+    public int ovrUpgradeAmountFOHEOTY;
+    public int ovrUpgradeAmountBOHEOTY;
+    public int ovrUpgradeAmountMVE;
 
     #region Award Lists
     private List<Employee> rookieEOTYNominations = new List<Employee>();
@@ -20,10 +28,18 @@ public class AwardManager : MonoBehaviour
     #endregion
 
     #region Award Winners
-    private Employee REOTY;
-    private Employee FOHEOTY;
-    private Employee BOHEOTY;
-    private Employee MVE;
+    public Employee REOTY;
+    public Employee FOHEOTY;
+    public Employee BOHEOTY;
+    public Employee MVE;
+    #endregion
+
+    #region Award Winner Prizes
+    [Header("Award Winner Prizes")]
+    public PrizeTypes rookiePrize;
+    public PrizeTypes frontPrize;
+    public PrizeTypes backPrize;
+    public PrizeTypes mostValuablePrize;
     #endregion
 
     private EmployeeLists employeeLists;
@@ -43,7 +59,8 @@ public class AwardManager : MonoBehaviour
         none,
         workEthicUpgrade,
         overallUpgrade,
-        personalityTraitUpgrade
+        personalityTraitUpgrade,
+        compensatoryFirstRoundPick
     }
     #endregion
 
@@ -51,6 +68,7 @@ public class AwardManager : MonoBehaviour
     public void GetAwardWinners()
     {
         AwardCriteraCheck();
+        uiManager.showEmployeesToNominateButton.interactable = true;
     }
 
     private void AwardCriteraCheck()
@@ -124,29 +142,29 @@ public class AwardManager : MonoBehaviour
 
     private void SelectREOTY()
     {
-        var rookieWinner = Random.Range(0, rookieEOTYNominations.Count + 1);
+        var rookieWinner = Random.Range(0, rookieEOTYNominations.Count);
         if (rookieWinner < rookieEOTYNominations.Count) REOTY = rookieEOTYNominations[rookieWinner];
         else REOTY = null;
     }
 
     private void SelectFOHEOTY()
     {
-        var frontWinner = Random.Range(0, frontOfHouseEOTYNominations.Count + 1);
+        var frontWinner = Random.Range(0, frontOfHouseEOTYNominations.Count);
         if (frontWinner < frontOfHouseEOTYNominations.Count) FOHEOTY = frontOfHouseEOTYNominations[frontWinner];
         else FOHEOTY = null;
     }
 
     private void SelectBOHEOTY()
     {
-        var backWinner = Random.Range(0, backOfHouseEOTYNominations.Count + 1);
+        var backWinner = Random.Range(0, backOfHouseEOTYNominations.Count);
         if (backWinner < backOfHouseEOTYNominations.Count) BOHEOTY = backOfHouseEOTYNominations[backWinner];
         else BOHEOTY = null;
     }
 
     private void SelectMVE()
     {
-        var mostValuableWinner = Random.Range(0, mostValuableEmployeeNominations.Count + 1);
-        if (mostValuableWinner < mostValuableEmployeeNominations.Count + 1) MVE = mostValuableEmployeeNominations[mostValuableWinner];
+        var mostValuableWinner = Random.Range(0, mostValuableEmployeeNominations.Count);
+        if (mostValuableWinner < mostValuableEmployeeNominations.Count) MVE = mostValuableEmployeeNominations[mostValuableWinner];
         else MVE = null;
     }
 
@@ -187,7 +205,7 @@ public class AwardManager : MonoBehaviour
     {
         if (REOTY != null)
         {
-            PrizeSelector(REOTY);
+            PrizeSelector(REOTY, "REOTY");
             REOTY.rookieOfTheYear++;
 
             awardWinners.Add(REOTY);
@@ -195,7 +213,7 @@ public class AwardManager : MonoBehaviour
 
         if (FOHEOTY != null)
         {
-            PrizeSelector(FOHEOTY);
+            PrizeSelector(FOHEOTY, "FOHEOTY");
             FOHEOTY.employeeOfTheYear++;
 
             awardWinners.Add(FOHEOTY);
@@ -203,7 +221,7 @@ public class AwardManager : MonoBehaviour
             
         if (BOHEOTY != null)
         {
-            PrizeSelector(BOHEOTY);
+            PrizeSelector(BOHEOTY, "BOHEOTY");
             BOHEOTY.employeeOfTheYear++;
 
             awardWinners.Add(BOHEOTY);
@@ -211,16 +229,17 @@ public class AwardManager : MonoBehaviour
 
         if (MVE != null)
         {
-            PrizeSelector(MVE);
+            PrizeSelector(MVE, "MVE");
             MVE.mostValuableEmployee++;
 
             awardWinners.Add(MVE);
         }       
     }
 
-    private void PrizeSelector(Employee awardWinner)
+    // There must be a way to simplify this and clean this up
+    private void PrizeSelector(Employee awardWinner, string awardWon)
     {
-        // Select 1 of 3 prizes, if the employee doesn't benefit from the prize, it will select another
+        // Select 1 of 3 prizes, if the employee doesn't benefit from the prize, it will select one that the employee WILL benefit from
         var randomPrize = Random.Range(0, 3);
         PrizeTypes selectedPrize = PrizeTypes.none;
 
@@ -231,67 +250,157 @@ public class AwardManager : MonoBehaviour
             case 3: selectedPrize = PrizeTypes.personalityTraitUpgrade; break;
         }
 
-        // If the employee doesn't benefit from any of these prizes, the user will gain a complementary 1st round pick in the upcoming draft
-        if (awardWinner.workEthic != EmployeeEnumerators.WorkEthic.X_Factor &&
-            awardWinner.overall <= 89 &&
-            awardWinner.personalityTrait != EmployeeEnumerators.PersonalityTrait.Perfectionist)
+        // If the employee doesn't benefit from any of these prizes, the user will gain a compensatory 1st round pick in the upcoming draft
+        if (awardWinner.workEthic == EmployeeEnumerators.WorkEthic.X_Factor &&
+            awardWinner.overall > 89 &&
+            awardWinner.personalityTrait == EmployeeEnumerators.PersonalityTrait.Perfectionist)
         {
-            switch (selectedPrize)
+            switch (awardWon)
             {
-                case PrizeTypes.workEthicUpgrade:
-                    if (awardWinner.workEthic == EmployeeEnumerators.WorkEthic.X_Factor)
-                        PrizeSelector(awardWinner);
-                    else
-                        awardWinner.workEthic++;
+                case "REOTY":
+                    rookiePrize = PrizeTypes.compensatoryFirstRoundPick;
                     break;
 
-                case PrizeTypes.overallUpgrade:
-                    if (awardWinner.overall > 89)
-                        PrizeSelector(awardWinner);
-                    else
-                    {
-                        awardWinner.efficiency += ovrUpgradeAmount;
-                        awardWinner.customerService += ovrUpgradeAmount;
-                        awardWinner.communication += ovrUpgradeAmount;
-                        awardWinner.teamwork += ovrUpgradeAmount;
-                        awardWinner.iq += ovrUpgradeAmount;
-                    }
+                case "FOHEOTY":
+                    frontPrize = PrizeTypes.compensatoryFirstRoundPick;
                     break;
 
-                case PrizeTypes.personalityTraitUpgrade:
-                    if (awardWinner.personalityTrait == EmployeeEnumerators.PersonalityTrait.Perfectionist)
-                        PrizeSelector(awardWinner);
-                    else
-                        awardWinner.personalityTrait++;
+                case "BOHEOTY":
+                    backPrize = PrizeTypes.compensatoryFirstRoundPick;
+                    break;
+
+                case "MVE":
+                    mostValuablePrize = PrizeTypes.compensatoryFirstRoundPick;
                     break;
             }
-        }
-        else
-        {
-            // We may have to display that they got a first round pick for the franchise
-            // Award first round pick
+
             generalManager.firstRoundPicks++;
         }
+
+        switch (selectedPrize)
+        {
+            case PrizeTypes.workEthicUpgrade:
+                if (awardWinner.workEthic == EmployeeEnumerators.WorkEthic.X_Factor) PrizeSelector(awardWinner, awardWon);
+                else
+                {
+                    // MVE Upgrades to instant max tier, other awards upgrade one tier
+                    switch (awardWon)
+                    {
+                        case "REOTY":
+                            awardWinner.workEthic++;
+                            rookiePrize = PrizeTypes.workEthicUpgrade;
+                            break;
+
+                        case "FOHEOTY":
+                            awardWinner.workEthic++;
+                            frontPrize = PrizeTypes.workEthicUpgrade;
+                            break;
+
+                        case "BOHEOTY":
+                            awardWinner.workEthic++;
+                            backPrize = PrizeTypes.workEthicUpgrade;                           
+                            break;
+
+                        case "MVE":
+                            awardWinner.workEthic = EmployeeEnumerators.WorkEthic.X_Factor;
+                            mostValuablePrize = PrizeTypes.workEthicUpgrade;
+                           break;
+                    }
+                }
+                break;
+
+            case PrizeTypes.overallUpgrade:
+                if (awardWinner.overall > 89) PrizeSelector(awardWinner, awardWon);
+                else
+                {
+                    // Upgrade overall prize amount depends on what award they won
+                    int amountToUpgrade = 0;
+
+                    switch (awardWon)
+                    {
+                        case "REOTY": 
+                            amountToUpgrade = ovrUpgradeAmountREOTY;
+                            rookiePrize = PrizeTypes.overallUpgrade;
+                            break;
+                        
+                        case "FOHEOTY": 
+                            amountToUpgrade = ovrUpgradeAmountFOHEOTY;
+                            frontPrize = PrizeTypes.overallUpgrade;
+                            break;
+                        
+                        case "BOHEOTY": 
+                            amountToUpgrade = ovrUpgradeAmountBOHEOTY;
+                            backPrize = PrizeTypes.overallUpgrade;
+                            break;
+                        
+                        case "MVE": 
+                            amountToUpgrade = ovrUpgradeAmountMVE;
+                            mostValuablePrize = PrizeTypes.overallUpgrade;
+                            break;
+                    }
+
+                    awardWinner.efficiency += amountToUpgrade;
+                    awardWinner.customerService += amountToUpgrade;
+                    awardWinner.communication += amountToUpgrade;
+                    awardWinner.teamwork += amountToUpgrade;
+                    awardWinner.iq += amountToUpgrade;
+                }
+                break;
+
+            case PrizeTypes.personalityTraitUpgrade:
+                if (awardWinner.personalityTrait == EmployeeEnumerators.PersonalityTrait.Perfectionist) PrizeSelector(awardWinner, awardWon);
+                else
+                {
+                    // MVE Upgrades to instant max tier, other awards upgrade one tier
+                    switch (awardWon)
+                    {
+                        case "REOTY":
+                            awardWinner.personalityTrait++;
+                            rookiePrize = PrizeTypes.personalityTraitUpgrade;
+                            break;
+
+                        case "FOHEOTY":
+                            awardWinner.personalityTrait++;
+                            frontPrize = PrizeTypes.personalityTraitUpgrade;
+                            break;
+
+                        case "BOHEOTY":
+                            awardWinner.personalityTrait++;
+                            backPrize = PrizeTypes.personalityTraitUpgrade;
+                            break;
+
+                        case "MVE":
+                            awardWinner.personalityTrait = EmployeeEnumerators.PersonalityTrait.Perfectionist;
+                            mostValuablePrize = PrizeTypes.personalityTraitUpgrade;
+                            break;
+                    }
+                }
+                break;
+        }
     }
 
-    public void ShowAwardWinnersList()
-    {
-        uiManager.BuildUI();
-        ResetAwards();
-    }
-
-    private void ResetAwards()
+    public void ResetAwards()
     {
         REOTY = null;
         FOHEOTY = null;
         BOHEOTY = null;
         MVE = null;
 
+        rookiePrize = PrizeTypes.none;
+        frontPrize = PrizeTypes.none;
+        backPrize = PrizeTypes.none;
+        mostValuablePrize = PrizeTypes.none;
+
         rookieEOTYNominations.Clear();
         frontOfHouseEOTYNominations.Clear();
         backOfHouseEOTYNominations.Clear();
         mostValuableEmployeeNominations.Clear();
         awardWinners.Clear();
+    }
+
+    public void ShowEmployeesToNominate()
+    {
+        uiManager.employeesToNominateContent.gameObject.SetActive(true);
     }
     #endregion
 }
