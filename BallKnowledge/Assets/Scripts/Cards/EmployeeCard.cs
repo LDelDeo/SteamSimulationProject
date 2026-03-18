@@ -7,7 +7,7 @@ using System;
 public class EmployeeCard : MonoBehaviour
 {
     #region Required Classes
-    protected GeneralManager manager;
+    protected GeneralManager generalManager;
     protected EmployeeLists employeeLists;
     protected UIManager uiManager;
     protected PeriodManager periodManager;
@@ -103,7 +103,7 @@ public class EmployeeCard : MonoBehaviour
 
     private void Awake()
     {
-        manager = FindFirstObjectByType<GeneralManager>();
+        generalManager = FindFirstObjectByType<GeneralManager>();
         employeeLists = FindFirstObjectByType<EmployeeLists>();
         uiManager = FindFirstObjectByType<UIManager>();
         periodManager = FindFirstObjectByType<PeriodManager>();

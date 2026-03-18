@@ -85,6 +85,8 @@ public class EmployeeFactory
 
     public int EmployeeValueCalucator(Employee employee)
     {
+        // This is going to have to be heavily tweaked with testing
+
         var employeeValue = 0;
         // Max Value = 30, Min Value = 3
         // Max Defualt Contract = 120/hr, Min Default Contract = $6/hr

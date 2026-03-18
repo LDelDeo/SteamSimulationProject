@@ -121,7 +121,7 @@ public class FreeAgentCard : EmployeeCard
                 if (employeeLists.HasRosterSpace(freeAgentToSign))
                 {
                     freeAgentToSign.yearsUnderContract = contractYears;
-                    freeAgentToSign.methodOfAcquirement = $"{manager.currentYear} Free Agency Class";
+                    freeAgentToSign.methodOfAcquirement = $"{generalManager.currentYear} Free Agency Class";
 
                     employeeLists.AddEmployee(freeAgentToSign, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(freeAgentToSign, employeeLists.freeAgentClass);

@@ -10,7 +10,7 @@ public class DisgruntledCard : EmployeeCard
 {
     [Header("Disgrunted Visuals")]
     [SerializeField] TMP_Text scenarioText;
-    [SerializeField] GameObject[] buttons; // 0 = Cut, 1 = Trade, 2 = Raise, 3 = Extend, 4 = Convince to Stay
+    [SerializeField] GameObject[] buttons; // 0 = Release, 1 = Trade, 2 = Raise, 3 = Extend, 4 = Convince to Stay
 
     private int raiseAmount;
     private int yearExtensionAmount;
@@ -74,7 +74,7 @@ public class DisgruntledCard : EmployeeCard
         scenarioText.text = $"{employeeFirstName} will not work until they're given a {raiseAmount}/hr raise";
 
         buttons[2].SetActive(true); // Raise
-        buttons[0].SetActive(true); // Cut
+        buttons[0].SetActive(true); // Release
         buttons[1].SetActive(true); // Trade
     }
 
@@ -82,7 +82,7 @@ public class DisgruntledCard : EmployeeCard
     {
         scenarioText.text = $"{employeeFirstName} has become increasinly unhappy with their role, they're demanding a trade from the franchise";
 
-        buttons[0].SetActive(true); // Cut
+        buttons[0].SetActive(true); // Release
         buttons[1].SetActive(true); // Trade
         buttons[4].SetActive(true); // Convince to Stay
     }
@@ -95,7 +95,7 @@ public class DisgruntledCard : EmployeeCard
         scenarioText.text = $"{employeeFirstName} will not work until they're given a {yearExtensionAmount} year contract extentsion";
 
         buttons[3].SetActive(true); // Extend
-        buttons[0].SetActive(true); // Cut
+        buttons[0].SetActive(true); // Release
         buttons[1].SetActive(true); // Trade
     }
 
@@ -113,20 +113,20 @@ public class DisgruntledCard : EmployeeCard
 
         scenarioText.text = $"{employeeFirstName} has been arrested for {reasonOfArrest}. Your customers are demanding an immediate release from the franchise (cancel culture)";
 
-        buttons[0].SetActive(true); // Cut
+        buttons[0].SetActive(true); // Release
     }
 
-    public void CutEmployee(DisgruntledCard disgruntledCard)
+    public void ReleaseEmployee(DisgruntledCard disgruntledCard)
     {
         Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
 
-        manager.playersCut++;
+        generalManager.playersCut++;
 
         employeeLists.AddEmployee(disgruntledEmployee, employeeLists.freeAgentClass);
         employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
 
-        uiManager.EmployeeCut(disgruntledEmployee);
-        SettlementClosed();
+        uiManager.EmployeeReleased(disgruntledEmployee);
+        SettlementClosed("Employee Released");
 
         disgruntledEmployee.hourlyWage = employeeRNG.GetRandomWage(disgruntledEmployee);
     }
@@ -143,7 +143,7 @@ public class DisgruntledCard : EmployeeCard
         else
         {
             tradeManager.TradeEmployeeForPicks(disgruntledEmployee);
-            SettlementClosed();
+            SettlementClosed("Employee Traded");
         }
     }
 
@@ -151,7 +151,7 @@ public class DisgruntledCard : EmployeeCard
     {
         Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
 
-        if (manager.currentUsedCapSpace + disgruntledEmployee.hourlyWage + raiseAmount <= manager.maxCapSpace)
+        if (generalManager.currentUsedCapSpace + disgruntledEmployee.hourlyWage + raiseAmount <= generalManager.maxCapSpace)
         {
             if (employeeLists.HasRosterSpace(disgruntledEmployee))
             {
@@ -161,7 +161,7 @@ public class DisgruntledCard : EmployeeCard
                 employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
 
                 uiManager.EmployeeRaise(disgruntledEmployee, raiseAmount, true);
-                SettlementClosed();
+                SettlementClosed("Employee Wage Raised");
             }
         }
         else
@@ -182,7 +182,7 @@ public class DisgruntledCard : EmployeeCard
             employeeLists.RemoveEmployee(disgruntledEmployee, employeeLists.disgruntledEmployees);
 
             uiManager.EmployeeExtention(disgruntledEmployee, yearExtensionAmount);
-            SettlementClosed();
+            SettlementClosed("Employee Contract Extended");
         }
     }
 
@@ -222,7 +222,7 @@ public class DisgruntledCard : EmployeeCard
         if (changedMind)
         {
             uiManager.NameGenericText(disgruntledEmployee, "has had a change of heart and has decided to stay");
-            SettlementClosed();
+            SettlementClosed("Employee Returning");
 
             if (employeeLists.HasRosterSpace(disgruntledEmployee))
             {
@@ -237,13 +237,13 @@ public class DisgruntledCard : EmployeeCard
         }
     }
 
-    private void SettlementClosed()
+    private void SettlementClosed(string settlementConclusion)
     {
         foreach (var button in buttons)
             button.SetActive(false);
 
         scenarioText.color = Color.green;
-        scenarioText.text = "SETTLED";
+        scenarioText.text = settlementConclusion;
 
         uiManager.UpdateCapSpace();
         uiManager.UpdateDraftPicks();

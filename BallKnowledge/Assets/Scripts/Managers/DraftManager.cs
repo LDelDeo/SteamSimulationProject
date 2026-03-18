@@ -7,14 +7,19 @@ using UnityEngine.UI;
 public class DraftManager : MonoBehaviour
 {
     [Header("Draft Period Configuration")]
-    [SerializeField] public int draftClassSize;
-    [SerializeField] public int currentRound;
+    public int draftClassSize;
+    public int currentRound;
     [SerializeField] int picksInBetweenRounds;
     [SerializeField] int maxOverallInRoundTwo;
     [SerializeField] int maxOverallInRoundThree;
     [SerializeField] int additionalCapSpacePerFirstRoundPick; 
     [SerializeField] int additionalCapSpacePerSecondRoundPick; 
     [SerializeField] int additionalCapSpacePerThirdRoundPick;
+
+    [Header("Draft Pick Configuration")]
+    public int firstRoundPicksRecouped;
+    public int secondRoundPicksRecouped;
+    public int thirdRoundPicksRecouped;
 
     public List<Employee> latestDraftClass = new List<Employee>();
 

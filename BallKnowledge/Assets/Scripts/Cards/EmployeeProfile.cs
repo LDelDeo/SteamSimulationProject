@@ -53,7 +53,7 @@ public class EmployeeProfile : EmployeeCard
             return;
         }
 
-        manager.playersCut++;
+        generalManager.playersCut++;
 
         uiManager.EmployeeCut(thisEmployee);
 

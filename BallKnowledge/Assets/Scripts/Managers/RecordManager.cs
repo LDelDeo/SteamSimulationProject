@@ -11,4 +11,6 @@ public class RecordManager : MonoBehaviour
     // Most Awards
     // Most Championships
     // Largest Contract
+    // Longest tenured employee
+    // Oldest employee
 }

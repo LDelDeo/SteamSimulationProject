@@ -237,7 +237,6 @@ public class AwardManager : MonoBehaviour
         }       
     }
 
-    // There must be a way to simplify this and clean this up
     private void PrizeSelector(Employee awardWinner, string awardWon)
     {
         // Select 1 of 3 prizes, if the employee doesn't benefit from the prize, it will select one that the employee WILL benefit from

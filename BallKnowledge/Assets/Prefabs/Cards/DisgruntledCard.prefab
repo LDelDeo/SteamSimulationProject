@@ -2094,7 +2094,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Cut
+  m_text: 'Release
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3001,6 +3003,7 @@ MonoBehaviour:
   jobPositionText: {fileID: 2933537616059309716}
   workEthicText: {fileID: 0}
   personalityText: {fileID: 2307668010497093428}
+  methodOfAcquirementText: {fileID: 0}
   ageText: {fileID: 2471107857066353557}
   hourlyWageText: {fileID: 2718026593568355127}
   yearsUnderContractText: {fileID: 4412225625571470945}
@@ -3414,7 +3417,7 @@ GameObject:
   - component: {fileID: 1179864269786717456}
   - component: {fileID: 240251731822062519}
   m_Layer: 5
-  m_Name: Cut Button
+  m_Name: Release Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3524,7 +3527,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8374373777349628615}
         m_TargetAssemblyTypeName: DisgruntledCard, Assembly-CSharp
-        m_MethodName: CutEmployee
+        m_MethodName: ReleaseEmployee
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 8374373777349628615}

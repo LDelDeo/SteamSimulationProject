@@ -58,14 +58,13 @@ public class AwardWinnerCard : EmployeeCard
 
         employeeLists.UpgradeEmployeeOverall(awardWinner, awardManager.ovrUpgradeAmountTeamAward);
 
-        // Maybe make a function in UI manager to create a singluar card
         GameObject cardObject = Instantiate(uiManager.awardWinnerCardPrefab, uiManager.awardWinnersContent);
         AwardWinnerCard card = cardObject.GetComponent<AwardWinnerCard>();
 
         card.GetEmployeeStats(awardWinner);
         card.SetEmployeeCardBackground(awardWinner);
-        card.awardWonText.text = $"{manager.currentYear} Management Thank You Award";
-        card.prizeWonText.text = $"+{awardManager.ovrUpgradeAmountTeamAward} Overall & a box of pens"; // maybe add corny gifts here
+        card.awardWonText.text = $"{generalManager.currentYear} Management Thank You Award";
+        card.prizeWonText.text = $"+{awardManager.ovrUpgradeAmountTeamAward} Overall & {GetCornyGift()}";
 
         uiManager.showEmployeesToNominateButton.interactable = false;
 
@@ -74,6 +73,27 @@ public class AwardWinnerCard : EmployeeCard
 
         uiManager.employeesToNominateContent.gameObject.SetActive(false);
         uiManager.awardWinnersContent.gameObject.SetActive(true);
+    }
+
+    private string GetCornyGift()
+    {
+        var randomNumber = Random.Range(0, 9);
+        string cornyGift = string.Empty;
+
+        switch (randomNumber)
+        {
+            case 0: cornyGift = "a box of pens"; break;
+            case 1: cornyGift = "a thank you sticker"; break;
+            case 2: cornyGift = "a company logo pin"; break;
+            case 3: cornyGift = "a paid day off"; break;
+            case 4: cornyGift = "a company themed plastic water bottle"; break;
+            case 5: cornyGift = "a fidget toy"; break;
+            case 6: cornyGift = "a company themed lanyard"; break;
+            case 7: cornyGift = "a company themed keychain"; break;
+            case 8: cornyGift = "a couple breath mints"; break;
+        }
+
+        return cornyGift;
     }
     #endregion
 }

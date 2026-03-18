@@ -87,7 +87,7 @@ public class TradeAssetCard : EmployeeCard
 
         Employee employeeToTrade = tradeAssetCard.employeeToBeOffered;
 
-        tradeManager.outgoingTradePackageValue.Add(employeeToTrade.value);
+        tradeManager.outgoingTradePackageValue.Add(employeeToTrade.value - tradeManager.outgoingEmployeeValueNerf);
 
         employeeLists.AddEmployee(employeeToTrade, tradeManager.outgoingEmployees);
         employeeLists.RemoveEmployee(employeeToTrade, employeeLists.currentRoster);
@@ -102,10 +102,13 @@ public class TradeAssetCard : EmployeeCard
     {
         Employee employeeNotToTrade = tradeAssetCard.employeeToBeOffered;
 
-        tradeManager.outgoingTradePackageValue.Remove(employeeNotToTrade.value);
+        tradeManager.outgoingTradePackageValue.Remove(employeeNotToTrade.value - tradeManager.outgoingEmployeeValueNerf);
 
-        employeeLists.AddEmployee(employeeNotToTrade, employeeLists.currentRoster);
-        employeeLists.RemoveEmployee(employeeNotToTrade, tradeManager.outgoingEmployees);
+        if (employeeLists.HasRosterSpace(employeeNotToTrade))
+        {
+            employeeLists.AddEmployee(employeeNotToTrade, employeeLists.currentRoster);
+            employeeLists.RemoveEmployee(employeeNotToTrade, tradeManager.outgoingEmployees);
+        }
 
         addButton.SetActive(true);
         removeButton.SetActive(false);

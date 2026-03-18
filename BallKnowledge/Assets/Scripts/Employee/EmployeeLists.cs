@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class EmployeeLists : MonoBehaviour
 {
+    [Header("Employee Stat Configuration")]
+    public int minEmployeeStat;
+    public int maxEmployeeStat;
+
     public RosterConstruction rosterConstruction = new RosterConstruction();
 
     #region Employee Lists
@@ -168,10 +172,8 @@ public class EmployeeLists : MonoBehaviour
 
     public bool HasCapSpaceToCompleteTransaction(Employee employee)
     {
-        if ((manager.currentUsedCapSpace + employee.hourlyWage) <= manager.maxCapSpace)
-            return true;
-        else
-            return false;
+        if ((manager.currentUsedCapSpace + employee.hourlyWage) <= manager.maxCapSpace) return true;
+        else return false;
     }
 
     public string FrontOrBackOfHouse(Employee employee)
@@ -210,24 +212,22 @@ public class EmployeeLists : MonoBehaviour
     #endregion
 
     #region Update Functions
-
-    // We should make a max stat field instead of hardcoding 100 in all places this happens
     public void UpgradeEmployeeOverall(Employee employee, int overallToUpgrade)
     {
-        if (employee.efficiency < 100) employee.efficiency += overallToUpgrade;
-        if (employee.efficiency > 100) employee.efficiency = 100;
+        if (employee.efficiency < maxEmployeeStat) employee.efficiency += overallToUpgrade;
+        if (employee.efficiency > maxEmployeeStat) employee.efficiency = maxEmployeeStat;
 
-        if (employee.customerService < 100) employee.customerService += overallToUpgrade;
-        if (employee.customerService > 100) employee.customerService = 100;
+        if (employee.customerService < maxEmployeeStat) employee.customerService += overallToUpgrade;
+        if (employee.customerService > maxEmployeeStat) employee.customerService = maxEmployeeStat;
 
-        if (employee.communication < 100) employee.communication += overallToUpgrade;
-        if (employee.communication > 100) employee.communication = 100;
+        if (employee.communication < maxEmployeeStat) employee.communication += overallToUpgrade;
+        if (employee.communication > maxEmployeeStat) employee.communication = maxEmployeeStat;
 
-        if (employee.teamwork < 100) employee.teamwork += overallToUpgrade;
-        if (employee.teamwork > 100) employee.teamwork = 100;
+        if (employee.teamwork < maxEmployeeStat) employee.teamwork += overallToUpgrade;
+        if (employee.teamwork > maxEmployeeStat) employee.teamwork = maxEmployeeStat;
 
-        if (employee.iq < 100) employee.iq += overallToUpgrade;
-        if (employee.iq > 100) employee.iq = 100;
+        if (employee.iq < maxEmployeeStat) employee.iq += overallToUpgrade;
+        if (employee.iq > maxEmployeeStat) employee.iq = maxEmployeeStat;
 
         employee.overall = (employee.efficiency +
                             employee.customerService +

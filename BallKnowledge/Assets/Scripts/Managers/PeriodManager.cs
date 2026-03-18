@@ -141,7 +141,9 @@ public class PeriodManager : MonoBehaviour
                 employeeLists.freeAgentClass.Clear();
 
                 CreateAnEmployee(tradeManager.tradeBlockSize, employeeFactory, employeeLists, employeeArrays, employeeLists.tradeBlock, tradeAssetCardObject, uiManager.tradeBlockContent);
-                
+
+                uiManager.SwitchTradeMenus(uiManager.tradeMenus[0]);
+                uiManager.SwitchTradeTabs(uiManager.tradeTabs[0]); 
                 uiManager.ChangeUI(uiManager.tradingScreen);
                 break;
 
@@ -208,9 +210,9 @@ public class PeriodManager : MonoBehaviour
         generalManager.currentYear++;
         generalManager.seasonsElapsed++;
 
-        generalManager.firstRoundPicks += 1;
-        generalManager.secondRoundPicks += 1;
-        generalManager.thirdRoundPicks += 1;
+        generalManager.firstRoundPicks += draftManager.firstRoundPicksRecouped;
+        generalManager.secondRoundPicks += draftManager.secondRoundPicksRecouped;
+        generalManager.thirdRoundPicks += draftManager.thirdRoundPicksRecouped;
         uiManager.UpdateDraftPicks();
 
         foreach (var employee in employeeLists.currentRoster)
@@ -279,19 +281,19 @@ public class PeriodManager : MonoBehaviour
                 statIncreases.Add(randomStatIncrease);
             }
 
-            if (employee.efficiency + statIncreases[0] > 100) employee.efficiency = 100;
+            if (employee.efficiency + statIncreases[0] > employeeLists.maxEmployeeStat) employee.efficiency = employeeLists.maxEmployeeStat;
             else employee.efficiency += statIncreases[0];
 
-            if (employee.customerService + statIncreases[1] > 100) employee.customerService = 100;
+            if (employee.customerService + statIncreases[1] > employeeLists.maxEmployeeStat) employee.customerService = employeeLists.maxEmployeeStat;
             else employee.customerService += statIncreases[1];
 
-            if (employee.communication + statIncreases[2] > 100) employee.communication = 100;
+            if (employee.communication + statIncreases[2] > employeeLists.maxEmployeeStat) employee.communication = employeeLists.maxEmployeeStat;
             else employee.communication += statIncreases[2];
 
-            if (employee.teamwork + statIncreases[3] > 100) employee.teamwork = 100;
+            if (employee.teamwork + statIncreases[3] > employeeLists.maxEmployeeStat) employee.teamwork = employeeLists.maxEmployeeStat;
             else employee.teamwork += statIncreases[3];
 
-            if (employee.iq + statIncreases[4] > 100) employee.iq = 100;
+            if (employee.iq + statIncreases[4] > employeeLists.maxEmployeeStat) employee.iq = employeeLists.maxEmployeeStat;
             else employee.iq += statIncreases[4];
 
             statIncreases.Clear();
@@ -304,20 +306,20 @@ public class PeriodManager : MonoBehaviour
             employee.teamwork -= amountOfRegressionPerStat;
             employee.iq -= amountOfRegressionPerStat;
 
-            if (employee.efficiency < 0)
-                employee.efficiency = 0;
+            if (employee.efficiency < employeeLists.minEmployeeStat)
+                employee.efficiency = employeeLists.minEmployeeStat;
 
-            if (employee.customerService < 0)
-                employee.customerService = 0;
+            if (employee.customerService < employeeLists.minEmployeeStat)
+                employee.customerService = employeeLists.minEmployeeStat;
 
-            if (employee.communication < 0)
-                employee.communication = 0;
+            if (employee.communication < employeeLists.minEmployeeStat)
+                employee.communication = employeeLists.minEmployeeStat;
 
-            if (employee.teamwork < 0)
-                employee.teamwork = 0;
+            if (employee.teamwork < employeeLists.minEmployeeStat)
+                employee.teamwork = employeeLists.minEmployeeStat;
 
-            if (employee.iq < 0)
-                employee.iq = 0;
+            if (employee.iq < employeeLists.minEmployeeStat)
+                employee.iq = employeeLists.minEmployeeStat;
         }
         
         employee.overall = (employee.efficiency + 

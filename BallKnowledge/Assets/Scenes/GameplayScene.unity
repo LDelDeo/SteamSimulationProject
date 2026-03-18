@@ -723,12 +723,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 313255433}
-        m_TargetAssemblyTypeName: TradeManager, Assembly-CSharp
-        m_MethodName: Display
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeMenus
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1859543558}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeTabs
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1053092711}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -2239,13 +2251,25 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 313255433}
-        m_TargetAssemblyTypeName: TradeManager, Assembly-CSharp
-        m_MethodName: Display
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeTabs
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1950912689}
+          m_ObjectArgument: {fileID: 380176826}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetTradeScrollContent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1950912690}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2565,6 +2589,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87b82bfc3a0d9c341b9c6cdde860f0b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minEmployeeStat: 0
+  maxEmployeeStat: 100
 --- !u!114 &313255430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2644,6 +2670,14 @@ MonoBehaviour:
   tradeBlockCardPrefab: {fileID: 7081134768087405561, guid: 18c79caa63d88394c80bd66adc1bdc96, type: 3}
   draftPickCardPrefab: {fileID: 7081134768087405561, guid: a377590059f3325419f22ff4a684fe74, type: 3}
   tradeInterestBar: {fileID: 1578615751}
+  tradeMenus:
+  - {fileID: 1859543558}
+  - {fileID: 401578566}
+  - {fileID: 571857862}
+  tradeTabs:
+  - {fileID: 1053092711}
+  - {fileID: 380176826}
+  - {fileID: 333448472}
   awardsScreen: {fileID: 401556434}
   awardWinnersContent: {fileID: 526538396}
   employeesToNominateContent: {fileID: 1820645785}
@@ -2703,6 +2737,9 @@ MonoBehaviour:
   additionalCapSpacePerFirstRoundPick: 3
   additionalCapSpacePerSecondRoundPick: 2
   additionalCapSpacePerThirdRoundPick: 1
+  firstRoundPicksRecouped: 1
+  secondRoundPicksRecouped: 1
+  thirdRoundPicksRecouped: 1
   prospectCardsSortingList: []
 --- !u!114 &313255433
 MonoBehaviour:
@@ -2720,12 +2757,7 @@ MonoBehaviour:
   firstRoundPickValue: 16
   secondRoundPickValue: 9
   thirdRoundPickValue: 4
-  displays:
-  - {fileID: 1859543558}
-  - {fileID: 941323009}
-  - {fileID: 1950912689}
-  - {fileID: 1500104208}
-  - {fileID: 1635287409}
+  outgoingEmployeeValueNerf: 2
   outgoingTradePackageValue: 
   outgoingDraftPicks: 
 --- !u!114 &313255434
@@ -2768,14 +2800,50 @@ MonoBehaviour:
   ovrRequiredToBeNominatedForEOTY: 70
   ovrRequiredToBeNominatedForMVE: 80
   ovrUpgradeAmountTeamAward: 2
-  ovrUpgradeAmountREOTY: 5
-  ovrUpgradeAmountFOHEOTY: 7
-  ovrUpgradeAmountBOHEOTY: 7
-  ovrUpgradeAmountMVE: 10
+  ovrUpgradeAmountREOTY: 3
+  ovrUpgradeAmountFOHEOTY: 4
+  ovrUpgradeAmountBOHEOTY: 4
+  ovrUpgradeAmountMVE: 6
   rookiePrize: 0
   frontPrize: 0
   backPrize: 0
   mostValuablePrize: 0
+--- !u!1 &333448472
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 333448473}
+  m_Layer: 5
+  m_Name: User Assets Tab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &333448473
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 333448472}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1500104209}
+  m_Father: {fileID: 571857863}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &346997332
 GameObject:
   m_ObjectHideFlags: 0
@@ -3094,6 +3162,42 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &380176826
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 380176827}
+  m_Layer: 5
+  m_Name: Trade Block Tab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &380176827
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380176826}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1950912690}
+  m_Father: {fileID: 571857863}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &401556434
 GameObject:
   m_ObjectHideFlags: 0
@@ -3178,7 +3282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &401578567
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4713,14 +4817,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1950912690}
-  - {fileID: 1500104209}
-  - {fileID: 1635287410}
-  - {fileID: 269094218}
-  - {fileID: 1269964836}
-  - {fileID: 1058354344}
+  - {fileID: 1053092712}
+  - {fileID: 380176827}
+  - {fileID: 333448473}
   - {fileID: 143592689}
-  - {fileID: 1870120254}
+  - {fileID: 1269964836}
+  - {fileID: 269094218}
+  - {fileID: 1058354344}
   m_Father: {fileID: 447033338}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -7403,7 +7506,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &941323010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7613,13 +7716,25 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 313255433}
-        m_TargetAssemblyTypeName: TradeManager, Assembly-CSharp
-        m_MethodName: Display
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeMenus
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 941323009}
+          m_ObjectArgument: {fileID: 401578566}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetTradeScrollContent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 941323012}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -8737,6 +8852,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1039584586}
   m_CullTransparentMesh: 1
+--- !u!1 &1053092711
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1053092712}
+  m_Layer: 5
+  m_Name: Transaction Tab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1053092712
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053092711}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1635287410}
+  - {fileID: 1870120254}
+  m_Father: {fileID: 571857863}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1056513860
 GameObject:
   m_ObjectHideFlags: 0
@@ -8959,13 +9111,25 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 313255433}
-        m_TargetAssemblyTypeName: TradeManager, Assembly-CSharp
-        m_MethodName: Display
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeTabs
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1635287409}
+          m_ObjectArgument: {fileID: 1053092711}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetTradeScrollContent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1635287410}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -10854,13 +11018,25 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 313255433}
-        m_TargetAssemblyTypeName: TradeManager, Assembly-CSharp
-        m_MethodName: Display
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeTabs
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1500104208}
+          m_ObjectArgument: {fileID: 333448472}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetTradeScrollContent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1500104209}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -13044,7 +13220,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1500104209
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13057,7 +13233,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 571857863}
+  m_Father: {fileID: 333448473}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -13807,7 +13983,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635287409}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13817,7 +13993,7 @@ RectTransform:
   - {fileID: 619028299}
   - {fileID: 1627298111}
   - {fileID: 1772422779}
-  m_Father: {fileID: 571857863}
+  m_Father: {fileID: 1053092712}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -14456,9 +14632,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 313255433}
-        m_TargetAssemblyTypeName: TradeManager, Assembly-CSharp
-        m_MethodName: Display
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeMenus
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1859543558}
@@ -16000,9 +16176,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 313255433}
-        m_TargetAssemblyTypeName: TradeManager, Assembly-CSharp
-        m_MethodName: Display
+      - m_Target: {fileID: 313255430}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SwitchTradeMenus
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 571857862}
@@ -16210,14 +16386,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1870120253}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1834504121}
   - {fileID: 1578615753}
-  m_Father: {fileID: 571857863}
+  m_Father: {fileID: 1053092712}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -16380,7 +16556,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1950912690
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16393,7 +16569,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 571857863}
+  m_Father: {fileID: 380176827}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

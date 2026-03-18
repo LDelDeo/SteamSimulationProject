@@ -5,15 +5,12 @@ using UnityEngine.UI;
 
 public class TradeManager : MonoBehaviour
 {
-    // We need to nerf the value of outgoing employees
     [Header("Trading Configuration")]
     [SerializeField] public int tradeBlockSize;
     [SerializeField] public int firstRoundPickValue;
     [SerializeField] public int secondRoundPickValue;
     [SerializeField] public int thirdRoundPickValue;
-
-    [Header("Trading Layout")]
-    [SerializeField] GameObject[] displays;
+    [SerializeField] public int outgoingEmployeeValueNerf;
 
     public List<int> outgoingTradePackageValue = new List<int>();
     private int totalTradePackageValue;
@@ -191,19 +188,6 @@ public class TradeManager : MonoBehaviour
         else if (employee.value >= 29) return TradePackages.MultipleFirstRoundPicks;
 
         return TradePackages.NoTradeInterest;
-    }
-    #endregion
-
-    #region Trading Layout/Displays
-    public void Display(GameObject displayToShow)
-    {
-        foreach (GameObject display in displays)
-            display.SetActive(false);
-
-        displayToShow.SetActive(true);
-
-        uiManager.RefreshUI();
-        uiManager.SetScrollContent(uiManager.tradingScreen, displayToShow.GetComponent<Transform>());
     }
     #endregion
 }

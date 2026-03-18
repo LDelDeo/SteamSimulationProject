@@ -97,55 +97,55 @@ public class ProspectCard : EmployeeCard
         switch (draftManager.currentRound)
         {
             case 1:
-                if (manager.firstRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft) && employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft))
+                if (generalManager.firstRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft) && employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft))
                 {
                     employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
-                    prospectToDraft.methodOfAcquirement = $"{manager.currentYear} first round pick";
+                    prospectToDraft.methodOfAcquirement = $"{generalManager.currentYear} first round pick";
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 
-                    manager.firstRoundPicks--;
+                    generalManager.firstRoundPicks--;
                 }
-                else if (manager.firstRoundPicks < 1) { uiManager.InsufficientDraftPicks("first"); }
+                else if (generalManager.firstRoundPicks < 1) { uiManager.InsufficientDraftPicks("first"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
                 else if (!employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft)) { uiManager.InsufficientCapRoom(prospectToDraft); }
                 break;
          
             case 2:
-                if (manager.secondRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
+                if (generalManager.secondRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
                 {
                     employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
-                    prospectToDraft.methodOfAcquirement = $"{manager.currentYear} second round pick";
+                    prospectToDraft.methodOfAcquirement = $"{generalManager.currentYear} second round pick";
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 
-                    manager.secondRoundPicks--;
+                    generalManager.secondRoundPicks--;
                 }
-                else if (manager.secondRoundPicks < 1) { uiManager.InsufficientDraftPicks("second"); }
+                else if (generalManager.secondRoundPicks < 1) { uiManager.InsufficientDraftPicks("second"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
                 else if (!employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft)) { uiManager.InsufficientCapRoom(prospectToDraft); }
                 break;
        
             case 3:
-                if (manager.thirdRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
+                if (generalManager.thirdRoundPicks > 0 && employeeLists.HasRosterSpace(prospectToDraft))
                 {
                     employeeLists.AddEmployee(prospectToDraft, draftManager.latestDraftClass);
-                    prospectToDraft.methodOfAcquirement = $"{manager.currentYear} third round pick";
+                    prospectToDraft.methodOfAcquirement = $"{generalManager.currentYear} third round pick";
 
                     employeeLists.AddEmployee(prospectToDraft, employeeLists.currentRoster);
                     employeeLists.RemoveEmployee(prospectToDraft, employeeLists.draftClass);
 
-                    manager.thirdRoundPicks--;
+                    generalManager.thirdRoundPicks--;
                 }
-                else if (manager.thirdRoundPicks < 1) { uiManager.InsufficientDraftPicks("third"); }
+                else if (generalManager.thirdRoundPicks < 1) { uiManager.InsufficientDraftPicks("third"); }
                 else if (!employeeLists.HasRosterSpace(prospectToDraft)) { uiManager.InsufficientRosterSpace(prospectToDraft); }
                 else if (!employeeLists.HasCapSpaceToCompleteTransaction(prospectToDraft)) { uiManager.InsufficientCapRoom(prospectToDraft); }
                 break;
         }
 
-        manager.playersDrafted++;
+        generalManager.playersDrafted++;
 
         uiManager.RefreshUI();
     }
