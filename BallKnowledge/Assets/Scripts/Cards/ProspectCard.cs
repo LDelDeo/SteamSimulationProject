@@ -4,11 +4,21 @@ using UnityEngine.UI;
 
 public class ProspectCard : EmployeeCard
 {
-    [Header("Prospect Stats")]
-    public bool developmentTraitRevealed;
+    [Header("Prospect Booleans")]
+    public bool isFavorited;
     public bool overallRevealed;
-    public EmployeeEnumerators.PersonalityTrait personalityTrait;
-    public EmployeeEnumerators.JobType jobType;
+    public bool workEthicsRevealed;
+
+    [Header("Prospect Values")]
+    public int overallToSort;
+    public EmployeeEnumerators.WorkEthic workEthicToSort;
+    public EmployeeEnumerators.PersonalityTrait personalityTraitToSort;
+    public EmployeeEnumerators.JobType jobTypeToSort;
+    
+
+    [Header("Prospect Visuals")]
+    public TMP_Text favoritedButtonText;
+    public GameObject favoritedStar;
 
     private int amountOfVisibleStats;
 
@@ -38,11 +48,13 @@ public class ProspectCard : EmployeeCard
         IsStatVisible(teamworkText, employeeTeamwork);
         IsStatVisible(iqText, employeeIq);
 
-        RevealDevelopmentTrait();
-        RevealOverall();     
+        RevealWorkEthics();
+        RevealOverall();
 
-        personalityTrait = employeePersonalityTrait;
-        jobType = employeeJobPosition;
+        overallToSort = employeeOverall;
+        workEthicToSort = employeeWorkEthic;
+        personalityTraitToSort = employeePersonalityTrait;
+        jobTypeToSort = employeeJobPosition;
     }
 
     #region Draft Stats
@@ -58,12 +70,12 @@ public class ProspectCard : EmployeeCard
         else if (randomNumber == 1) { statText.text = "?"; }   
     }
 
-    private void RevealDevelopmentTrait()
+    private void RevealWorkEthics()
     {
         if (amountOfVisibleStats == 0) 
         { 
             workEthicText.text = $"Work Ethic: {employeeWorkEthic}";
-            developmentTraitRevealed = true;
+            workEthicsRevealed = true;
         }
         else { workEthicText.text = "Work Ethic: ?"; }
     }
@@ -90,7 +102,13 @@ public class ProspectCard : EmployeeCard
         prospect = employee;
     }
 
-    public void DraftPlayer(ProspectCard prospectCard)
+    public void FavoriteProspect()
+    {
+        isFavorited = !isFavorited;
+        uiManager.RefreshUI();
+    }
+
+    public void DraftProspect(ProspectCard prospectCard)
     {
         Employee prospectToDraft = prospectCard.prospect;
         

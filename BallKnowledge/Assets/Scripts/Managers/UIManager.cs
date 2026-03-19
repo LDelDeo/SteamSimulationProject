@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +19,14 @@ public class UIManager : MonoBehaviour
     public GameObject currentActionCanvas;
     public GameObject actionCanvasText;
     private GameObject closeActionCanvasButton;
+
+    [Header("Descion Canvas")]
+    public GameObject descionCanvasPrefab;
+    public Transform descionCanvasInstantiatePoint;
+    public GameObject currentDescionCanvas;
+    public GameObject descionCanvasText;
+    public UnityEvent descionEvent;
+    private GameObject closeDescionCanvasButton;
 
     [Header("Roster Screen UI")]
     public GameObject rosterScreen;
@@ -45,6 +55,8 @@ public class UIManager : MonoBehaviour
     public GameObject selectedProspectCardPrefab;
 
     public TMP_Text currentRoundText;
+
+    public TMP_Dropdown positionDropDown;
 
     [Header("Free Agency Screen UI")]
     public GameObject freeAgencyScreen;
@@ -151,6 +163,7 @@ public class UIManager : MonoBehaviour
                 break;
             case PeriodManager.Period.Draft:
                 RefreshProspects();
+                RefreshDraftHUD();
                 break;
             case PeriodManager.Period.SeasonSimulation:
                 break;
@@ -204,6 +217,8 @@ public class UIManager : MonoBehaviour
         UpdateHUD();
     }
 
+
+    // We should find a way to merge these and make it generic
     #region Action Canvas Functionality
     public void FindActionCanvas()
     {
@@ -214,8 +229,6 @@ public class UIManager : MonoBehaviour
         closeActionCanvasButton.GetComponent<Button>().onClick.AddListener(CloseActionCanvas);
     }
 
-    // We need an action canvas to ackowledge information as well as a descion mode with (Yes/No) buttons
-    // I'm thinking we can subscribe methods to an event, which is triggered by the YES button, and invoke those methods
     public void OpenActionCanvas() 
     {
         Instantiate(actionCanvasPrefab, actionCanvasInstantiatePoint);
@@ -326,6 +339,38 @@ public class UIManager : MonoBehaviour
     {
         OpenActionCanvas();
         actionCanvasText.GetComponent<TMP_Text>().text = textToDisplay;
+    }
+    #endregion
+
+    #region Decsion Canvas Functionality
+    public void FindDescionCanvas()
+    {
+        currentDescionCanvas = GameObject.Find("Descion Canvas(Clone");
+        descionCanvasText = GameObject.Find("Outcome Text");
+
+        closeDescionCanvasButton = GameObject.Find("No Button");
+        closeDescionCanvasButton.GetComponent<Button>().onClick.AddListener(NoChoiceDescionCanvas);
+    }
+
+    public void OpenDescionCanvas(UnityAction functionToAdd)
+    {
+        Instantiate(descionCanvasPrefab, descionCanvasInstantiatePoint);
+        FindDescionCanvas();
+        descionEvent.AddListener(functionToAdd);
+    }
+
+    public void YesChoiceDescionCanvas()
+    {
+        descionEvent.Invoke();
+        descionEvent.RemoveAllListeners();
+        Destroy(currentDescionCanvas);
+    }
+
+    public void NoChoiceDescionCanvas()
+    {
+        FindDescionCanvas();
+        descionEvent.RemoveAllListeners();
+        Destroy(currentDescionCanvas);
     }
     #endregion
 
@@ -453,7 +498,23 @@ public class UIManager : MonoBehaviour
             var cardObject = prospectCard.gameObject;
             var scriptObject = cardObject.GetComponent<ProspectCard>();
             scriptObject.RemoveProspect(cardObject.GetComponent<ProspectCard>());
+
+            if (scriptObject.isFavorited)
+            {
+                scriptObject.favoritedButtonText.text = "Unfavorite";
+                scriptObject.favoritedStar.SetActive(true);
+            }
+            else
+            {
+                scriptObject.favoritedButtonText.text = "Favorite";
+                scriptObject.favoritedStar.SetActive(false);
+            }
         }
+    }
+
+    private void RefreshDraftHUD()
+    {
+        uiManager.currentRoundText.text = $"Round {draftManager.currentRound}";
     }
     #endregion
 
@@ -576,8 +637,6 @@ public class UIManager : MonoBehaviour
             cardInstance.GetEmployeeStats(employee);
             cardInstance.SetEmployeeCardBackground(employee);
         }
-
-        periodManager.CheckforEmptyList(employeeLists.currentRoster, $"No Employees to Trade in {generalManager.currentYear}");
     }
 
     public void BuildEmployeesForPicksUI()
@@ -655,6 +714,9 @@ public class UIManager : MonoBehaviour
             menu.SetActive(false);
 
         menuToShow.SetActive(true);
+
+        if (tradeMenus[1].activeSelf) periodManager.CheckforEmptyList(employeeLists.currentRoster, $"No Employees to Trade in {generalManager.currentYear}");
+        else emptyListText.text = string.Empty;
 
         RefreshUI();
     }

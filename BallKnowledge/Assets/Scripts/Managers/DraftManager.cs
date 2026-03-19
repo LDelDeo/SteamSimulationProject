@@ -1,7 +1,8 @@
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class DraftManager : MonoBehaviour
@@ -24,6 +25,7 @@ public class DraftManager : MonoBehaviour
     public List<Employee> latestDraftClass = new List<Employee>();
 
     public List<GameObject> prospectCardsSortingList = new List<GameObject>();
+    private EmployeeEnumerators.JobType jobToSortBy;
 
     private EmployeeLists employeeLists;
     private UIManager uiManager;
@@ -47,11 +49,10 @@ public class DraftManager : MonoBehaviour
         if (currentRound < 3)
         {
             currentRound++;
-            uiManager.currentRoundText.text = $"Round {currentRound}";
 
             for (int i = 0; i < picksInBetweenRounds; i++) // Removes a set amount of prospects in between user picks to simulate a real snake draft
             {
-                int randomNumber = Random.Range(0, employeeLists.draftClass.Count);
+                int randomNumber = UnityEngine.Random.Range(0, employeeLists.draftClass.Count);
                 employeeLists.RemoveEmployee(employeeLists.draftClass[randomNumber], employeeLists.draftClass);
             }
 
@@ -63,10 +64,7 @@ public class DraftManager : MonoBehaviour
                     employeeLists.RemoveEmployee(prospect, employeeLists.draftClass);
             }
         }
-        else 
-        { 
-            DisplayFinalDraftClass();
-        }
+        else { DisplayFinalDraftClass(); }
 
         uiManager.RefreshUI();
         uiManager.UpdateDraftPicks();
@@ -125,7 +123,7 @@ public class DraftManager : MonoBehaviour
                         capSpaceAdded += additionalCapSpacePerThirdRoundPick;
                     }
 
-                    uiManager.DraftPicksForCapSpace(manager.thirdRoundPicks, "thrid", capSpaceAdded);
+                    uiManager.DraftPicksForCapSpace(manager.thirdRoundPicks, "third", capSpaceAdded);
                     manager.thirdRoundPicks = 0;
                 }
                 break;
@@ -136,9 +134,6 @@ public class DraftManager : MonoBehaviour
     #endregion
 
     #region List Sorting
-    // We should use a dropdown or a check box for ascending/descending order when sorting
-    // Maybe sorting mutliple items at once as well (this would require checkboxes and not buttons)
-    // We should also look into favoriting prospects
     private void AddProspectCardsToSortingList()
     {
         foreach (Transform prospectCard in uiManager.prospectContent)
@@ -148,15 +143,58 @@ public class DraftManager : MonoBehaviour
         }
     }
 
-    public void SortByPosition()
+    public void SortByFavorites()
     {
         AddProspectCardsToSortingList();
 
-        var sorted = prospectCardsSortingList.OrderByDescending
-            (prospectCard => prospectCard.GetComponent<ProspectCard>().jobType).ToList();
+        NothingToSort("Favorites", "No Favorited Prospects to Sort");
 
-        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+        var sorted = prospectCardsSortingList.OrderByDescending
+            (prospectCard => prospectCard.GetComponent<ProspectCard>().isFavorited).ToList();
+
+        for (int i = 0; i < sorted.Count; i++)
             sorted[i].transform.SetSiblingIndex(i);
+
+        prospectCardsSortingList.Clear();
+    }
+
+    public void SetJobPositionToSortBy()
+    {
+        int dropdownIndex = uiManager.positionDropDown.value;
+
+        switch (dropdownIndex)
+        {
+            case 0: jobToSortBy = EmployeeEnumerators.JobType.Busser; break;
+            case 1: jobToSortBy = EmployeeEnumerators.JobType.Janitor; break;
+            case 2: jobToSortBy = EmployeeEnumerators.JobType.Drive_Thru_Attendee; break;
+            case 3: jobToSortBy = EmployeeEnumerators.JobType.Cashier; break;
+            case 4: jobToSortBy = EmployeeEnumerators.JobType.Media_Manager; break;
+            case 5: jobToSortBy = EmployeeEnumerators.JobType.Prep_Cook; break;
+            case 6: jobToSortBy = EmployeeEnumerators.JobType.Line_Cook; break;
+            case 7: jobToSortBy = EmployeeEnumerators.JobType.Fry_Cook; break;
+            case 8: jobToSortBy = EmployeeEnumerators.JobType.Patty_Flipper; break;
+            case 9: jobToSortBy = EmployeeEnumerators.JobType.Expediter; break;
+            case 10: jobToSortBy = EmployeeEnumerators.JobType.Shift_Manager; break;
+            case 11: jobToSortBy = EmployeeEnumerators.JobType.Manager; break;
+        }
+    }
+    
+    public void SortByPosition()
+    {
+        foreach (Transform prospectCard in uiManager.prospectContent)
+        {
+            var cardObject = prospectCard.gameObject;
+            var cardScript = cardObject.GetComponent<ProspectCard>();
+
+            if (cardScript.jobTypeToSort == jobToSortBy)
+                prospectCardsSortingList.Add(cardObject);
+        }
+
+        var sorted = prospectCardsSortingList.OrderByDescending
+            (prospectCard => prospectCard.GetComponent<ProspectCard>().jobTypeToSort).ToList();
+
+        for (int i = 0; i < sorted.Count; i++)
+                sorted[i].transform.SetSiblingIndex(i);
 
         prospectCardsSortingList.Clear();
     }
@@ -166,22 +204,26 @@ public class DraftManager : MonoBehaviour
         AddProspectCardsToSortingList();
 
         var sorted = prospectCardsSortingList.OrderByDescending
-            (prospectCard => prospectCard.GetComponent<ProspectCard>().personalityTrait).ToList();
+            (prospectCard => prospectCard.GetComponent<ProspectCard>().personalityTraitToSort).ToList();
 
-        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+        for (int i = 0; i < sorted.Count; i++)
             sorted[i].transform.SetSiblingIndex(i);
 
         prospectCardsSortingList.Clear();
     }
 
-    public void SortByRevealedDevelopmentTrait()
+    public void SortByRevealedWorkEthics()
     {
         AddProspectCardsToSortingList();
 
-        var sorted = prospectCardsSortingList.OrderByDescending
-            (prospectCard => prospectCard.GetComponent<ProspectCard>().developmentTraitRevealed).ToList();
-        
-        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+        NothingToSort("WorkEthics", "No Prospects with Revealed Work Ethics");
+
+        var sorted = prospectCardsSortingList
+            .OrderByDescending(prospectCard => prospectCard.GetComponent<ProspectCard>().workEthicsRevealed)
+            .ThenByDescending(prospectCard => prospectCard.GetComponent<ProspectCard>().workEthicToSort)
+            .ToList();
+
+        for (int i = 0; i < sorted.Count; i++)
             sorted[i].transform.SetSiblingIndex(i);
 
         prospectCardsSortingList.Clear();
@@ -191,13 +233,41 @@ public class DraftManager : MonoBehaviour
     {
         AddProspectCardsToSortingList();
 
-        var sorted = prospectCardsSortingList.OrderByDescending
-            (prospectCard => prospectCard.GetComponent<ProspectCard>().overallRevealed).ToList();
+        NothingToSort("Overall", "No Prospects with Revealed Overall");
 
-        for (int i = 0; i < prospectCardsSortingList.Count; i++)
+        var sorted = prospectCardsSortingList
+            .OrderByDescending(prospectCard => prospectCard.GetComponent<ProspectCard>().overallRevealed)
+            .ThenByDescending(prospectCard => prospectCard.GetComponent<ProspectCard>().overallToSort)
+            .ToList();
+
+        for (int i = 0; i < sorted.Count; i++)
             sorted[i].transform.SetSiblingIndex(i);
 
         prospectCardsSortingList.Clear();
+    }
+
+    private void NothingToSort(string varToSort, string textToDisplay)
+    {
+        var prospectsToSort = 0;
+
+        foreach (Transform prospectCard in uiManager.prospectContent)
+        {
+            ProspectCard cardObject = prospectCard.gameObject.GetComponent<ProspectCard>();
+            
+            switch (varToSort)
+            {
+                case "Favorites": if (cardObject.isFavorited) prospectsToSort++; break;
+                case "WorkEthics": if (cardObject.workEthicsRevealed) prospectsToSort++; break;
+                case "Overall": if (cardObject.overallRevealed) prospectsToSort++; break;
+            }
+        }
+
+        if (prospectsToSort == 0)
+        {
+            uiManager.GenericText(textToDisplay);
+            prospectCardsSortingList.Clear();
+            return;
+        }
     }
     #endregion
 }
