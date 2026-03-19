@@ -1681,11 +1681,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: -6679483620263885895}
         m_TargetAssemblyTypeName: FreeAgentCard, Assembly-CSharp
-        m_MethodName: ResignPlayer
-        m_Mode: 2
+        m_MethodName: AttemptToReSignPlayer
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: -6679483620263885895}
-          m_ObjectArgumentAssemblyTypeName: FreeAgentCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3118,6 +3118,7 @@ MonoBehaviour:
   isRestrictedFreeAgent: 1
   maxInterestMultiplier: 1.8
   minInterestMultiplier: 1.1
+  contractYears: 1
 --- !u!1 &7467116837875991726
 GameObject:
   m_ObjectHideFlags: 0

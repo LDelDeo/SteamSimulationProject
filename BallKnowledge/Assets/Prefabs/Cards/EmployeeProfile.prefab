@@ -1961,8 +1961,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9166813210180314598}
-        m_TargetAssemblyTypeName: EmployeeStats, Assembly-CSharp
-        m_MethodName: CutEmployee
+        m_TargetAssemblyTypeName: EmployeeProfile, Assembly-CSharp
+        m_MethodName: RequestToCutEmployee
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

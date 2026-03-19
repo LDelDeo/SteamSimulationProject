@@ -2682,11 +2682,11 @@ MonoBehaviour:
   actionCanvasInstantiatePoint: {fileID: 938782848}
   currentActionCanvas: {fileID: 0}
   actionCanvasText: {fileID: 0}
-  descionCanvasPrefab: {fileID: 2703001920624651071, guid: 76b6fac1c8b389b42a968673993767a6, type: 3}
-  descionCanvasInstantiatePoint: {fileID: 938782848}
-  currentDescionCanvas: {fileID: 0}
-  descionCanvasText: {fileID: 0}
-  descionEvent:
+  decisionCanvasPrefab: {fileID: 2703001920624651071, guid: 76b6fac1c8b389b42a968673993767a6, type: 3}
+  decisionCanvasInstantiatePoint: {fileID: 938782848}
+  currentDecisionCanvas: {fileID: 0}
+  decisionCanvasText: {fileID: 0}
+  decisionEvent:
     m_PersistentCalls:
       m_Calls: []
   rosterScreen: {fileID: 1596375105}

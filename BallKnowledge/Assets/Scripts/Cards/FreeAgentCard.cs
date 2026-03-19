@@ -14,7 +14,7 @@ public class FreeAgentCard : EmployeeCard
     [SerializeField] float maxInterestMultiplier;
     [SerializeField] float minInterestMultiplier;
 
-    private int contractYears = 1;
+    public int contractYears = 1;
     private float interestInSigning;
     private int interestStandard;
     private bool willSign;
@@ -104,9 +104,15 @@ public class FreeAgentCard : EmployeeCard
             willSign = true;
     }
 
-    public void SignPlayer(FreeAgentCard freeAgentCard)
+    public void AttemptToSignPlayer()
     {
-        Employee freeAgentToSign = freeAgentCard.freeAgent;
+        if (contractYears > 4) uiManager.AttemptLongTermContract(freeAgent, SignPlayer, contractYears);
+        else SignPlayer();
+    }
+
+    private void SignPlayer()
+    {
+        Employee freeAgentToSign = this.gameObject.GetComponent<FreeAgentCard>().freeAgent;
 
         if (!willSign)
         {
@@ -136,9 +142,15 @@ public class FreeAgentCard : EmployeeCard
         }    
     }
 
-    public void ResignPlayer(FreeAgentCard expiringContractCard)
+    public void AttemptToReSignPlayer()
     {
-        Employee employeeToResign = expiringContractCard.freeAgent;
+        if (contractYears > 4) uiManager.AttemptLongTermContract(freeAgent, ResignPlayer, contractYears);
+        else ResignPlayer();
+    }
+
+    private void ResignPlayer()
+    {
+        Employee employeeToResign = this.gameObject.GetComponent<FreeAgentCard>().freeAgent;
 
         if (!willSign)
         {

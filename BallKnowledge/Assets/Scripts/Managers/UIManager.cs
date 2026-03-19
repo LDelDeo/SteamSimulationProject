@@ -21,12 +21,13 @@ public class UIManager : MonoBehaviour
     private GameObject closeActionCanvasButton;
 
     [Header("Descion Canvas")]
-    public GameObject descionCanvasPrefab;
-    public Transform descionCanvasInstantiatePoint;
-    public GameObject currentDescionCanvas;
-    public GameObject descionCanvasText;
-    public UnityEvent descionEvent;
-    private GameObject closeDescionCanvasButton;
+    public GameObject decisionCanvasPrefab;
+    public Transform decisionCanvasInstantiatePoint;
+    public GameObject currentDecisionCanvas;
+    public GameObject decisionCanvasText;
+    public UnityEvent decisionEvent;
+    private GameObject closeDecisionCanvasButton;
+    private GameObject invokeDecisionCanvasButton;
 
     [Header("Roster Screen UI")]
     public GameObject rosterScreen;
@@ -217,8 +218,6 @@ public class UIManager : MonoBehaviour
         UpdateHUD();
     }
 
-
-    // We should find a way to merge these and make it generic
     #region Action Canvas Functionality
     public void FindActionCanvas()
     {
@@ -342,35 +341,64 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
-    #region Decsion Canvas Functionality
-    public void FindDescionCanvas()
+    #region Decision Canvas Functionality
+    public void FindDecisionCanvas()
     {
-        currentDescionCanvas = GameObject.Find("Descion Canvas(Clone");
-        descionCanvasText = GameObject.Find("Outcome Text");
+        currentDecisionCanvas = GameObject.Find("Decision Canvas(Clone)");
+        decisionCanvasText = GameObject.Find("Decision Text");
 
-        closeDescionCanvasButton = GameObject.Find("No Button");
-        closeDescionCanvasButton.GetComponent<Button>().onClick.AddListener(NoChoiceDescionCanvas);
+        closeDecisionCanvasButton = GameObject.Find("No Button");
+        closeDecisionCanvasButton.GetComponent<Button>().onClick.AddListener(NoChoiceDecisionCanvas);
+
+        invokeDecisionCanvasButton = GameObject.Find("Yes Button");
+        invokeDecisionCanvasButton.GetComponent<Button>().onClick.AddListener(YesChoiceDecisionCanvas);
     }
 
-    public void OpenDescionCanvas(UnityAction functionToAdd)
+    public void OpenDecisionCanvas(UnityAction functionToAdd)
     {
-        Instantiate(descionCanvasPrefab, descionCanvasInstantiatePoint);
-        FindDescionCanvas();
-        descionEvent.AddListener(functionToAdd);
+        Instantiate(decisionCanvasPrefab, decisionCanvasInstantiatePoint);
+        FindDecisionCanvas();
+        decisionEvent.AddListener(functionToAdd);
     }
 
-    public void YesChoiceDescionCanvas()
+    public void YesChoiceDecisionCanvas()
     {
-        descionEvent.Invoke();
-        descionEvent.RemoveAllListeners();
-        Destroy(currentDescionCanvas);
+        FindDecisionCanvas();
+        decisionEvent.Invoke();
+        decisionEvent.RemoveAllListeners();
+        Destroy(currentDecisionCanvas);
     }
 
-    public void NoChoiceDescionCanvas()
+    public void NoChoiceDecisionCanvas()
     {
-        FindDescionCanvas();
-        descionEvent.RemoveAllListeners();
-        Destroy(currentDescionCanvas);
+        FindDecisionCanvas();
+        decisionEvent.RemoveAllListeners();
+        Destroy(currentDecisionCanvas);
+    }
+    #endregion
+
+    #region Decision Canvas Messages
+    public void AttemptEmployeeCut(Employee employee, UnityAction functionToAdd)
+    {
+        OpenDecisionCanvas(functionToAdd);
+        decisionCanvasText.GetComponent<TMP_Text>().text = $"Are you sure you want to cut Employee?\n Cap Space Savings: ${employee.hourlyWage}/hr";
+    }
+
+    // We need to hook up these messages to button presses and update the action canvas text that follows
+    // Employee EXTENDING contracts over 4 years, trading + capital, advancing rounds with picks remaining etc.
+    // Also be sure to use this on card classes instead of passing the script itself: this.gameObject.GetComponent<EmployeeCard>().grabbedEmployee;
+
+    // Maybe we make contracts over 4 years cannot be traded as well
+    public void AttemptEmployeeRelease(Employee employee, UnityAction functionToAdd)
+    {
+        OpenDecisionCanvas(functionToAdd);
+        decisionCanvasText.GetComponent<TMP_Text>().text = $"Are you sure you want to release Employee?\n Cap Space Savings: ${employee.hourlyWage}/hr";
+    }
+
+    public void AttemptLongTermContract(Employee employee, UnityAction functionToAdd, int contractYears)
+    {
+        OpenDecisionCanvas(functionToAdd);
+        decisionCanvasText.GetComponent<TMP_Text>().text = $"Are you sure you want to offer a {contractYears} year contract?\n You cannot cut a contract over 4 years";
     }
     #endregion
 

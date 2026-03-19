@@ -116,9 +116,14 @@ public class DisgruntledCard : EmployeeCard
         buttons[0].SetActive(true); // Release
     }
 
-    public void ReleaseEmployee(DisgruntledCard disgruntledCard)
+    public void RequestToReleaseEmployee()
     {
-        Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
+        uiManager.AttemptEmployeeRelease(disgruntledEmployee, ReleaseEmployee);
+    }
+
+    private void ReleaseEmployee()
+    {
+        Employee disgruntledEmployee = this.gameObject.GetComponent<DisgruntledCard>().disgruntledEmployee;
 
         generalManager.playersCut++;
 

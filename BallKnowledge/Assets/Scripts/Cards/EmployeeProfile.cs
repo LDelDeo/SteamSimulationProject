@@ -44,7 +44,12 @@ public class EmployeeProfile : EmployeeCard
         thisEmployee = employee;
     }
 
-    public void CutEmployee()
+    public void RequestToCutEmployee()
+    {
+        uiManager.AttemptEmployeeCut(thisEmployee, CutEmployee);
+    }
+
+    private void CutEmployee()
     {
         // Contracts with more than 4 years remaining cannot be cut
         if (thisEmployee.yearsUnderContract > 4)

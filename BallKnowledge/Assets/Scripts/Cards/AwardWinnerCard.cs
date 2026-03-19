@@ -52,9 +52,9 @@ public class AwardWinnerCard : EmployeeCard
         awardWinner = employee;
     }
 
-    public void NominateEmployeeForTeamAward(AwardWinnerCard awardWinnerCard)
+    public void NominateEmployeeForTeamAward()
     {
-        Employee awardWinner = awardWinnerCard.awardWinner;
+        Employee awardWinner = this.gameObject.GetComponent<AwardWinnerCard>().awardWinner;
 
         employeeLists.UpgradeEmployeeOverall(awardWinner, awardManager.ovrUpgradeAmountTeamAward);
 
