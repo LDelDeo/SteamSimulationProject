@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public class DraftManager : MonoBehaviour
 {
+    // Allow employees to trade employees for picks during the draft
+    // Show the screen of assets for picks, remove the back button, Get Offers button is non interactable for rookies
+
+    // We should hide the work ethic, overall and stats of rookie employees in roster screen during the draft
+
+    // We could also display the top 3 positional needs
     [Header("Draft Period Configuration")]
     public int draftClassSize;
     public int currentRound;
@@ -16,6 +22,7 @@ public class DraftManager : MonoBehaviour
     [SerializeField] int additionalCapSpacePerFirstRoundPick; 
     [SerializeField] int additionalCapSpacePerSecondRoundPick; 
     [SerializeField] int additionalCapSpacePerThirdRoundPick;
+    [SerializeField] int amountOfTopProspectsToDisplay;
 
     [Header("Draft Pick Configuration")]
     public int firstRoundPicksRecouped;
@@ -23,6 +30,7 @@ public class DraftManager : MonoBehaviour
     public int thirdRoundPicksRecouped;
 
     public List<Employee> latestDraftClass = new List<Employee>();
+    public List<Employee> topOverallProspects = new List<Employee>();
 
     public List<GameObject> prospectCardsSortingList = new List<GameObject>();
     private EmployeeEnumerators.JobType jobToSortBy;
@@ -41,7 +49,7 @@ public class DraftManager : MonoBehaviour
     }
 
     #region Drafting Functionality
-    public void AdvanceRound()
+    private void AdvanceRound()
     {
         // If you advance a round with left over draft picks in the current round, you can increase your max cap space by an X amount depending on the value of the pick
         TradingLeftOverPicks(); 
@@ -64,20 +72,56 @@ public class DraftManager : MonoBehaviour
                     employeeLists.RemoveEmployee(prospect, employeeLists.draftClass);
             }
         }
-        else { DisplayFinalDraftClass(); }
+        else 
+        { 
+            DisplayFinalDraftClass();
+            uiManager.topProspectsContent.gameObject.SetActive(true);
+        }
 
         uiManager.RefreshUI();
         uiManager.UpdateDraftPicks();
         uiManager.UpdateCapSpace();
     }
 
-    private void DisplayFinalDraftClass()
+    public void RequestPicksForCapSpace()
     {
-        uiManager.nextPeriodButton.SetActive(true);
+        int capSpaceAdded = 0;
 
-        employeeLists.draftClass.Clear();
-        uiManager.BuildUI();
-        uiManager.draftScreen.GetComponent<ScrollRect>().content = uiManager.finalDraftClassContent.GetComponent<RectTransform>();
+        switch (currentRound)
+        {
+            case 1:
+                if (manager.firstRoundPicks > 0)
+                {
+                    for (int i = 0; i < manager.firstRoundPicks; i++)
+                        capSpaceAdded += additionalCapSpacePerFirstRoundPick;
+
+                    uiManager.AttemptToSkipDraftRound(AdvanceRound, manager.firstRoundPicks, "first", capSpaceAdded);
+                }
+                else AdvanceRound();
+                break;
+
+            case 2:
+                if (manager.secondRoundPicks > 0)
+                {
+                    for (int i = 0; i < manager.secondRoundPicks; i++)
+                        capSpaceAdded += additionalCapSpacePerSecondRoundPick;
+
+                    uiManager.AttemptToSkipDraftRound(AdvanceRound, manager.secondRoundPicks, "second", capSpaceAdded);
+                }
+                else AdvanceRound();
+                break;
+
+            case 3:
+                if (manager.thirdRoundPicks > 0)
+                {
+                    for (int i = 0; i < manager.thirdRoundPicks; i++)
+                        capSpaceAdded += additionalCapSpacePerThirdRoundPick;
+
+                    uiManager.AttemptToSkipDraftRound(AdvanceRound, manager.thirdRoundPicks, "third", capSpaceAdded);
+                }
+                else AdvanceRound();
+                break;
+        }
     }
 
     private void TradingLeftOverPicks()
@@ -130,6 +174,28 @@ public class DraftManager : MonoBehaviour
         }
 
         uiManager.UpdateCapSpace();
+    }
+    #endregion
+
+    #region Post-Draft Lists
+
+    private void DisplayFinalDraftClass()
+    {
+        uiManager.nextPeriodButton.SetActive(true);
+
+        employeeLists.draftClass.Clear();
+        uiManager.BuildUI();
+        uiManager.draftScreen.GetComponent<ScrollRect>().content = uiManager.finalDraftClassContent.GetComponent<RectTransform>();
+    }
+
+    public void GrabTopProspects()
+    {
+        var sortedByOverall = employeeLists.draftClass.OrderByDescending(prospect => prospect.overall).ToList();
+
+        for (int i = 0; i < amountOfTopProspectsToDisplay; i++)
+            topOverallProspects.Add(sortedByOverall[i]);  
+        
+        uiManager.topProspectsContent.gameObject.SetActive(false);
     }
     #endregion
 

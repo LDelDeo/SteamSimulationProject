@@ -1795,11 +1795,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8374373777349628615}
         m_TargetAssemblyTypeName: DisgruntledCard, Assembly-CSharp
-        m_MethodName: ExtendEmployee
-        m_Mode: 2
+        m_MethodName: RequestToExtendEmployee
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8374373777349628615}
-          m_ObjectArgumentAssemblyTypeName: DisgruntledCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2019,11 +2019,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8374373777349628615}
         m_TargetAssemblyTypeName: DisgruntledCard, Assembly-CSharp
-        m_MethodName: TradeEmployee
-        m_Mode: 2
+        m_MethodName: RequestToTradeEmployee
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8374373777349628615}
-          m_ObjectArgumentAssemblyTypeName: DisgruntledCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2429,10 +2429,10 @@ MonoBehaviour:
       - m_Target: {fileID: 8374373777349628615}
         m_TargetAssemblyTypeName: DisgruntledCard, Assembly-CSharp
         m_MethodName: RaiseEmployee
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8374373777349628615}
-          m_ObjectArgumentAssemblyTypeName: DisgruntledCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2697,10 +2697,10 @@ MonoBehaviour:
       - m_Target: {fileID: 8374373777349628615}
         m_TargetAssemblyTypeName: DisgruntledCard, Assembly-CSharp
         m_MethodName: ConvinceEmployeeToStay
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8374373777349628615}
-          m_ObjectArgumentAssemblyTypeName: DisgruntledCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

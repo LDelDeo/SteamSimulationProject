@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using static TradeManager;
 
 public class TradeAssetCard : EmployeeCard
 {
@@ -43,14 +44,38 @@ public class TradeAssetCard : EmployeeCard
         employeeToBeOffered = employee;
     }
 
-    public void GetOffersForEmployee(TradeAssetCard tradeAssetCard)
+    public void RequestToGetOffers()
     {
-        Employee employeeToTradeAway = tradeAssetCard.employeeToBeOffered;
-
-        tradeManager.TradeEmployeeForPicks(employeeToTradeAway);
+        if (tradeManager.EmployeeValueInPicks(employeeToBeOffered) == TradeManager.TradePackages.NoTradeInterest)
+            uiManager.NameGenericText(employeeToBeOffered, "has generated no trade interest from other fast food franchises");
+        else
+        uiManager.AttemptEmployeeTrade(employeeToBeOffered, GetOffersForEmployee, AttemptTradeEmployeeForPicks());
     }
 
-    public void SelectEmployeeToTradeFor(TradeAssetCard tradeBlockCard)
+    private string AttemptTradeEmployeeForPicks()
+    {
+        var tradePackage = string.Empty;
+
+        switch (tradeManager.EmployeeValueInPicks(employeeToBeOffered))
+        {
+            case TradePackages.NoTradeInterest: tradePackage = "has generated no trade interest from other fast food franchises"; break;
+            case TradePackages.ThirdRoundPick: tradePackage = "a third round pick"; break;
+            case TradePackages.MultipleThirdRoundPicks: tradePackage = "two third round picks"; break;
+            case TradePackages.SecondRoundPick: tradePackage = "a second round pick"; break;
+            case TradePackages.MultipleSecondRoundPicks: tradePackage = "two second round picks"; break;
+            case TradePackages.FirstRoundPick: tradePackage = "a FIRST round pick"; break;
+            case TradePackages.MultipleFirstRoundPicks: tradePackage = "TWO FIRST ROUND PICKS"; break;
+        }
+
+        return tradePackage;
+    }
+
+    private void GetOffersForEmployee()
+    {
+        tradeManager.TradeEmployeeForPicks(employeeToBeOffered);
+    }
+
+    public void SelectEmployeeToTradeFor()
     {
         if (tradeManager.employeeToBeAcquired != null)
         {
@@ -58,7 +83,7 @@ public class TradeAssetCard : EmployeeCard
             return;
         }
 
-        Employee employeeToAcquire = tradeBlockCard.employeeToBeOffered;
+        Employee employeeToAcquire = this.gameObject.GetComponent<TradeAssetCard>().employeeToBeOffered;
         tradeManager.employeeToBeAcquired = employeeToAcquire;
 
         addButton.SetActive(false);
@@ -77,7 +102,7 @@ public class TradeAssetCard : EmployeeCard
         uiManager.RefreshUI();
     }
 
-    public void AddEmployeeToTradePackage(TradeAssetCard tradeAssetCard)
+    public void AddEmployeeToTradePackage()
     {
         if (tradeManager.TradePackageIsFull())
         {
@@ -85,7 +110,7 @@ public class TradeAssetCard : EmployeeCard
             return;
         }
 
-        Employee employeeToTrade = tradeAssetCard.employeeToBeOffered;
+        Employee employeeToTrade = this.gameObject.GetComponent<TradeAssetCard>().employeeToBeOffered;
 
         tradeManager.outgoingTradePackageValue.Add(employeeToTrade.value - tradeManager.outgoingEmployeeValueNerf);
 
@@ -98,9 +123,9 @@ public class TradeAssetCard : EmployeeCard
         uiManager.RefreshUI();
     }
 
-    public void RemoveEmployeeFromTradePackage(TradeAssetCard tradeAssetCard)
+    public void RemoveEmployeeFromTradePackage()
     {
-        Employee employeeNotToTrade = tradeAssetCard.employeeToBeOffered;
+        Employee employeeNotToTrade = this.gameObject.GetComponent<TradeAssetCard>().employeeToBeOffered;
 
         tradeManager.outgoingTradePackageValue.Remove(employeeNotToTrade.value - tradeManager.outgoingEmployeeValueNerf);
 

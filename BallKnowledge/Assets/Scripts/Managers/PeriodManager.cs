@@ -164,12 +164,14 @@ public class PeriodManager : MonoBehaviour
                 draftManager.currentRound = 1;
                 uiManager.nextPeriodButton.SetActive(false);
                 CreateAnEmployee(draftManager.draftClassSize, employeeFactory, employeeLists, employeeArrays, employeeLists.draftClass, prospectCardObject, uiManager.prospectContent);
+                draftManager.GrabTopProspects();
 
                 uiManager.ChangeUI(uiManager.draftScreen);
                 break;
 
             case Period.SeasonSimulation:
                 draftManager.latestDraftClass.Clear();
+                draftManager.topOverallProspects.Clear();
 
                 break;
 

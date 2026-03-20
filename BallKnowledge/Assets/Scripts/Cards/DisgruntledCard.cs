@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static TradeManager;
 
 public class DisgruntledCard : EmployeeCard
 {
@@ -136,25 +137,45 @@ public class DisgruntledCard : EmployeeCard
         disgruntledEmployee.hourlyWage = employeeRNG.GetRandomWage(disgruntledEmployee);
     }
 
-    public void TradeEmployee(DisgruntledCard disgruntledCard)
+    public void RequestToTradeEmployee()
     {
-        Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
+        Employee disgruntledEmployee = this.gameObject.GetComponent<DisgruntledCard>().disgruntledEmployee;
 
         if (tradeManager.EmployeeValueInPicks(disgruntledEmployee) == TradeManager.TradePackages.NoTradeInterest)
         {
             uiManager.NameGenericText(disgruntledEmployee, "has generated no trade interest from other fast food franchises");
             buttons[1].SetActive(false);
         }
-        else
-        {
-            tradeManager.TradeEmployeeForPicks(disgruntledEmployee);
-            SettlementClosed("Employee Traded");
-        }
+        else uiManager.AttemptEmployeeTrade(disgruntledEmployee, TradeEmployee, AttemptTradeEmployeeForPicks());
     }
 
-    public void RaiseEmployee(DisgruntledCard disgruntledCard)
+    private string AttemptTradeEmployeeForPicks()
     {
-        Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
+        var tradePackage = string.Empty;
+
+        switch (tradeManager.EmployeeValueInPicks(disgruntledEmployee))
+        {
+            case TradePackages.NoTradeInterest: tradePackage = "has generated no trade interest from other fast food franchises"; break;
+            case TradePackages.ThirdRoundPick: tradePackage = "a third round pick"; break;
+            case TradePackages.MultipleThirdRoundPicks: tradePackage = "two third round picks"; break;
+            case TradePackages.SecondRoundPick: tradePackage = "a second round pick"; break;
+            case TradePackages.MultipleSecondRoundPicks: tradePackage = "two second round picks"; break;
+            case TradePackages.FirstRoundPick: tradePackage = "a FIRST round pick"; break;
+            case TradePackages.MultipleFirstRoundPicks: tradePackage = "TWO FIRST ROUND PICKS"; break;
+        }
+
+        return tradePackage;
+    }
+
+    private void TradeEmployee()
+    {
+        tradeManager.TradeEmployeeForPicks(disgruntledEmployee);
+        SettlementClosed("Employee Traded");
+    }
+
+    public void RaiseEmployee()
+    {
+        Employee disgruntledEmployee = this.gameObject.GetComponent<DisgruntledCard>().disgruntledEmployee;
 
         if (generalManager.currentUsedCapSpace + disgruntledEmployee.hourlyWage + raiseAmount <= generalManager.maxCapSpace)
         {
@@ -175,9 +196,15 @@ public class DisgruntledCard : EmployeeCard
         }
     }
 
-    public void ExtendEmployee(DisgruntledCard disgruntledCard)
+    public void RequestToExtendEmployee()
     {
-        Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
+        if (disgruntledEmployee.yearsUnderContract + yearExtensionAmount > 4) uiManager.AttemptToExtendEmployee(disgruntledEmployee, ExtendEmployee, yearExtensionAmount);
+        else ExtendEmployee();
+    }
+
+    private void ExtendEmployee()
+    {
+        Employee disgruntledEmployee = this.gameObject.GetComponent<DisgruntledCard>().disgruntledEmployee;
 
         if (employeeLists.HasRosterSpace(disgruntledEmployee))
         {
@@ -191,9 +218,9 @@ public class DisgruntledCard : EmployeeCard
         }
     }
 
-    public void ConvinceEmployeeToStay(DisgruntledCard disgruntledCard)
+    public void ConvinceEmployeeToStay()
     {
-        Employee disgruntledEmployee = disgruntledCard.disgruntledEmployee;
+        Employee disgruntledEmployee = this.gameObject.GetComponent<DisgruntledCard>().disgruntledEmployee;
 
         int randomNumber = Random.Range(1, 101);
 

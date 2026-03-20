@@ -1767,10 +1767,10 @@ MonoBehaviour:
       - m_Target: {fileID: 1376719305067877416}
         m_TargetAssemblyTypeName: ProspectCard, Assembly-CSharp
         m_MethodName: DraftProspect
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 1376719305067877416}
-          m_ObjectArgumentAssemblyTypeName: ProspectCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2430,10 +2430,12 @@ MonoBehaviour:
   facialHairRenderer: {fileID: 8902329067661763885}
   employeeCardBackground: {fileID: 5135445610804419322}
   isFavorited: 0
-  developmentTraitRevealed: 0
   overallRevealed: 0
-  personalityTrait: 0
-  jobType: 0
+  workEthicsRevealed: 0
+  overallToSort: 0
+  workEthicToSort: 0
+  personalityTraitToSort: 0
+  jobTypeToSort: 0
   favoritedButtonText: {fileID: 667160637308554502}
   favoritedStar: {fileID: 2738534326425465883}
 --- !u!1 &7410208907116661552

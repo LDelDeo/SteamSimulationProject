@@ -995,10 +995,10 @@ MonoBehaviour:
       - m_Target: {fileID: 511826424170727708}
         m_TargetAssemblyTypeName: RetirementCard, Assembly-CSharp
         m_MethodName: ConvinceToStay
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 511826424170727708}
-          m_ObjectArgumentAssemblyTypeName: RetirementCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2071,6 +2071,7 @@ MonoBehaviour:
   jobPositionText: {fileID: 2933537616059309716}
   workEthicText: {fileID: 0}
   personalityText: {fileID: 0}
+  methodOfAcquirementText: {fileID: 0}
   ageText: {fileID: 2471107857066353557}
   hourlyWageText: {fileID: 2718026593568355127}
   yearsUnderContractText: {fileID: 0}
@@ -2222,10 +2223,10 @@ MonoBehaviour:
       - m_Target: {fileID: 511826424170727708}
         m_TargetAssemblyTypeName: RetirementCard, Assembly-CSharp
         m_MethodName: AddToHallOfFame
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 511826424170727708}
-          m_ObjectArgumentAssemblyTypeName: RetirementCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

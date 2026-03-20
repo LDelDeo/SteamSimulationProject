@@ -1592,10 +1592,10 @@ MonoBehaviour:
       - m_Target: {fileID: 809467621385479567}
         m_TargetAssemblyTypeName: AwardWinnerCard, Assembly-CSharp
         m_MethodName: NominateEmployeeForTeamAward
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 809467621385479567}
-          m_ObjectArgumentAssemblyTypeName: AwardWinnerCard, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

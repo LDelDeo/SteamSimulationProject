@@ -1,9 +1,20 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class EmployeeProfile : EmployeeCard
 {
+    [Header("Employee Profile Visuals")]
+    [SerializeField] Button cutButton;
+
     private Employee thisEmployee;
+
+    private void Start()
+    {
+        // You can't cut a rookie employee during the draft they were taken in
+        if (thisEmployee.isRookie && periodManager.currentPeriod == PeriodManager.Period.Draft)
+            cutButton.interactable = false;
+    }
 
     public override void GetEmployeeStats(Employee employee)
     {

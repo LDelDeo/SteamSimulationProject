@@ -42,9 +42,9 @@ public class RetirementCard : EmployeeCard
         retiredEmployee = employee;
     }
 
-    public void ConvinceToStay(RetirementCard retirementCard)
+    public void ConvinceToStay()
     {
-        Employee employeeRetiring = retirementCard.retiredEmployee;
+        Employee employeeRetiring = this.gameObject.GetComponent<RetirementCard>().retiredEmployee;
 
         if (employeeRetiring.age >= 40) { ButtonEnabler(false, true, true); } // If employee is 40 or older, 100% chance they retire
         else
@@ -74,9 +74,9 @@ public class RetirementCard : EmployeeCard
         ButtonEnabler(false, false, true);
     }
 
-    public void AddToHallOfFame(RetirementCard retirementCard)
+    public void AddToHallOfFame()
     {
-        Employee employeeRetiring = retirementCard.retiredEmployee;
+        Employee employeeRetiring = this.gameObject.GetComponent<RetirementCard>().retiredEmployee;
 
         uiManager.NameGenericText(employeeRetiring, $"is honored to be added to the {generalManager.franchiseName} hall of fame");
 

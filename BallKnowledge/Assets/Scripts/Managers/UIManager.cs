@@ -1,14 +1,14 @@
-﻿using System.Collections;
+﻿using NUnit.Framework;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
-using System;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -51,6 +51,8 @@ public class UIManager : MonoBehaviour
 
     public Transform finalDraftClassContent;
     public TMP_Text draftPicksByRoundText;
+
+    public Transform topProspectsContent;
 
     public GameObject prospectCardPrefab;
     public GameObject selectedProspectCardPrefab;
@@ -203,6 +205,7 @@ public class UIManager : MonoBehaviour
                 break;
             case PeriodManager.Period.Draft:
                 BuildDraftUI();
+                BuildTopProspectsUI();
                 BuildFinalDraftClassUI();
                 break;
             case PeriodManager.Period.SeasonSimulation:
@@ -313,13 +316,13 @@ public class UIManager : MonoBehaviour
     public void DraftPicksForCapSpace(int amountOfPicks, string pickType, int additionalCapSpace)
     {
         OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = $"You will be trading {amountOfPicks} {pickType} round pick(s) for an increase of ${additionalCapSpace} of cap space";
+        actionCanvasText.GetComponent<TMP_Text>().text = $"You traded {amountOfPicks} {pickType} round pick(s) for an increase of ${additionalCapSpace} of cap space";
     }
 
     public void TradeEmployeeForPicks(Employee employee, string tradePackage)
     {
         OpenActionCanvas();
-        actionCanvasText.GetComponent<TMP_Text>().text = $"(Insert other franchise here) is offering {tradePackage} in the upcoming draft for {employee.firstName} {employee.lastName}";
+        actionCanvasText.GetComponent<TMP_Text>().text = $"{employee.firstName} {employee.lastName} has been delt to (Insert other franchise here) for {tradePackage} in the upcoming draft";
     }
 
     public void EmployeeSigningContract(Employee employee)
@@ -384,11 +387,6 @@ public class UIManager : MonoBehaviour
         decisionCanvasText.GetComponent<TMP_Text>().text = $"Are you sure you want to cut Employee?\n Cap Space Savings: ${employee.hourlyWage}/hr";
     }
 
-    // We need to hook up these messages to button presses and update the action canvas text that follows
-    // Employee EXTENDING contracts over 4 years, trading + capital, advancing rounds with picks remaining etc.
-    // Also be sure to use this on card classes instead of passing the script itself: this.gameObject.GetComponent<EmployeeCard>().grabbedEmployee;
-
-    // Maybe we make contracts over 4 years cannot be traded as well
     public void AttemptEmployeeRelease(Employee employee, UnityAction functionToAdd)
     {
         OpenDecisionCanvas(functionToAdd);
@@ -399,6 +397,24 @@ public class UIManager : MonoBehaviour
     {
         OpenDecisionCanvas(functionToAdd);
         decisionCanvasText.GetComponent<TMP_Text>().text = $"Are you sure you want to offer a {contractYears} year contract?\n You cannot cut a contract over 4 years";
+    }
+
+    public void AttemptEmployeeTrade(Employee employee, UnityAction functionToAdd, string tradePackage)
+    {
+        OpenDecisionCanvas(functionToAdd);
+        decisionCanvasText.GetComponent<TMP_Text>().text = $"(Insert other franchise here) is offering {tradePackage} in the upcoming draft for {employee.firstName} {employee.lastName}";
+    }
+
+    public void AttemptToExtendEmployee(Employee employee, UnityAction functionToAdd, int contractExtention)
+    {
+        OpenDecisionCanvas(functionToAdd);
+        decisionCanvasText.GetComponent<TMP_Text>().text = $"Are you sure you want to extened {employee.firstName} {employee.lastName}'s contract by {contractExtention} year(s)?\n You cannot cut a contract over 4 years";
+    }
+
+    public void AttemptToSkipDraftRound(UnityAction functionToAdd, int amountOfPicks, string pickType, int additionalCapSpace)
+    {
+        OpenDecisionCanvas(functionToAdd);
+        decisionCanvasText.GetComponent<TMP_Text>().text = $"You will be trading {amountOfPicks} {pickType} round pick(s) for an increase of ${additionalCapSpace} of cap space";
     }
     #endregion
 
@@ -446,41 +462,18 @@ public class UIManager : MonoBehaviour
     {
         switch (employee.jobPosition)
         {
-            case EmployeeEnumerators.JobType.Busser:
-                return rosterSlots[0];
-
-            case EmployeeEnumerators.JobType.Janitor:
-                return rosterSlots[1];
-
-            case EmployeeEnumerators.JobType.Media_Manager:
-                return rosterSlots[2];
-
-            case EmployeeEnumerators.JobType.Expediter:
-                return rosterSlots[3];
-
-            case EmployeeEnumerators.JobType.Cashier:
-                return rosterSlots[4];
-
-            case EmployeeEnumerators.JobType.Drive_Thru_Attendee:
-                return rosterSlots[5];
-
-            case EmployeeEnumerators.JobType.Patty_Flipper:
-                return rosterSlots[6];
-
-            case EmployeeEnumerators.JobType.Fry_Cook:
-                return rosterSlots[7];
-
-            case EmployeeEnumerators.JobType.Prep_Cook:
-                return rosterSlots[8];
-
-            case EmployeeEnumerators.JobType.Line_Cook:
-                return rosterSlots[9];
-
-            case EmployeeEnumerators.JobType.Shift_Manager:
-                return rosterSlots[10];
-
-            case EmployeeEnumerators.JobType.Manager:
-                return rosterSlots[11];
+            case EmployeeEnumerators.JobType.Busser: return rosterSlots[0];
+            case EmployeeEnumerators.JobType.Janitor: return rosterSlots[1];
+            case EmployeeEnumerators.JobType.Media_Manager: return rosterSlots[2];
+            case EmployeeEnumerators.JobType.Expediter: return rosterSlots[3];
+            case EmployeeEnumerators.JobType.Cashier: return rosterSlots[4];
+            case EmployeeEnumerators.JobType.Drive_Thru_Attendee: return rosterSlots[5];
+            case EmployeeEnumerators.JobType.Patty_Flipper: return rosterSlots[6];
+            case EmployeeEnumerators.JobType.Fry_Cook: return rosterSlots[7];
+            case EmployeeEnumerators.JobType.Prep_Cook: return rosterSlots[8];
+            case EmployeeEnumerators.JobType.Line_Cook: return rosterSlots[9];
+            case EmployeeEnumerators.JobType.Shift_Manager: return rosterSlots[10];
+            case EmployeeEnumerators.JobType.Manager: return rosterSlots[11];
         }
 
         return null;
@@ -503,6 +496,33 @@ public class UIManager : MonoBehaviour
             GameObject cardObject = Instantiate(prospectCardPrefab, prospectContent);
             ProspectCard card = cardObject.GetComponent<ProspectCard>();
             card.GetEmployeeStats(prospect);
+        }
+    }
+
+    private void BuildTopProspectsUI()
+    {
+        ClearContent(topProspectsContent);
+
+        foreach (var topProspect in draftManager.topOverallProspects)
+        {
+            GameObject cardObject = Instantiate(selectedProspectCardPrefab, topProspectsContent);
+            SelectedProspectCard card = cardObject.GetComponent<SelectedProspectCard>();
+            card.GetEmployeeStats(topProspect);
+            card.SetEmployeeCardBackground(topProspect);
+
+            int prospectNumber = 0;
+
+            if (topProspect == draftManager.topOverallProspects[0]) prospectNumber = 1;
+            else if (topProspect == draftManager.topOverallProspects[1]) prospectNumber = 2;
+            else if (topProspect == draftManager.topOverallProspects[2]) prospectNumber = 3;
+            else if (topProspect == draftManager.topOverallProspects[3]) prospectNumber = 4;
+            else if (topProspect == draftManager.topOverallProspects[4]) prospectNumber = 5;
+
+            card.selectionText.text = $"#{prospectNumber} Overall Prospect";
+
+            // Highlight prospect if user drafted them
+            if (draftManager.latestDraftClass.Contains(topProspect))
+                card.highlightedBackground.gameObject.SetActive(true);
         }
     }
 

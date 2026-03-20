@@ -179,13 +179,13 @@ public class TradeManager : MonoBehaviour
 
     public TradePackages EmployeeValueInPicks(Employee employee)
     {
-        if (employee.value >= 4 && employee.value <= 8) return TradePackages.NoTradeInterest;
-        else if (employee.value >= 9 && employee.value <= 12) return TradePackages.ThirdRoundPick;
-        else if (employee.value >= 13 && employee.value <= 16) return TradePackages.MultipleThirdRoundPicks;
-        else if (employee.value >= 17 && employee.value <= 19) return TradePackages.SecondRoundPick;
-        else if (employee.value >= 20 && employee.value <= 24) return TradePackages.MultipleSecondRoundPicks;
-        else if (employee.value >= 25 && employee.value <= 28) return TradePackages.FirstRoundPick;
-        else if (employee.value >= 29) return TradePackages.MultipleFirstRoundPicks;
+        if (employee.value >= 4 && employee.value <= 12) return TradePackages.NoTradeInterest;
+        else if (employee.value >= 13 && employee.value <= 14) return TradePackages.ThirdRoundPick;
+        else if (employee.value >= 15 && employee.value <= 16) return TradePackages.MultipleThirdRoundPicks;
+        else if (employee.value >= 17 && employee.value <= 18) return TradePackages.SecondRoundPick;
+        else if (employee.value >= 19 && employee.value <= 20) return TradePackages.MultipleSecondRoundPicks;
+        else if (employee.value >= 22 && employee.value <= 23) return TradePackages.FirstRoundPick;
+        else if (employee.value >= 24) return TradePackages.MultipleFirstRoundPicks;
 
         return TradePackages.NoTradeInterest;
     }

@@ -109,7 +109,7 @@ public class EmployeeCard : MonoBehaviour
         periodManager = FindFirstObjectByType<PeriodManager>();
         draftManager = FindFirstObjectByType<DraftManager>();
         tradeManager = FindFirstObjectByType<TradeManager>();
-        awardManager = FindFirstObjectByType<AwardManager>();
+        awardManager = FindFirstObjectByType<AwardManager>();  
     }
 
     public virtual void GetEmployeeStats(Employee employee)

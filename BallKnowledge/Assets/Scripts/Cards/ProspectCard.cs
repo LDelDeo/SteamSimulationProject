@@ -108,10 +108,10 @@ public class ProspectCard : EmployeeCard
         uiManager.RefreshUI();
     }
 
-    public void DraftProspect(ProspectCard prospectCard)
+    public void DraftProspect()
     {
-        Employee prospectToDraft = prospectCard.prospect;
-        
+        Employee prospectToDraft = this.gameObject.GetComponent<ProspectCard>().prospect;
+
         switch (draftManager.currentRound)
         {
             case 1:

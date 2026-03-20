@@ -2993,6 +2993,7 @@ MonoBehaviour:
   hairRenderer: {fileID: 3377699468385364069}
   facialHairRenderer: {fileID: 2590430934305898765}
   employeeCardBackground: {fileID: 5135445610804419322}
+  cutButton: {fileID: 8109175411632031941}
 --- !u!1 &7150700507330004025
 GameObject:
   m_ObjectHideFlags: 0
