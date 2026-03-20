@@ -354,6 +354,7 @@ public class PeriodManager : MonoBehaviour
                 case 38: percentChanceOfRetirement = 61; break; // 60% Chance
                 case 39: percentChanceOfRetirement = 81; break; // 80% Chance
                 case 40: percentChanceOfRetirement = 101; break; // 100% Chance
+                default: percentChanceOfRetirement = 0; break;
             }
 
             if (randomNumber < percentChanceOfRetirement)

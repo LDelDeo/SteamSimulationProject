@@ -98,10 +98,8 @@ public class FreeAgentCard : EmployeeCard
 
     private void UpdateInterestDecsion()
     {
-        if (interestStandard > interestInSigning)
-            willSign = false;
-        else
-            willSign = true;
+        if (interestStandard > interestInSigning) willSign = false;
+        else willSign = true;
     }
 
     public void AttemptToSignPlayer()

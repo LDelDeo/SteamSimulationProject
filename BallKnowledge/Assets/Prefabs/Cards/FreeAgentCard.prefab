@@ -2799,7 +2799,7 @@ MonoBehaviour:
   signButton: {fileID: 8109175411632031941}
   isRestrictedFreeAgent: 0
   maxInterestMultiplier: 1.8
-  minInterestMultiplier: 1.1
+  minInterestMultiplier: 1.3
   contractYears: 1
 --- !u!1 &7223461384523827437
 GameObject:
