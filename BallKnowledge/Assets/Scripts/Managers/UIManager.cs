@@ -106,6 +106,13 @@ public class UIManager : MonoBehaviour
     public GameObject nominationCardPrefab;
     public Button showEmployeesToNominateButton;
 
+    [Header("Season Reflection Screen UI")]
+    public GameObject reflectionScreen;
+    public Transform employeeUpgradesContent;
+    public GameObject upgradedEmployeeCardPrefab;
+    public TMP_Text seasonRecordText;
+    public TMP_Text seasonFinishText;
+
     [Header("Layout Array")]
     public GameObject[] screens;
 
@@ -214,6 +221,7 @@ public class UIManager : MonoBehaviour
                 BuildAwardUI();
                 break;
             case PeriodManager.Period.SeasonReflection:
+                BuildReflectionUI();
                 break;
         }
 
@@ -860,6 +868,22 @@ public class UIManager : MonoBehaviour
                 cardInstance.GetEmployeeStats(employee);
                 cardInstance.SetEmployeeCardBackground(employee);
             }
+        }
+    }
+    #endregion
+
+    #region Season Reflection UI
+    private void BuildReflectionUI()
+    {
+        ClearContent(employeeUpgradesContent);
+
+        foreach (var employee in employeeLists.currentRoster)
+        {
+            GameObject cardObject = Instantiate(upgradedEmployeeCardPrefab, employeeUpgradesContent);
+            UpgradeCard cardInstance = cardObject.GetComponent<UpgradeCard>();
+
+            cardInstance.GetEmployeeStats(employee);
+            cardInstance.SetEmployeeCardBackground(employee);
         }
     }
     #endregion

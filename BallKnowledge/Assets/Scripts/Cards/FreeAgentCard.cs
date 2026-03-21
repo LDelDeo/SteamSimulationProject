@@ -66,8 +66,8 @@ public class FreeAgentCard : EmployeeCard
             foreach (Employee employee in employeeLists.pendingFreeAgents)
                 preExpiringContractOverall += employee.overall;
 
-            maxInterestInSigning = ((preExpiringContractOverall + employeeLists.GetRosterOverall()) * maxInterestMultiplier) / employeeLists.rosterConstruction.GetMaxEmployees();
-            minInterestInSigning = ((preExpiringContractOverall + employeeLists.GetRosterOverall()) * minInterestMultiplier) / employeeLists.rosterConstruction.GetMaxEmployees();
+            maxInterestInSigning = (((preExpiringContractOverall / employeeLists.rosterConstruction.GetMaxEmployees()) + employeeLists.GetRosterOverall()) * maxInterestMultiplier);
+            minInterestInSigning = (((preExpiringContractOverall / employeeLists.rosterConstruction.GetMaxEmployees()) + employeeLists.GetRosterOverall()) * minInterestMultiplier);
         }
         else
         {
@@ -75,16 +75,12 @@ public class FreeAgentCard : EmployeeCard
             minInterestInSigning = employeeLists.GetRosterOverall() * minInterestMultiplier;
         }
 
-        if (maxInterestInSigning > 100)
-            maxInterestInSigning = 100;
+        if (maxInterestInSigning > 100) maxInterestInSigning = 100;
 
-        if (minInterestInSigning > 100)
-            minInterestInSigning = 100;
-        else if (minInterestInSigning < 0)
-            minInterestInSigning = 0;
+        if (minInterestInSigning > 100) minInterestInSigning = 100;
+        else if (minInterestInSigning < 0) minInterestInSigning = 0;
 
-        if (maxInterestInSigning <= minInterestInSigning)
-            maxInterestInSigning = minInterestInSigning + 20;
+        if (maxInterestInSigning <= minInterestInSigning) maxInterestInSigning = minInterestInSigning + 20;
 
         interestInSigning = Random.Range(minInterestInSigning, maxInterestInSigning);
 

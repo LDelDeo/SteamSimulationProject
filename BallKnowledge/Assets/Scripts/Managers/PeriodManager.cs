@@ -27,8 +27,7 @@ public class PeriodManager : MonoBehaviour
     [SerializeField] int freeAgencyClassSize;
 
     [Header("Annual Configuration")]
-    [SerializeField] int ageOfRegression;
-    [SerializeField] int amountOfRegressionPerStat;
+    public int ageOfRegression;
 
     #region Card Scripts
     private EmployeeCard employeeCardObject;
@@ -47,6 +46,7 @@ public class PeriodManager : MonoBehaviour
     private TradeManager tradeManager;
     private FaceManager faceManager;
     private AwardManager awardManager;
+    private ReflectionManager reflectionManager;
 
     EmployeeRNG employeeRNG = new EmployeeRNG();
     EmployeeArrays employeeArrays = new EmployeeArrays();
@@ -61,6 +61,7 @@ public class PeriodManager : MonoBehaviour
         tradeManager = GetComponent<TradeManager>();
         faceManager = GetComponent<FaceManager>();
         awardManager = GetComponent<AwardManager>();
+        reflectionManager = GetComponent<ReflectionManager>();
 
         employeeFactory = new EmployeeFactory();
 
@@ -184,6 +185,9 @@ public class PeriodManager : MonoBehaviour
             case Period.SeasonReflection:
                 awardManager.ResetAwards();
 
+                uiManager.ChangeUI(uiManager.reflectionScreen);
+                reflectionManager.NaturalEmployeeStatChange();
+
                 NewLeagueYear();
                 break;
         }
@@ -224,112 +228,7 @@ public class PeriodManager : MonoBehaviour
 
             if (employee.isRookie)
                 employee.isRookie = false;
-
-            UpdateEmployeeOverall(employee);
         }
-    }
-
-    // We could make this stat increases serialized fields if needed
-    // Possibly with a Season Reflection Manager?
-    private void UpdateEmployeeOverall(Employee employee) 
-    {
-        List<int> statIncreases = new List<int>();
-        int minStatsIncrease = 0;
-        int maxStatsIncrease = 0;
-
-        switch (employee.workEthic)
-        {
-            case EmployeeEnumerators.WorkEthic.Bum:
-                minStatsIncrease = 0;
-                maxStatsIncrease = 1;
-                break;
-
-            case EmployeeEnumerators.WorkEthic.Lazy:
-                minStatsIncrease = 0;
-                maxStatsIncrease = 2;
-                break;
-
-            case EmployeeEnumerators.WorkEthic.Paycheck_Collector:
-                minStatsIncrease = 0;
-                maxStatsIncrease = 3;
-                break;
-
-            case EmployeeEnumerators.WorkEthic.Gets_The_Job_Done:
-                minStatsIncrease = 1;
-                maxStatsIncrease = 3;
-                break;
-
-            case EmployeeEnumerators.WorkEthic.Motivated:
-                minStatsIncrease = 2;
-                maxStatsIncrease = 3;
-                break;
-
-            case EmployeeEnumerators.WorkEthic.Grinder:
-                minStatsIncrease = 2;
-                maxStatsIncrease = 4;
-                break;
-
-            case EmployeeEnumerators.WorkEthic.X_Factor:
-                minStatsIncrease = 3;
-                maxStatsIncrease = 5;
-                break;
-        }
-
-        if (employee.age <= ageOfRegression)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                int randomStatIncrease = Random.Range(minStatsIncrease, maxStatsIncrease);
-                statIncreases.Add(randomStatIncrease);
-            }
-
-            if (employee.efficiency + statIncreases[0] > employeeLists.maxEmployeeStat) employee.efficiency = employeeLists.maxEmployeeStat;
-            else employee.efficiency += statIncreases[0];
-
-            if (employee.customerService + statIncreases[1] > employeeLists.maxEmployeeStat) employee.customerService = employeeLists.maxEmployeeStat;
-            else employee.customerService += statIncreases[1];
-
-            if (employee.communication + statIncreases[2] > employeeLists.maxEmployeeStat) employee.communication = employeeLists.maxEmployeeStat;
-            else employee.communication += statIncreases[2];
-
-            if (employee.teamwork + statIncreases[3] > employeeLists.maxEmployeeStat) employee.teamwork = employeeLists.maxEmployeeStat;
-            else employee.teamwork += statIncreases[3];
-
-            if (employee.iq + statIncreases[4] > employeeLists.maxEmployeeStat) employee.iq = employeeLists.maxEmployeeStat;
-            else employee.iq += statIncreases[4];
-
-            statIncreases.Clear();
-        }
-        else
-        {
-            employee.efficiency -= amountOfRegressionPerStat;
-            employee.customerService -= amountOfRegressionPerStat;
-            employee.communication -= amountOfRegressionPerStat;
-            employee.teamwork -= amountOfRegressionPerStat;
-            employee.iq -= amountOfRegressionPerStat;
-
-            if (employee.efficiency < employeeLists.minEmployeeStat)
-                employee.efficiency = employeeLists.minEmployeeStat;
-
-            if (employee.customerService < employeeLists.minEmployeeStat)
-                employee.customerService = employeeLists.minEmployeeStat;
-
-            if (employee.communication < employeeLists.minEmployeeStat)
-                employee.communication = employeeLists.minEmployeeStat;
-
-            if (employee.teamwork < employeeLists.minEmployeeStat)
-                employee.teamwork = employeeLists.minEmployeeStat;
-
-            if (employee.iq < employeeLists.minEmployeeStat)
-                employee.iq = employeeLists.minEmployeeStat;
-        }
-        
-        employee.overall = (employee.efficiency + 
-                            employee.customerService + 
-                            employee.communication +
-                            employee.teamwork +
-                            employee.iq) 
-                            / 5;
     }
 
     public void CheckforEmptyList(List<Employee> listToCheck, string emptyAction)

@@ -166,6 +166,7 @@ public class EmployeeCard : MonoBehaviour
         jobPositionText.text = employeeJobPosition.ToString();
         overallText.text = employeeOverall.ToString();
 
+        // We may have to make a generic function here to set all of this to the sprite renderers for each card
         headRenderer.sprite = employeeHead;
         eyesRenderer.sprite = employeeEyes;
         mouthRenderer.sprite = employeeMouth;
