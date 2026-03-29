@@ -29,12 +29,12 @@ public class EmployeeProfile : EmployeeCard
         firstNameText.text = employeeFirstName;
         lastNameText.text = employeeLastName;
         genderText.text = employeeGender.ToString();
-        ageText.text = $"Age: {employeeAge}";
+        ageText.text = $"{employeeAge} y/o";
         isRookieText.text = employeeIsRookie ? "Rookie" : "Veteran";
         jobPositionText.text = employeeJobPosition.ToString();
-        workEthicText.text = $"Work Ethics: {employeeWorkEthic}";
-        personalityText.text = $"Personality: {employeePersonalityTrait}";
-        methodOfAcquirementText.text = $"{employeeMethodOfAcquirement}";
+        workEthicText.text = employeeWorkEthic.ToString();
+        personalityText.text = employeePersonalityTrait.ToString();
+        methodOfAcquirementText.text = employeeMethodOfAcquirement.ToString();
         hourlyWageText.text = $"{employeeHourlyWage}/hr";
         yearsUnderContractText.text = $"{employeeYearsUnderContract} year(s) remaining";
         efficiencyText.text = $"Efficiency: {employeeEfficiency}";
